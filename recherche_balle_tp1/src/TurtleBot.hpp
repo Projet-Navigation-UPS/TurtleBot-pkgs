@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 #include <string>
 #include "sensor_msgs/Image.h"
+#include "geometry_msgs/Twist.h"
 
 class TurtleBot 
 {
@@ -15,12 +16,15 @@ class TurtleBot
 	ros::Subscriber subscriberCameraRgbImage_rect_color ;
 
 	//Publishers
-	//ros::Publisher ... ;
+	ros::Publisher publisherMobile_baseCommandsVelocity ;
+
 
 	//
 	sensor_msgs::Image cameraRgbImage_raw;
 	sensor_msgs::Image cameraRgbImage_color;
 	sensor_msgs::Image cameraRgbImage_rect_color;
+
+	geometry_msgs::Twist mobile_baseCommandsVelocity;
 
 	public:
 

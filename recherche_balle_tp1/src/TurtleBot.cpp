@@ -5,13 +5,14 @@ TurtleBot::TurtleBot(ros::NodeHandle nod) :
 
 	
 	//Publishers
-	//pub_enable(noeud.advertise<msg>("topic", 1)),
+	publisherMobile_baseCommandsVelocity (nod.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1)),
 
 	//Subcribers
 	subscriberCameraRgbImage_raw(nod.subscribe("/camera/rgb/image_raw", 1, &TurtleBot::callbackCameraRgbImage_raw,this)),
 	subscriberCameraRgbImage_color(nod.subscribe("/camera/rgb/image_color", 1, &TurtleBot::callbackCameraRgbImage_color,this)),
-	subscriberCameraRgbImage_rect_color(nod.subscribe("/camera/rgb/image_rect_color", 1, &TurtleBot::callbackCameraRgbImage_rect_color,this))
+	subscriberCameraRgbImage_rect_color(nod.subscribe("/camera/rgb/image_rect_color", 1, &TurtleBot::callbackCameraRgbImage_rect_color,this)),
 {
+	mobile_baseCommandsVelocity.
 }
 
 //Getters
@@ -29,6 +30,7 @@ sensor_msgs::Image TurtleBot::getCameraRgbImage_rect_color()
 {
 	return cameraRgbImage_rect_color;
 }
+
 
 
 void TurtleBot::callbackCameraRgbImage_raw(const sensor_msgs::Image& msg)
