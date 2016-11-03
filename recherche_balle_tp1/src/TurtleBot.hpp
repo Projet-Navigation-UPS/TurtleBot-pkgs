@@ -30,9 +30,14 @@ class TurtleBot
 
 	TurtleBot(ros::NodeHandle nod);
 
+	//Getters
 	sensor_msgs::Image getCameraRgbImage_raw();
 	sensor_msgs::Image getCameraRgbImage_color();
 	sensor_msgs::Image getCameraRgbImage_rect_color();
+	geometry_msgs::Twist getMobile_baseCommandsVelocity();
+
+	//Setters
+	void setMobile_baseCommandsVelocity(float linearX, float linearY, float linearZ, float angularX, float angularY, float angularZ);
 
 
 	//Callbacks
@@ -40,10 +45,26 @@ class TurtleBot
 	void callbackCameraRgbImage_color(const sensor_msgs::Image& msg);
 	void callbackCameraRgbImage_rect_color(const sensor_msgs::Image& msg);
 
+	//Publications
+	void sendMobile_baseCommandsVelocity();
 
+	//Image convertion
 	unsigned char* convertSensor_msgsImageToRaw(sensor_msgs::Image sensor_msgsImage);
-	void displaySensor_msgsImage(std::string type, sensor_msgs::Image sensor_msgsImage);
 
+	//Displays
+	void displaySensor_msgsImage(std::string type, sensor_msgs::Image sensor_msgsImage);
+	void displayMobile_baseCommandsVelocity();
+
+	//Motions
+	void stop();
+	void moveForward();
+	void moveBackward();
+	void turnRight();
+	void turnLeft();
+	void moveForwardTurningRight();
+	void moveForwardTurningLeft();
+	void moveBackwardTurningRight();
+	void moveBackwardTurningLeft();
 
 };
 
