@@ -22,13 +22,13 @@ int main(int argc, char **argv)
   	while(ros::ok())
 	{
 		//Displays
-		turtleBot.displaySensor_msgsImage("RAW", turtleBot.getCameraRgbImage_raw());
-		turtleBot.displaySensor_msgsImage("COLOR", turtleBot.getCameraRgbImage_color());
-		turtleBot.displaySensor_msgsImage("COLOR_RECT", turtleBot.getCameraRgbImage_raw());
-		turtleBot.displayMobile_baseCommandsVelocity();
+		turtleBot.displaySensorMsgsImage("RAW", turtleBot.getCameraRgbImageRaw());
+		turtleBot.displaySensorMsgsImage("COLOR", turtleBot.getCameraRgbImageColor());
+		turtleBot.displaySensorMsgsImage("COLOR_RECT", turtleBot.getCameraRgbImageRectColor());
+		turtleBot.displayMobileBaseCommandsVelocity();
 
 		//Publications
-		turtleBot.sendMobile_baseCommandsVelocity();
+		turtleBot.sendMobileBaseCommandsVelocity();
 
 		//Launching Callbacks and synchronizing with loop_rate
 		ros::spinOnce(); 

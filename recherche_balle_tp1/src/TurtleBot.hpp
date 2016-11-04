@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 #include <string>
 #include "sensor_msgs/Image.h"
+#include "sensor_msgs/JointState.h"
 #include "geometry_msgs/Twist.h"
 
 class TurtleBot 
@@ -11,49 +12,51 @@ class TurtleBot
 	private:
 
 	//Subscribers
-	ros::Subscriber subscriberCameraRgbImage_raw ;
-	ros::Subscriber subscriberCameraRgbImage_color ;
-	ros::Subscriber subscriberCameraRgbImage_rect_color ;
+	ros::Subscriber subscriberCameraRgbImageRaw ;
+	ros::Subscriber subscriberCameraRgbImageColor ;
+	ros::Subscriber subscriberCameraRgbImageRectColor ;
+	ros::Subscriber subscriberJointStates ;
 
 	//Publishers
-	ros::Publisher publisherMobile_baseCommandsVelocity ;
+	ros::Publisher publisherMobileBaseCommandsVelocity ;
 
 
 	//
-	sensor_msgs::Image cameraRgbImage_raw;
-	sensor_msgs::Image cameraRgbImage_color;
-	sensor_msgs::Image cameraRgbImage_rect_color;
+	sensor_msgs::Image cameraRgbImageRaw;
+	sensor_msgs::Image cameraRgbImageColor;
+	sensor_msgs::Image cameraRgbImageRectColor;
+	sensor_msgs::JointState JointStates;
 
-	geometry_msgs::Twist mobile_baseCommandsVelocity;
+	geometry_msgs::Twist mobileBaseCommandsVelocity;
 
 	public:
 
 	TurtleBot(ros::NodeHandle nod);
 
 	//Getters
-	sensor_msgs::Image getCameraRgbImage_raw();
-	sensor_msgs::Image getCameraRgbImage_color();
-	sensor_msgs::Image getCameraRgbImage_rect_color();
-	geometry_msgs::Twist getMobile_baseCommandsVelocity();
+	sensor_msgs::Image getCameraRgbImageRaw();
+	sensor_msgs::Image getCameraRgbImageColor();
+	sensor_msgs::Image getCameraRgbImageRectColor();
+	geometry_msgs::Twist getMobileBaseCommandsVelocity();
 
 	//Setters
-	void setMobile_baseCommandsVelocity(float linearX, float linearY, float linearZ, float angularX, float angularY, float angularZ);
+	void setMobileBaseCommandsVelocity(float linearX, float linearY, float linearZ, float angularX, float angularY, float angularZ);
 
 
 	//Callbacks
-	void callbackCameraRgbImage_raw(const sensor_msgs::Image& msg);
-	void callbackCameraRgbImage_color(const sensor_msgs::Image& msg);
-	void callbackCameraRgbImage_rect_color(const sensor_msgs::Image& msg);
+	void callbackCameraRgbImageRaw(const sensor_msgs::Image& msg);
+	void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);
+	void callbackCameraRgbImageRectColor(const sensor_msgs::Image& msg);
 
 	//Publications
-	void sendMobile_baseCommandsVelocity();
+	void sendMobileBaseCommandsVelocity();
 
 	//Image convertion
-	unsigned char* convertSensor_msgsImageToRaw(sensor_msgs::Image sensor_msgsImage);
+	unsigned char* convertSensor_msgsImageToRaw(sensor_msgs::Image sensorMsgsImage);
 
 	//Displays
-	void displaySensor_msgsImage(std::string type, sensor_msgs::Image sensor_msgsImage);
-	void displayMobile_baseCommandsVelocity();
+	void displaySensorMsgsImage(std::string type, sensor_msgs::Image sensorMsgsImage);
+	void displayMobileBaseCommandsVelocity();
 
 	//Motions
 	void stop();
