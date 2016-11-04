@@ -6,21 +6,26 @@
 #include "sensor_msgs/Image.h"
 #include "sensor_msgs/JointState.h"
 #include "geometry_msgs/Twist.h"
-#include "kobuki_msgs/Sound.h"
 
 class TurtleBot 
 {
 	private:
 
 	//Subscribers
+<<<<<<< HEAD
+	ros::Subscriber subscriberCameraRgbImageRaw ;
+	ros::Subscriber subscriberCameraRgbImageColor ;
+	ros::Subscriber subscriberCameraRgbImageRectColor;
+	ros::Subscriber subscriberJointStates;
+=======
 	ros::Subscriber subscriberCameraRgbImageRaw;
 	ros::Subscriber subscriberCameraRgbImageColor;
 	ros::Subscriber subscriberCameraRgbImageRectColor;
-	ros::Subscriber subscriberJointStates;
+	ros::Subscriber subscriberJointStates ;
+>>>>>>> 93037bfa42929b8a17d2a4b9b5f68b9e13659786
 
 	//Publishers
 	ros::Publisher publisherMobileBaseCommandsVelocity;
-	ros::Publisher publisherMobileBaseCommandsSound;
 
 
 	//Messages
@@ -29,12 +34,11 @@ class TurtleBot
 	sensor_msgs::Image cameraRgbImageRectColor;
 	sensor_msgs::JointState jointStates;
 
-	kobuki_msgs::Sound mobileBaseCommandsSound;
 	geometry_msgs::Twist mobileBaseCommandsVelocity;
 
 	public:
 
-	TurtleBot(ros::NodeHandle node);
+	TurtleBot(ros::NodeHandle nod);
 
 	//Getters
 	sensor_msgs::Image getCameraRgbImageRaw();
@@ -45,7 +49,6 @@ class TurtleBot
 
 	//Setters
 	void setMobileBaseCommandsVelocity(float linearX, float linearY, float linearZ, float angularX, float angularY, float angularZ);
-	void setMobileBaseCommandsSound(int sound);
 
 
 	//Callbacks
@@ -56,7 +59,6 @@ class TurtleBot
 
 	//Publications
 	void sendMobileBaseCommandsVelocity();
-	void sendMobileBaseCommandsSound();
 
 	//Image convertion
 	unsigned char* convertSensor_msgsImageToRaw(sensor_msgs::Image sensorMsgsImage);
@@ -65,7 +67,6 @@ class TurtleBot
 	void displaySensorMsgsImage(std::string type, sensor_msgs::Image sensorMsgsImage);
 	void displayMobileBaseCommandsVelocity();
 	void displayJointStates();
-	void displayMobileBaseCommandsSound();
 
 	//Motions
 	void stop();

@@ -1,21 +1,23 @@
 #include "TurtleBot.hpp"
 #include <vector>
 
+
 #define LINEAR_MAX_VELOCITY 0.25
-#define ANGULAR_MAX_VELOCITY 1
+#define ANGULAR_MAX_VELOCITY 2
 
 
-TurtleBot::TurtleBot(ros::NodeHandle nod) :
+TurtleBot::TurtleBot(ros::NodeHandle node):
 
 	
 	//Publishers
-	publisherMobileBaseCommandsVelocity (nod.advertise<geometry_msgs::Twist>("/mobileBase/commands/velocity", 1)),
+	publisherMobileBaseCommandsVelocity(node.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1)),
+	publisherMobileBaseCommandsSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
 
 	//Subcribers
-	subscriberCameraRgbImageRaw(nod.subscribe("/camera/rgb/image_raw", 1, &TurtleBot::callbackCameraRgbImageRaw,this)),
-	subscriberCameraRgbImageColor(nod.subscribe("/camera/rgb/image_color", 1, &TurtleBot::callbackCameraRgbImageColor,this)),
-	subscriberCameraRgbImageRectColor(nod.subscribe("/camera/rgb/image_rect_color", 1, &TurtleBot::callbackCameraRgbImageRectColor,this)),
-	subscriberJointStates(nod.subscribe("/joint_states", 1, &TurtleBot::callbackJointStates,this))
+	subscriberCameraRgbImageRaw(node.subscribe("/camera/rgb/image_raw", 1, &TurtleBot::callbackCameraRgbImageRaw,this)),
+	subscriberCameraRgbImageColor(node.subscribe("/camera/rgb/image_color", 1, &TurtleBot::callbackCameraRgbImageColor,this)),
+	subscriberCameraRgbImageRectColor(node.subscribe("/camera/rgb/image_rect_color", 1, &TurtleBot::callbackCameraRgbImageRectColor,this)),
+	subscriberJointStates(node.subscribe("/joint_states", 1, &TurtleBot::callbackJointStates,this))
 {
 	TurtleBot::stop();
 }
@@ -59,6 +61,11 @@ void TurtleBot::setMobileBaseCommandsVelocity(float linearX, float linearY, floa
 	mobileBaseCommandsVelocity.angular.z=angularZ;
 }
 
+void TurtleBot::setMobileBaseCommandsSound(int sound)
+{
+	mobileBaseCommandsSound.value = sound;
+}
+
 //Callbacks
 void TurtleBot::callbackCameraRgbImageRaw(const sensor_msgs::Image& msg)
 {
@@ -85,6 +92,11 @@ void TurtleBot::callbackJointStates(const sensor_msgs::JointState& msg)
 void TurtleBot::sendMobileBaseCommandsVelocity()
 {
 	publisherMobileBaseCommandsVelocity.publish(mobileBaseCommandsVelocity);
+}
+
+void TurtleBot::sendMobileBaseCommandsSound()
+{
+	publisherMobileBaseCommandsSound.publish(mobileBaseCommandsSound);
 }
 
 
@@ -117,6 +129,11 @@ void TurtleBot::displayMobileBaseCommandsVelocity()
 void TurtleBot::displayJointStates()
 {
 	std::cout<<jointStates<<std::endl;
+}
+
+void TurtleBot::displayMobileBaseCommandsSound()
+{
+	std::cout<<mobileBaseCommandsSound<<std::endl;
 }
 
 
