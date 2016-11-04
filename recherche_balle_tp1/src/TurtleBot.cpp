@@ -14,8 +14,8 @@ TurtleBot::TurtleBot(ros::NodeHandle nod) :
 	//Subcribers
 	subscriberCameraRgbImageRaw(nod.subscribe("/camera/rgb/image_raw", 1, &TurtleBot::callbackCameraRgbImageRaw,this)),
 	subscriberCameraRgbImageColor(nod.subscribe("/camera/rgb/image_color", 1, &TurtleBot::callbackCameraRgbImageColor,this)),
-	subscriberCameraRgbImageRectColor(nod.subscribe("/camera/rgb/image_rect_color", 1, &TurtleBot::callbackCameraRgbImageRectColor,this))
-	//subscriberJointState(nod.subscribe("/joint_states", 1, &TurtleBot::callbackCameraRgbImageRectColor,this))
+	subscriberCameraRgbImageRectColor(nod.subscribe("/camera/rgb/image_rect_color", 1, &TurtleBot::callbackCameraRgbImageRectColor,this)),
+	subscriberJointStates(nod.subscribe("/joint_states", 1, &TurtleBot::callbackJointStates,this))
 {
 	TurtleBot::stop();
 }
@@ -39,6 +39,11 @@ sensor_msgs::Image TurtleBot::getCameraRgbImageRectColor()
 geometry_msgs::Twist TurtleBot::getMobileBaseCommandsVelocity() 
 {
 	return mobileBaseCommandsVelocity;
+}
+
+sensor_msgs::JointState TurtleBot::getJointStates()
+{
+	return jointStates;
 }
 
 
@@ -68,6 +73,11 @@ void TurtleBot::callbackCameraRgbImageColor(const sensor_msgs::Image& msg)
 void TurtleBot::callbackCameraRgbImageRectColor(const sensor_msgs::Image& msg)
 {
 	cameraRgbImageRectColor = msg;
+}
+
+void TurtleBot::callbackJointStates(const sensor_msgs::JointState& msg)
+{
+	jointStates = msg;
 }
 
 
@@ -101,7 +111,12 @@ void TurtleBot::displaySensorMsgsImage(std::string type, sensor_msgs::Image sens
 
 void TurtleBot::displayMobileBaseCommandsVelocity()
 {
-	std::cout<<TurtleBot::getMobileBaseCommandsVelocity()<<std::endl;
+	std::cout<<mobileBaseCommandsVelocity<<std::endl;
+}
+
+void TurtleBot::displayJointStates()
+{
+	std::cout<<jointStates<<std::endl;
 }
 
 

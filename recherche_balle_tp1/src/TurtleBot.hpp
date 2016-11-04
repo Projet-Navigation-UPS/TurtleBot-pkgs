@@ -14,18 +14,18 @@ class TurtleBot
 	//Subscribers
 	ros::Subscriber subscriberCameraRgbImageRaw ;
 	ros::Subscriber subscriberCameraRgbImageColor ;
-	ros::Subscriber subscriberCameraRgbImageRectColor ;
-	ros::Subscriber subscriberJointStates ;
+	ros::Subscriber subscriberCameraRgbImageRectColor;
+	ros::Subscriber subscriberJointStates;
 
 	//Publishers
-	ros::Publisher publisherMobileBaseCommandsVelocity ;
+	ros::Publisher publisherMobileBaseCommandsVelocity;
 
 
 	//
 	sensor_msgs::Image cameraRgbImageRaw;
 	sensor_msgs::Image cameraRgbImageColor;
 	sensor_msgs::Image cameraRgbImageRectColor;
-	sensor_msgs::JointState JointStates;
+	sensor_msgs::JointState jointStates;
 
 	geometry_msgs::Twist mobileBaseCommandsVelocity;
 
@@ -38,6 +38,7 @@ class TurtleBot
 	sensor_msgs::Image getCameraRgbImageColor();
 	sensor_msgs::Image getCameraRgbImageRectColor();
 	geometry_msgs::Twist getMobileBaseCommandsVelocity();
+	sensor_msgs::JointState getJointStates();
 
 	//Setters
 	void setMobileBaseCommandsVelocity(float linearX, float linearY, float linearZ, float angularX, float angularY, float angularZ);
@@ -47,6 +48,7 @@ class TurtleBot
 	void callbackCameraRgbImageRaw(const sensor_msgs::Image& msg);
 	void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);
 	void callbackCameraRgbImageRectColor(const sensor_msgs::Image& msg);
+	void callbackJointStates(const sensor_msgs::JointState& msg);
 
 	//Publications
 	void sendMobileBaseCommandsVelocity();
@@ -57,6 +59,7 @@ class TurtleBot
 	//Displays
 	void displaySensorMsgsImage(std::string type, sensor_msgs::Image sensorMsgsImage);
 	void displayMobileBaseCommandsVelocity();
+	void displayJointStates();
 
 	//Motions
 	void stop();

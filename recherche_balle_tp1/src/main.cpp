@@ -26,6 +26,7 @@ int main(int argc, char **argv)
 		turtleBot.displaySensorMsgsImage("COLOR", turtleBot.getCameraRgbImageColor());
 		turtleBot.displaySensorMsgsImage("COLOR_RECT", turtleBot.getCameraRgbImageRectColor());
 		turtleBot.displayMobileBaseCommandsVelocity();
+		turtleBot.displayJointStates();
 
 		//Publications
 		turtleBot.sendMobileBaseCommandsVelocity();
