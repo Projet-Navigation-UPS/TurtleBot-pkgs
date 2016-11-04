@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 
 	//turtleBot.moveForward();
 	//turtleBot.moveBackward();
-	turtleBot.turnRight();
+	//turtleBot.turnRight();
 	//turtleBot.turnLeft();
 	//turtleBot.moveForwardTurningRight();
 	//turtleBot.moveForwardTurningLeft();
