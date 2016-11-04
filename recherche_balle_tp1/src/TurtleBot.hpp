@@ -12,16 +12,16 @@ class TurtleBot
 	private:
 
 	//Subscribers
-	ros::Subscriber subscriberCameraRgbImageRaw ;
-	ros::Subscriber subscriberCameraRgbImageColor ;
-	ros::Subscriber subscriberCameraRgbImageRectColor ;
+	ros::Subscriber subscriberCameraRgbImageRaw;
+	ros::Subscriber subscriberCameraRgbImageColor;
+	ros::Subscriber subscriberCameraRgbImageRectColor;
 	ros::Subscriber subscriberJointStates ;
 
 	//Publishers
-	ros::Publisher publisherMobileBaseCommandsVelocity ;
+	ros::Publisher publisherMobileBaseCommandsVelocity;
 
 
-	//
+	//Messages
 	sensor_msgs::Image cameraRgbImageRaw;
 	sensor_msgs::Image cameraRgbImageColor;
 	sensor_msgs::Image cameraRgbImageRectColor;
