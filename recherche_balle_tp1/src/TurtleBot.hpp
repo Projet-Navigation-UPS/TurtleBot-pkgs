@@ -27,10 +27,11 @@ private:
     ros::Subscriber subscriberCameraRgbImageColor;
     ros::Subscriber subscriberCameraRgbImageRectColor;
     ros::Subscriber subscriberJointStates;
+
     //Publishers
     ros::Publisher publisherMobileBaseCommandsVelocity;
     ros::Publisher publisherMobileBaseCommandsSound;
-
+	ros::Publisher publisherImageDisplay;
 
     //Messages
     sensor_msgs::Image cameraRgbImageRaw;
@@ -66,6 +67,7 @@ public:
     //Publications
     void sendMobileBaseCommandsVelocity();
     void sendMobileBaseCommandsSound();
+	void sendImageDisplay(sensor_msgs::Image imageMsg);
 
     //Image convertion
     unsigned char* convertSensor_msgsImageToRaw(sensor_msgs::Image sensorMsgsImage);

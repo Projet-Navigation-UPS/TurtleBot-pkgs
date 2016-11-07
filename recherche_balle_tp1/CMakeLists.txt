@@ -131,13 +131,18 @@ include_directories(
 
 ## Declare a C++ executable
 add_executable(recherche_balle_tp1 src/main.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp)
+add_executable(BallSearch src/BallSearch.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(recherche_balle_tp1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(BallSearch ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(recherche_balle_tp1
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(BallSearch
   ${catkin_LIBRARIES}
 )
 

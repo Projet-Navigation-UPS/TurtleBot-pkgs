@@ -4,7 +4,7 @@
 int main(int argc, char **argv)
 {
     std::cout<<"Launching recherche_balle_tp1 ..."<<std::endl;
-    ros::init(argc, argv, "vision");
+    ros::init(argc, argv, "recherche_balle_tp1");
     ros::NodeHandle node;
     ros::Rate loop_rate(2); // 2Hz 
 
@@ -20,6 +20,9 @@ int main(int argc, char **argv)
 	    turtleBot.displayJointStates();
 	    turtleBot.displayMobileBaseCommandsSound();
 
+
+		turtleBot.sendImageDisplay(turtleBot.getCameraRgbImageColor());
+		
 	    //Launching Callbacks and synchronizing with loop_rate
 	    ros::spinOnce(); 
 	    loop_rate.sleep();
