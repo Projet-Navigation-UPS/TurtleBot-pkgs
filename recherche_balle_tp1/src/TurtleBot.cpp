@@ -2,6 +2,7 @@
 #include <vector>
 
 
+
 #define LINEAR_MAX_VELOCITY 0.25
 #define ANGULAR_MAX_VELOCITY 2
 
@@ -115,12 +116,25 @@ unsigned char* TurtleBot::convertSensor_msgsImageToRaw(sensor_msgs::Image sensor
 	return raw;	
 }
 
+sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(char* raw, int height, int width, std::string encoding,char is_bigendian, int step)
+{	
+	sensor_msgs::Image sensorMsgsImage;
+	std::vector<unsigned char> vectorRaw(raw, raw + (height*width));
+	sensorMsgsImage.data = vectorRaw;
+	sensorMsgsImage.height = height;
+	sensorMsgsImage.width = width;
+	sensorMsgsImage.encoding = encoding;
+	sensorMsgsImage.is_bigendian = is_bigendian;
+	sensorMsgsImage.step = step;
+	return sensorMsgsImage;
+}
+
 
 //Displays
 void TurtleBot::displaySensorMsgsImage(std::string type, sensor_msgs::Image sensorMsgsImage)
 {
 	std::cout<<"--------"<<type<<"---------"<<std::endl;
-  	std::cout<<sensorMsgsImage.height<<std::endl;
+	std::cout<<sensorMsgsImage.height<<std::endl;
 	std::cout<<sensorMsgsImage.width<<std::endl;
 	std::cout<<sensorMsgsImage.encoding<<std::endl;
 	std::cout<<sensorMsgsImage.is_bigendian<<std::endl;

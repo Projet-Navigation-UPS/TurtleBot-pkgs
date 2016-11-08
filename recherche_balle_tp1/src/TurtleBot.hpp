@@ -22,72 +22,73 @@ class TurtleBot
     
 private:
     
-    //Subscrbers
-    ros::Subscriber subscriberCameraRgbImageRaw;
-    ros::Subscriber subscriberCameraRgbImageColor;
-    ros::Subscriber subscriberCameraRgbImageRectColor;
-    ros::Subscriber subscriberJointStates;
+	//Subscrbers
+	ros::Subscriber subscriberCameraRgbImageRaw;
+	ros::Subscriber subscriberCameraRgbImageColor;
+	ros::Subscriber subscriberCameraRgbImageRectColor;
+ 	ros::Subscriber subscriberJointStates;
 
-    //Publishers
-    ros::Publisher publisherMobileBaseCommandsVelocity;
-    ros::Publisher publisherMobileBaseCommandsSound;
+	//Publishers
+ 	ros::Publisher publisherMobileBaseCommandsVelocity;
+	ros::Publisher publisherMobileBaseCommandsSound;
 	ros::Publisher publisherImageDisplay;
 
-    //Messages
-    sensor_msgs::Image cameraRgbImageRaw;
-    sensor_msgs::Image cameraRgbImageColor;
-    sensor_msgs::Image cameraRgbImageRectColor;
-    sensor_msgs::JointState jointStates;
+	//Messages
+	sensor_msgs::Image cameraRgbImageRaw;
+	sensor_msgs::Image cameraRgbImageColor;
+	sensor_msgs::Image cameraRgbImageRectColor;
+	sensor_msgs::JointState jointStates;
 
-    kobuki_msgs::Sound mobileBaseCommandsSound;
-    geometry_msgs::Twist mobileBaseCommandsVelocity;
+	kobuki_msgs::Sound mobileBaseCommandsSound;
+	geometry_msgs::Twist mobileBaseCommandsVelocity;
 
 public:
 
-    TurtleBot(ros::NodeHandle node);
+	TurtleBot(ros::NodeHandle node);
 
-    //Getters
-    sensor_msgs::Image getCameraRgbImageRaw();
-    sensor_msgs::Image getCameraRgbImageColor();
-    sensor_msgs::Image getCameraRgbImageRectColor();
-    geometry_msgs::Twist getMobileBaseCommandsVelocity();
-    sensor_msgs::JointState getJointStates();
+	//Getters
+	sensor_msgs::Image getCameraRgbImageRaw();
+	sensor_msgs::Image getCameraRgbImageColor();
+	sensor_msgs::Image getCameraRgbImageRectColor();
+	geometry_msgs::Twist getMobileBaseCommandsVelocity();
+	sensor_msgs::JointState getJointStates();
 
-    //Setters
-    void setMobileBaseCommandsVelocity(float linearX, float linearY, float linearZ, float angularX, float angularY, float angularZ);
-    void setMobileBaseCommandsSound(int sound);
+	//Setters
+	void setMobileBaseCommandsVelocity(float linearX, float linearY, float linearZ, float angularX, float angularY, float angularZ);
+	void setMobileBaseCommandsSound(int sound);
 
 
-    //Callbacks
-    void callbackCameraRgbImageRaw(const sensor_msgs::Image& msg);
-    void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);
-    void callbackCameraRgbImageRectColor(const sensor_msgs::Image& msg);
-    void callbackJointStates(const sensor_msgs::JointState& msg);
+	//Callbacks
+	void callbackCameraRgbImageRaw(const sensor_msgs::Image& msg);
+	void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);
+	void callbackCameraRgbImageRectColor(const sensor_msgs::Image& msg);
+	void callbackJointStates(const sensor_msgs::JointState& msg);
 
-    //Publications
-    void sendMobileBaseCommandsVelocity();
-    void sendMobileBaseCommandsSound();
+	//Publications
+	void sendMobileBaseCommandsVelocity();
+	void sendMobileBaseCommandsSound();
 	void sendImageDisplay(sensor_msgs::Image imageMsg);
 
-    //Image convertion
-    unsigned char* convertSensor_msgsImageToRaw(sensor_msgs::Image sensorMsgsImage);
+	//Image convertion
+	unsigned char* convertSensor_msgsImageToRaw(sensor_msgs::Image sensorMsgsImage);
+	sensor_msgs::Image convertRawToSensorMsgsImage(char* raw, int height, int width, std::string encoding,char is_bigendian, int step);
 
-    //Displays
-    void displaySensorMsgsImage(std::string type, sensor_msgs::Image sensorMsgsImage);
-    void displayMobileBaseCommandsVelocity();
-    void displayJointStates();
-    void displayMobileBaseCommandsSound();
+	//Displays
+	void displaySensorMsgsImage(std::string type, sensor_msgs::Image sensorMsgsImage);
+	void displayMobileBaseCommandsVelocity();
+	void displayJointStates();
+	void displayMobileBaseCommandsSound();
 
-    //Motions
-    void stop();
-    void moveForward();
-    void moveBackward();
-    void turnRight();
-    void turnLeft();
-    void moveForwardTurningRight();
-    void moveForwardTurningLeft();
-    void moveBackwardTurningRight();
-    void moveBackwardTurningLeft();
+	//Motions
+	void stop();
+	void moveForward();
+	void moveBackward();
+	void turnRight();
+	void turnLeft();
+	void moveForwardTurningRight();
+	void moveForwardTurningLeft();
+	void moveBackwardTurningRight();
+	void moveBackwardTurningLeft();
 
 };
 
