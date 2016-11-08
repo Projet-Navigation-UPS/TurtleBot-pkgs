@@ -5,8 +5,13 @@ TurtleBot::TurtleBot(ros::NodeHandle node):
 
     
     //Publishers
+<<<<<<< HEAD
+	publisherMobileBaseCommandsVelocity(node.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1)),
+	publisherMobileBaseCommandsSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
+=======
     publisherMobileBaseCommandsVelocity(node.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1)),
     publisherMobileBaseCommandsSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
+>>>>>>> a47f0bcc761bfd692e2114cd83750e50aeae0cc8
 
     //Subcribers
     subscriberCameraRgbImageRaw(node.subscribe("/camera/rgb/image_raw", 1, &TurtleBot::callbackCameraRgbImageRaw,this)),
@@ -97,16 +102,35 @@ void TurtleBot::sendMobileBaseCommandsSound()
 //Image convertion
 unsigned char* TurtleBot::convertSensor_msgsImageToRaw(const sensor_msgs::Image& sensorMsgsImage)
 {
+<<<<<<< HEAD
 	std::vector<unsigned char> vectorRaw(sensorMsgsImage.height*sensorMsgsImage.step);
+	vectorRaw=sensorMsgsImage.data;
+	unsigned char* raw = &vectorRaw[0];
+	return raw;	
+}
+
+sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(unsigned char* raw, int height, int width, std::string encoding,unsigned char is_bigendian, int step)
+{	
+	sensor_msgs::Image sensorMsgsImage;
+	std::vector<unsigned char> vectorRaw(raw, raw + height*step);
+	sensorMsgsImage.data = vectorRaw;
+	sensorMsgsImage.height = height;
+	sensorMsgsImage.width = width;
+	sensorMsgsImage.encoding = encoding;
+	sensorMsgsImage.is_bigendian = is_bigendian;
+	sensorMsgsImage.step = step;
+	return sensorMsgsImage;
+=======
+    std::vector<unsigned char> vectorRaw(sensorMsgsImage.height*sensorMsgsImage.width);
     vectorRaw=sensorMsgsImage.data;
     unsigned char* raw = &vectorRaw[0];
     return raw;	
 }
 
-sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(unsigned char* raw, const int height, const int width, const std::string& encoding, const char is_bigendian, const int step)
+sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(char* raw, const int height, const int width, const std::string& encoding, const char is_bigendian, const int step)
 {	
     sensor_msgs::Image sensorMsgsImage;
-	std::vector<unsigned char> vectorRaw(raw, raw + height*step);
+    std::vector<unsigned char> vectorRaw(raw, raw + (height*width));
     sensorMsgsImage.data = vectorRaw;
     sensorMsgsImage.height = height;
     sensorMsgsImage.width = width;
@@ -114,6 +138,7 @@ sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(unsigned char* raw, co
     sensorMsgsImage.is_bigendian = is_bigendian;
     sensorMsgsImage.step = step;
     return sensorMsgsImage;
+>>>>>>> a47f0bcc761bfd692e2114cd83750e50aeae0cc8
 }
 
 //Displays

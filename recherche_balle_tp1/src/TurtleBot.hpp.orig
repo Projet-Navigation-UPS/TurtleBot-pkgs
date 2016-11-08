@@ -46,6 +46,53 @@ private:
     
 public:
 
+<<<<<<< HEAD
+	TurtleBot(ros::NodeHandle node);
+
+	//Getters
+	sensor_msgs::Image getCameraRgbImageRaw();
+	sensor_msgs::Image getCameraRgbImageColor();
+	sensor_msgs::Image getCameraRgbImageRectColor();
+	geometry_msgs::Twist getMobileBaseCommandsVelocity();
+	sensor_msgs::JointState getJointStates();
+
+	//Setters
+	void setMobileBaseCommandsVelocity(float linearX, float linearY, float linearZ, float angularX, float angularY, float angularZ);
+	void setMobileBaseCommandsSound(int sound);
+
+
+	//Callbacks
+	void callbackCameraRgbImageRaw(const sensor_msgs::Image& msg);
+	void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);
+	void callbackCameraRgbImageRectColor(const sensor_msgs::Image& msg);
+	void callbackJointStates(const sensor_msgs::JointState& msg);
+
+	//Publications
+	void sendMobileBaseCommandsVelocity();
+	void sendMobileBaseCommandsSound();
+
+	//Image convertion
+	unsigned char* convertSensor_msgsImageToRaw(sensor_msgs::Image sensorMsgsImage);
+	sensor_msgs::Image convertRawToSensorMsgsImage(unsigned char* raw, int height, int width, std::string encoding, unsigned char is_bigendian, int step);
+
+	//Displays
+	void displaySensorMsgsImage(std::string type, sensor_msgs::Image sensorMsgsImage);
+	void displayMobileBaseCommandsVelocity();
+	void displayJointStates();
+	void displayMobileBaseCommandsSound();
+
+	//Motions
+	void stop();
+	void moveForward();
+	void moveBackward();
+	void turnRight();
+	void turnLeft();
+	void moveForwardTurningRight();
+	void moveForwardTurningLeft();
+	void moveBackwardTurningRight();
+	void moveBackwardTurningLeft();
+
+=======
     TurtleBot(ros::NodeHandle node);
 
     //Getters
@@ -65,7 +112,7 @@ public:
 
     //Image convertion
     unsigned char* convertSensor_msgsImageToRaw(const sensor_msgs::Image& sensorMsgsImage);
-    sensor_msgs::Image convertRawToSensorMsgsImage(unsigned char* raw, const int height, const int width, const std::string&encoding, const char is_bigendian, const int step);
+    sensor_msgs::Image convertRawToSensorMsgsImage(char* raw, const int height, const int width, const std::string&encoding, const char is_bigendian, const int step);
 
     //Displays
     void displaySensorMsgsImage(const std::string& type, const sensor_msgs::Image& sensorMsgsImage);
@@ -90,6 +137,7 @@ private:
     void callbackCameraRgbImageRectColor(const sensor_msgs::Image& msg);
     void callbackJointStates(const sensor_msgs::JointState& msg);
     
+>>>>>>> a47f0bcc761bfd692e2114cd83750e50aeae0cc8
 };
 
 #endif
