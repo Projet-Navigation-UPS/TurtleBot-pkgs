@@ -59,9 +59,6 @@ public:
     void setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
     void setMobileBaseCommandsSound(const int sound);
 
-    //Publications
-    void sendMobileBaseCommandsVelocity();
-    void sendMobileBaseCommandsSound();
 
     //Image convertion
     unsigned char* convertSensor_msgsImageToRaw(const sensor_msgs::Image& sensorMsgsImage);

@@ -54,11 +54,13 @@ void TurtleBot::setMobileBaseCommandsVelocity(const float linearX, const float l
     mobileBaseCommandsVelocity.angular.x=angularX;
     mobileBaseCommandsVelocity.angular.y=angularY;
     mobileBaseCommandsVelocity.angular.z=angularZ;
+    publisherMobileBaseCommandsVelocity.publish(mobileBaseCommandsVelocity);
 }
 
 void TurtleBot::setMobileBaseCommandsSound(const int sound)
 {
     mobileBaseCommandsSound.value = sound;
+    publisherMobileBaseCommandsSound.publish(mobileBaseCommandsSound);
 }
 
 //Callbacks
@@ -83,16 +85,6 @@ void TurtleBot::callbackJointStates(const sensor_msgs::JointState& msg)
 }
 
 
-//Publications
-void TurtleBot::sendMobileBaseCommandsVelocity()
-{
-    publisherMobileBaseCommandsVelocity.publish(mobileBaseCommandsVelocity);
-}
-
-void TurtleBot::sendMobileBaseCommandsSound()
-{
-    publisherMobileBaseCommandsSound.publish(mobileBaseCommandsSound);
-}
 
 //Image convertion
 unsigned char* TurtleBot::convertSensor_msgsImageToRaw(const sensor_msgs::Image& sensorMsgsImage)
