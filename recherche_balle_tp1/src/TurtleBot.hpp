@@ -69,7 +69,7 @@ public:
 
 	//Image convertion
 	unsigned char* convertSensor_msgsImageToRaw(sensor_msgs::Image sensorMsgsImage);
-	sensor_msgs::Image convertRawToSensorMsgsImage(char* raw, int height, int width, std::string encoding,char is_bigendian, int step);
+	sensor_msgs::Image convertRawToSensorMsgsImage(unsigned char* raw, int height, int width, std::string encoding, unsigned char is_bigendian, int step);
 
 	//Displays
 	void displaySensorMsgsImage(std::string type, sensor_msgs::Image sensorMsgsImage);

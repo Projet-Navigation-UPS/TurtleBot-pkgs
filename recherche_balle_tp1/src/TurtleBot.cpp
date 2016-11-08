@@ -10,7 +10,7 @@
 TurtleBot::TurtleBot(ros::NodeHandle node):
 
     
-	//Publishers
+    //Publishers
 	publisherMobileBaseCommandsVelocity(node.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1)),
 	publisherMobileBaseCommandsSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
 
@@ -103,16 +103,16 @@ void TurtleBot::sendMobileBaseCommandsSound()
 //Image convertion
 unsigned char* TurtleBot::convertSensor_msgsImageToRaw(sensor_msgs::Image sensorMsgsImage)
 {
-	std::vector<unsigned char> vectorRaw(sensorMsgsImage.height*sensorMsgsImage.width);
+	std::vector<unsigned char> vectorRaw(sensorMsgsImage.height*sensorMsgsImage.step);
 	vectorRaw=sensorMsgsImage.data;
 	unsigned char* raw = &vectorRaw[0];
 	return raw;	
 }
 
-sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(char* raw, int height, int width, std::string encoding,char is_bigendian, int step)
+sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(unsigned char* raw, int height, int width, std::string encoding,unsigned char is_bigendian, int step)
 {	
 	sensor_msgs::Image sensorMsgsImage;
-	std::vector<unsigned char> vectorRaw(raw, raw + (height*width));
+	std::vector<unsigned char> vectorRaw(raw, raw + height*step);
 	sensorMsgsImage.data = vectorRaw;
 	sensorMsgsImage.height = height;
 	sensorMsgsImage.width = width;
