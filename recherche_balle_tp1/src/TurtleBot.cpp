@@ -12,7 +12,6 @@ TurtleBot::TurtleBot(ros::NodeHandle node):
 	//Publishers
 	publisherMobileBaseCommandsVelocity(node.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1)),
 	publisherMobileBaseCommandsSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
-	publisherImageDisplay(node.advertise<sensor_msgs::Image>("/image/display", 1)),
 
 	//Subcribers
 	subscriberCameraRgbImageRaw(node.subscribe("/camera/rgb/image_raw", 1, &TurtleBot::callbackCameraRgbImageRaw,this)),
@@ -100,12 +99,6 @@ void TurtleBot::sendMobileBaseCommandsSound()
 	publisherMobileBaseCommandsSound.publish(mobileBaseCommandsSound);
 }
 
-void TurtleBot::sendImageDisplay(sensor_msgs::Image imageMsg)
-{
-	publisherImageDisplay.publish(imageMsg);
-}
-
-
 //Image convertion
 unsigned char* TurtleBot::convertSensor_msgsImageToRaw(sensor_msgs::Image sensorMsgsImage)
 {
@@ -114,7 +107,6 @@ unsigned char* TurtleBot::convertSensor_msgsImageToRaw(sensor_msgs::Image sensor
 	unsigned char* raw = &vectorRaw[0];
 	return raw;	
 }
-
 
 //Displays
 void TurtleBot::displaySensorMsgsImage(std::string type, sensor_msgs::Image sensorMsgsImage)

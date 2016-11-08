@@ -1,5 +1,6 @@
 #include "ros/ros.h"
 #include "TurtleBot.hpp"
+#include "GraphicServer.hpp"
 
 int main(int argc, char **argv)
 {
@@ -9,7 +10,7 @@ int main(int argc, char **argv)
     ros::Rate loop_rate(2); // 2Hz 
 
     TurtleBot turtleBot(node);
-
+    GraphicServer graphicServer("/image/display");
     while(ros::ok())
 	{
 	    //Displays
@@ -21,7 +22,7 @@ int main(int argc, char **argv)
 	    turtleBot.displayMobileBaseCommandsSound();
 
 
-		turtleBot.sendImageDisplay(turtleBot.getCameraRgbImageColor());
+	    graphicServer.sendImageDisplay(turtleBot.getCameraRgbImageColor());
 		
 	    //Launching Callbacks and synchronizing with loop_rate
 	    ros::spinOnce(); 
