@@ -103,7 +103,7 @@ unsigned char* TurtleBot::convertSensor_msgsImageToRaw(const sensor_msgs::Image&
     return raw;	
 }
 
-sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(unsigned char* raw, const int height, const int width, const std::string& encoding, const char is_bigendian, const int step)
+sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(const unsigned char* raw, const int height, const int width, const std::string& encoding, const char is_bigendian, const int step)
 {	
     sensor_msgs::Image sensorMsgsImage;
 	std::vector<unsigned char> vectorRaw(raw, raw + height*step);
