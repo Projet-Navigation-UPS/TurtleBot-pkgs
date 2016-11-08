@@ -1,6 +1,8 @@
 #ifndef _TRAITEMENT_H_
 #define _TRAITEMENT_H
 
+
+
 extern bool estRouge(int rouge, int vert, int bleu);
 extern bool estVert(int rouge, int vert, int bleu);
 extern bool estBleu(int rouge, int vert, int bleu);

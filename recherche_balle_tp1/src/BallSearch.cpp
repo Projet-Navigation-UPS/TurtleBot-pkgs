@@ -63,7 +63,7 @@ Objet * Recherche_balle(TurtleBot turtlebot,       // objet de communication ave
       // acquisition d'une image
 	  //   attente(0,1);
 	  
-      unsigned char* raw = turtlebot.convertSensor_msgsImageToRaw(turtlebot.getCameraRgbImageRaw());;
+      unsigned char* raw = turtlebot.convertSensor_msgsImageToRaw(turtlebot.getCameraRgbImageRaw());
       int width = turtlebot.getCameraRgbImageRaw().width;
       int height = turtlebot.getCameraRgbImageRaw().height;
 

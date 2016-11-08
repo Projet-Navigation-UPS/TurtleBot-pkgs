@@ -351,6 +351,7 @@ unsigned char* erosion (unsigned char* image, int width, int height) {
 unsigned char* dilatation (unsigned char* image, int width, int height) {
 // A compléter la fonction dilatation en se basant sur la fonction erosion
 
+    return image;
 }
 
 //******************************************************************************
@@ -363,6 +364,7 @@ unsigned char* ouverture (unsigned char* image, int width, int height) {
 // A completer la fonction ouverture en utilisant les fonctions erosion et dilatation
 
  //  return image_dilatee;
+     return image;
 }
 
 //******************************************************************************
@@ -375,6 +377,7 @@ unsigned char* fermeture (unsigned char* image, int width, int height) {
 // A completer la fonction fermeture en utilisant les fonctions erosion et dilatation
 
  //  return image_erodee;
+    return image;
 }
 
 
