@@ -17,77 +17,79 @@ const int SOUND_ERROR = 4;
 const int SOUND_CLEANINGSTART = 5;
 const int SOUND_CLEANINGEND = 6;
 
+const float LINEAR_MAX_VELOCITY = 0.25;
+const float ANGULAR_MAX_VELOCITY = 2;
+
 class TurtleBot 
 {
     
 private:
     
-	//Subscrbers
-	ros::Subscriber subscriberCameraRgbImageRaw;
-	ros::Subscriber subscriberCameraRgbImageColor;
-	ros::Subscriber subscriberCameraRgbImageRectColor;
- 	ros::Subscriber subscriberJointStates;
+    //Subscrbers
+    ros::Subscriber subscriberCameraRgbImageRaw;
+    ros::Subscriber subscriberCameraRgbImageColor;
+    ros::Subscriber subscriberCameraRgbImageRectColor;
+    ros::Subscriber subscriberJointStates;
 
-	//Publishers
- 	ros::Publisher publisherMobileBaseCommandsVelocity;
-	ros::Publisher publisherMobileBaseCommandsSound;
+    //Publishers
+    ros::Publisher publisherMobileBaseCommandsVelocity;
+    ros::Publisher publisherMobileBaseCommandsSound;
 
-	//Messages
-	sensor_msgs::Image cameraRgbImageRaw;
-	sensor_msgs::Image cameraRgbImageColor;
-	sensor_msgs::Image cameraRgbImageRectColor;
-	sensor_msgs::JointState jointStates;
+    //Messages
+    sensor_msgs::Image cameraRgbImageRaw;
+    sensor_msgs::Image cameraRgbImageColor;
+    sensor_msgs::Image cameraRgbImageRectColor;
+    sensor_msgs::JointState jointStates;
 
-	kobuki_msgs::Sound mobileBaseCommandsSound;
-	geometry_msgs::Twist mobileBaseCommandsVelocity;
-
+    kobuki_msgs::Sound mobileBaseCommandsSound;
+    geometry_msgs::Twist mobileBaseCommandsVelocity;
+    
 public:
 
-	TurtleBot(ros::NodeHandle node);
+    TurtleBot(ros::NodeHandle node);
 
-	//Getters
-	sensor_msgs::Image getCameraRgbImageRaw();
-	sensor_msgs::Image getCameraRgbImageColor();
-	sensor_msgs::Image getCameraRgbImageRectColor();
-	geometry_msgs::Twist getMobileBaseCommandsVelocity();
-	sensor_msgs::JointState getJointStates();
+    //Getters
+    sensor_msgs::Image getCameraRgbImageRaw();
+    sensor_msgs::Image getCameraRgbImageColor();
+    sensor_msgs::Image getCameraRgbImageRectColor();
+    geometry_msgs::Twist getMobileBaseCommandsVelocity();
+    sensor_msgs::JointState getJointStates();
 
-	//Setters
-	void setMobileBaseCommandsVelocity(float linearX, float linearY, float linearZ, float angularX, float angularY, float angularZ);
-	void setMobileBaseCommandsSound(int sound);
+    //Setters
+    void setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
+    void setMobileBaseCommandsSound(const int sound);
 
+    //Publications
+    void sendMobileBaseCommandsVelocity();
+    void sendMobileBaseCommandsSound();
 
-	//Callbacks
-	void callbackCameraRgbImageRaw(const sensor_msgs::Image& msg);
-	void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);
-	void callbackCameraRgbImageRectColor(const sensor_msgs::Image& msg);
-	void callbackJointStates(const sensor_msgs::JointState& msg);
+    //Image convertion
+    unsigned char* convertSensor_msgsImageToRaw(const sensor_msgs::Image& sensorMsgsImage);
+    sensor_msgs::Image convertRawToSensorMsgsImage(char* raw, const int height, const int width, const std::string&encoding, const char is_bigendian, const int step);
 
-	//Publications
-	void sendMobileBaseCommandsVelocity();
-	void sendMobileBaseCommandsSound();
+    //Displays
+    void displaySensorMsgsImage(const std::string& type, const sensor_msgs::Image& sensorMsgsImage);
+    void displayMobileBaseCommandsVelocity();
+    void displayJointStates();
+    void displayMobileBaseCommandsSound();
 
-	//Image convertion
-	unsigned char* convertSensor_msgsImageToRaw(sensor_msgs::Image sensorMsgsImage);
-	sensor_msgs::Image convertRawToSensorMsgsImage(char* raw, int height, int width, std::string encoding,char is_bigendian, int step);
-
-	//Displays
-	void displaySensorMsgsImage(std::string type, sensor_msgs::Image sensorMsgsImage);
-	void displayMobileBaseCommandsVelocity();
-	void displayJointStates();
-	void displayMobileBaseCommandsSound();
-
-	//Motions
-	void stop();
-	void moveForward();
-	void moveBackward();
-	void turnRight();
-	void turnLeft();
-	void moveForwardTurningRight();
-	void moveForwardTurningLeft();
-	void moveBackwardTurningRight();
-	void moveBackwardTurningLeft();
-
+    //Motions
+    void stop();
+    void moveForward();
+    void moveBackward();
+    void turnRight();
+    void turnLeft();
+    void moveForwardTurningRight();
+    void moveForwardTurningLeft();
+    void moveBackwardTurningRight();
+    void moveBackwardTurningLeft();
+private:
+    //Callbacks
+    void callbackCameraRgbImageRaw(const sensor_msgs::Image& msg);
+    void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);
+    void callbackCameraRgbImageRectColor(const sensor_msgs::Image& msg);
+    void callbackJointStates(const sensor_msgs::JointState& msg);
+    
 };
 
 #endif
