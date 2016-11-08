@@ -22,6 +22,7 @@ class TurtleBot
     
 private:
     
+<<<<<<< HEAD
 	//Subscrbers
 	ros::Subscriber subscriberCameraRgbImageRaw;
 	ros::Subscriber subscriberCameraRgbImageColor;
@@ -31,6 +32,18 @@ private:
 	//Publishers
  	ros::Publisher publisherMobileBaseCommandsVelocity;
 	ros::Publisher publisherMobileBaseCommandsSound;
+	ros::Publisher publisherImageDisplay;
+=======
+    //Subscrbers
+    ros::Subscriber subscriberCameraRgbImageRaw;
+    ros::Subscriber subscriberCameraRgbImageColor;
+    ros::Subscriber subscriberCameraRgbImageRectColor;
+    ros::Subscriber subscriberJointStates;
+
+    //Publishers
+    ros::Publisher publisherMobileBaseCommandsVelocity;
+    ros::Publisher publisherMobileBaseCommandsSound;
+>>>>>>> a647a97b01ed817d53b3ced9775fd360a86e78cb
 
 	//Messages
 	sensor_msgs::Image cameraRgbImageRaw;
@@ -63,9 +76,16 @@ public:
 	void callbackCameraRgbImageRectColor(const sensor_msgs::Image& msg);
 	void callbackJointStates(const sensor_msgs::JointState& msg);
 
+<<<<<<< HEAD
 	//Publications
 	void sendMobileBaseCommandsVelocity();
 	void sendMobileBaseCommandsSound();
+	void sendImageDisplay(sensor_msgs::Image imageMsg);
+=======
+    //Publications
+    void sendMobileBaseCommandsVelocity();
+    void sendMobileBaseCommandsSound();
+>>>>>>> a647a97b01ed817d53b3ced9775fd360a86e78cb
 
 	//Image convertion
 	unsigned char* convertSensor_msgsImageToRaw(sensor_msgs::Image sensorMsgsImage);

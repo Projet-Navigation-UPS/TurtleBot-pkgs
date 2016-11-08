@@ -109,6 +109,7 @@ unsigned char* TurtleBot::convertSensor_msgsImageToRaw(sensor_msgs::Image sensor
 	return raw;	
 }
 
+<<<<<<< HEAD
 sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(char* raw, int height, int width, std::string encoding,char is_bigendian, int step)
 {	
 	sensor_msgs::Image sensorMsgsImage;
@@ -122,6 +123,9 @@ sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(char* raw, int height,
 	return sensorMsgsImage;
 }
 
+
+=======
+>>>>>>> a647a97b01ed817d53b3ced9775fd360a86e78cb
 //Displays
 void TurtleBot::displaySensorMsgsImage(std::string type, sensor_msgs::Image sensorMsgsImage)
 {
