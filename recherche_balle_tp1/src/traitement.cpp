@@ -351,7 +351,39 @@ unsigned char* erosion (unsigned char* image, int width, int height) {
 unsigned char* dilatation (unsigned char* image, int width, int height) {
 // A compléter la fonction dilatation en se basant sur la fonction erosion
 
-    return image;
+    int size = 10; /* demi taille du noyau */
+   int h, w; /* indices pour balayer lignes et colonnes image */
+   int dx, dy; /* indices pour balayer le noyau */
+   unsigned char* temp = new unsigned char[width*height]; /* image temporaire */
+   bool dilatee;
+   
+   for (h = 0; h < (int)height; h++) {
+      for (w = 0; w < (int)width; w++) {
+         dilatee = false;
+         if ( h < size || h > ((int)height - size - 1) || w < size || w > ((int)width - size - 1) ) {
+           temp[h*width+w] = 0;
+         } 
+         else {
+           temp[(h * width) + w]=0;
+           if (image[(h+dx)*width + (w+dy)]!= 0)
+           {
+                for (dx =-size; dx <= size; dx++) 
+                {
+                    for (dy =-size; dy <= size; dy++) {
+                    {
+                    temp[(h*width) + w] = 255;
+                    dilatee = true;
+                    }
+                    //if (dilatee ) break;
+                 }
+                //if (dilatee ) break;
+           }
+          }
+           
+         }
+      }
+   }
+   return temp;
 }
 
 //******************************************************************************
@@ -363,8 +395,12 @@ unsigned char* dilatation (unsigned char* image, int width, int height) {
 unsigned char* ouverture (unsigned char* image, int width, int height) {
 // A completer la fonction ouverture en utilisant les fonctions erosion et dilatation
 
- //  return image_dilatee;
-     return image;
+    unsigned char* dilatee1 = dilatation (image, width, height);
+    unsigned char* dilatee2 = dilatation (dilatee1, width, height);
+    unsigned char* dilatee3 = dilatation (dilatee2, width, height);
+    unsigned char* dilatee4 = dilatation (dilatee3, width, height);
+    
+    return dilatee4;
 }
 
 //******************************************************************************
@@ -375,9 +411,12 @@ unsigned char* ouverture (unsigned char* image, int width, int height) {
 
 unsigned char* fermeture (unsigned char* image, int width, int height) {
 // A completer la fonction fermeture en utilisant les fonctions erosion et dilatation
+// Test avec plusieurs itération de érosion
 
- //  return image_erodee;
-    return image;
+    unsigned char* erodee1 = erosion (image, width, height);
+    unsigned char* erodee2 = erosion (erodee1, width, height);
+    
+    return erodee2;
 }
 
 
@@ -480,14 +519,13 @@ unsigned char* filtrage_image(unsigned char* image, int width, int height, int c
    rawRVB[1] = get_green_channel(image,width,height);
    rawRVB[2] = get_blue_channel(image,width,height);
 
-   unsigned char* image_seuillee = seuillage(rawRVB,width,height,canal);
-   unsigned char* image_ouverte = ouverture(image_seuillee,width,height);
-   unsigned char* image_finale = fermeture(image_ouverte,width,height);
+   unsigned char* image_seuillee = seuillage(rawRVB,width,height,canal);   
+   unsigned char* image_finale = ouverture(image_seuillee,width,height);
+   //unsigned char* image_finale = fermeture(image_ouverte,width,height);
 
    delete rawRVB[0];
    delete rawRVB[1];
    delete rawRVB[2];
-   //return image_seuillee;
    return image_finale;
 }
 

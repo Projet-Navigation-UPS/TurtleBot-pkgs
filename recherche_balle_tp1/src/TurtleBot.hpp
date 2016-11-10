@@ -25,6 +25,7 @@ const int CAMERA_WIDTH = 640;
 const int CAMERA_HEIGHT = 480;
 const int CAMERA_CHANNELS = 3;
 const int CAMERA_STEP_RGB = CAMERA_WIDTH * CAMERA_CHANNELS;
+const int CAMERA_STEP_MONO = CAMERA_WIDTH;
 
 class TurtleBot 
 {
