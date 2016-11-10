@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 #include <string>
+#include <vector>
 #include "sensor_msgs/Image.h"
 #include "sensor_msgs/JointState.h"
 #include "geometry_msgs/Twist.h"
@@ -20,40 +21,39 @@ const int SOUND_CLEANINGEND = 6;
 const float LINEAR_MAX_VELOCITY = 0.25;
 const float ANGULAR_MAX_VELOCITY = 2;
 
+const int CAMERA_WIDTH = 640;
+const int CAMERA_HEIGHT = 480;
+const int CAMERA_CHANNELS = 3;
+const int CAMERA_STEP_RGB = CAMERA_WIDTH * CAMERA_CHANNELS;
+
 class TurtleBot 
 {
     
 private:
     
     //Subscrbers
-    ros::Subscriber subscriberCameraRgbImageRaw;
     ros::Subscriber subscriberCameraRgbImageColor;
-    ros::Subscriber subscriberCameraRgbImageRectColor;
-    ros::Subscriber subscriberJointStates;
 
     //Publishers
     ros::Publisher publisherMobileBaseCommandsVelocity;
     ros::Publisher publisherMobileBaseCommandsSound;
 
     //Messages
-    sensor_msgs::Image cameraRgbImageRaw;
     sensor_msgs::Image cameraRgbImageColor;
-    sensor_msgs::Image cameraRgbImageRectColor;
-    sensor_msgs::JointState jointStates;
-
+    unsigned char* cameraRgbImageColorRaw;
+    std::vector<unsigned char> cameraRgbImageColorVec;
+    
     kobuki_msgs::Sound mobileBaseCommandsSound;
     geometry_msgs::Twist mobileBaseCommandsVelocity;
     
 public:
 
     TurtleBot(ros::NodeHandle node);
-
+    ~TurtleBot();
     //Getters
-    sensor_msgs::Image getCameraRgbImageRaw();
     sensor_msgs::Image getCameraRgbImageColor();
-    sensor_msgs::Image getCameraRgbImageRectColor();
+    unsigned char* getCameraRgbImageColorRaw();
     geometry_msgs::Twist getMobileBaseCommandsVelocity();
-    sensor_msgs::JointState getJointStates();
 
     //Setters
     void setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
@@ -67,7 +67,6 @@ public:
     //Displays
     void displaySensorMsgsImage(const std::string& type, const sensor_msgs::Image& sensorMsgsImage);
     void displayMobileBaseCommandsVelocity();
-    void displayJointStates();
     void displayMobileBaseCommandsSound();
 
     //Motions
@@ -82,11 +81,7 @@ public:
     void moveBackwardTurningLeft();
 private:
     //Callbacks
-    void callbackCameraRgbImageRaw(const sensor_msgs::Image& msg);
-    void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);
-    void callbackCameraRgbImageRectColor(const sensor_msgs::Image& msg);
-    void callbackJointStates(const sensor_msgs::JointState& msg);
-    
+    void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);    
 };
 
 #endif

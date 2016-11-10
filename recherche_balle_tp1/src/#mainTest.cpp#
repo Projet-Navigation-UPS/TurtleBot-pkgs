@@ -26,7 +26,6 @@ int main(int argc, char **argv)
     while(ros::ok())
 	{
 	    //Displays
-
 	    turtleBot.displaySensorMsgsImage("COLOR", turtleBot.getCameraRgbImageColor());
 	    
 	    raw = turtleBot.getCameraRgbImageColorRaw();
