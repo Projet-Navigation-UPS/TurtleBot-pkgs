@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 	    
 	    
 	    raw = turtleBot.getCameraRgbImageColorRaw();
-	    rawFiltrageImage = filtrage_image(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 2);
+	    rawFiltrageImage = filtrage_image(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 1);
                 
 	    image = turtleBot.convertRawToSensorMsgsImage(rawFiltrageImage, CAMERA_HEIGHT, CAMERA_WIDTH, "mono8", ' ', CAMERA_STEP_MONO);
                  
