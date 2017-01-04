@@ -1,6 +1,7 @@
 #include "TurtleBot.hpp"
 
-TurtleBot::TurtleBot(ros::NodeHandle node):
+TurtleBot::TurtleBot(ros::NodeHandle& node):
+    m_node(node),
     //Publishers
     publisherMobileBaseCommandsVelocity(node.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1)),
     publisherMobileBaseCommandsSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
@@ -58,6 +59,11 @@ void TurtleBot::callbackCameraRgbImageColor(const sensor_msgs::Image& msg)
     cameraRgbImageColorRaw = &cameraRgbImageColorVec[0];
 }
 
+void TurtleBot::callbackStop(const ros::WallTimerEvent& event)
+{
+    stop();
+}
+
     
 sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(const unsigned char* raw, const int height, const int width, const std::string& encoding, const char is_bigendian, const int step)
 {	
@@ -103,6 +109,23 @@ void TurtleBot::move(const float linearVelocity)
 {
     TurtleBot::setMobileBaseCommandsVelocity(linearVelocity, 0, 0, 0, 0, 0);
 }
+
+//velocity m/s distance m duration s
+void TurtleBot::move(const float linearVelocity, const float distance)
+{
+    move(linearVelocity);
+    float duration = 1/(linearVelocity/distance);
+    m_node.createWallTimer(ros::WallDuration(duration), &TurtleBot::callbackStop, this, true);
+}
+
+//velocity rad/s angle rad duration s 
+void TurtleBot::turn(const float angularVelocity, const float angle)
+{
+    turn(angularVelocity);
+    float duration = 1/(angularVelocity/angle);
+    m_node.createWallTimer(ros::WallDuration(duration), &TurtleBot::callbackStop, this, true);
+}
+
 
 void TurtleBot::turn(const float angularVelocity)
 {

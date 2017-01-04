@@ -50,9 +50,10 @@ private:
     kobuki_msgs::Sound mobileBaseCommandsSound;
     geometry_msgs::Twist mobileBaseCommandsVelocity;
     
+    ros::NodeHandle& m_node;
 public:
 
-    TurtleBot(ros::NodeHandle node);
+    TurtleBot(ros::NodeHandle& node);
     ~TurtleBot();
     
     //Getters
@@ -74,13 +75,18 @@ public:
     //Motion
     void stop();
     void move(const float linearVelocity);
+    void move(const float linearVelocity, const float distance);
     void turn(const float angularVelocity);
     void moveAndTurn(const float linearVelocity, const float angularVelocity);
 
 private:
     geometry_msgs::Twist getMobileBaseCommandsVelocity();
     void setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
-    void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);    
+
+    // simple callback to receive image from camera 
+    void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);
+    // simple stop callback
+    void callbackStop(const ros::WallTimerEvent& event); 
     
 };
 
