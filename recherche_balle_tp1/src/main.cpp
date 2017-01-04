@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 	ros::Rate loop_rate(2); // 2Hz 
 
 	TurtleBot turtleBot(node);
-    GraphicServer graphicServer(node,"/image/display");
+	GraphicServer graphicServer(node,"/image/display");
 	while(ros::ok())
 	{
 		//Displays
@@ -22,7 +22,7 @@ int main(int argc, char **argv)
 		turtleBot.displayMobileBaseCommandsSound();
 
 
-	    graphicServer.sendImageDisplay(turtleBot.getCameraRgbImageColor());
+		graphicServer.sendImageDisplay(turtleBot.getCameraRgbImageColor());
 		
 		//Launching Callbacks and synchronizing with loop_rate
 		ros::spinOnce(); 

@@ -27,6 +27,9 @@ const int CAMERA_CHANNELS = 3;
 const int CAMERA_STEP_RGB = CAMERA_WIDTH * CAMERA_CHANNELS;
 const int CAMERA_STEP_MONO = CAMERA_WIDTH;
 
+const float ROBOT_MAX_LINEAR_VELOCITY = 0.5f;
+const float ROBOT_MAX_ANGULAR_VELOCITY = 3.14f;
+
 class TurtleBot 
 {
     
@@ -51,17 +54,15 @@ public:
 
     TurtleBot(ros::NodeHandle node);
     ~TurtleBot();
+    
     //Getters
     sensor_msgs::Image getCameraRgbImageColor();
     unsigned char* getCameraRgbImageColorRaw();
-    geometry_msgs::Twist getMobileBaseCommandsVelocity();
-
-    //Setters
-    void setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
+ 
+    //Setters    
     void setMobileBaseCommandsSound(const int sound);
 
-
-    //Image convertion
+    //Image conversion
     unsigned char* convertSensor_msgsImageToRaw(const sensor_msgs::Image& sensorMsgsImage);
     sensor_msgs::Image convertRawToSensorMsgsImage(const unsigned char* raw, const int height, const int width, const std::string&encoding, const char is_bigendian, const int step);
 
@@ -70,19 +71,17 @@ public:
     void displayMobileBaseCommandsVelocity();
     void displayMobileBaseCommandsSound();
 
-    //Motions
+    //Motion
     void stop();
-    void moveForward();
-    void moveBackward();
-    void turnRight();
-    void turnLeft();
-    void moveForwardTurningRight();
-    void moveForwardTurningLeft();
-    void moveBackwardTurningRight();
-    void moveBackwardTurningLeft();
+    void move(const float linearVelocity);
+    void turn(const float angularVelocity);
+    void moveAndTurn(const float linearVelocity, const float angularVelocity);
+
 private:
-    //Callbacks
+    geometry_msgs::Twist getMobileBaseCommandsVelocity();
+    void setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
     void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);    
+    
 };
 
 #endif

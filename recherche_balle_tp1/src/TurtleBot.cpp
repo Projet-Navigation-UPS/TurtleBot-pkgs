@@ -32,7 +32,6 @@ geometry_msgs::Twist TurtleBot::getMobileBaseCommandsVelocity()
     return mobileBaseCommandsVelocity;
 }
 
-//Setters
 void TurtleBot::setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ)
 {
     mobileBaseCommandsVelocity.linear.x=linearX;
@@ -100,42 +99,17 @@ void TurtleBot::stop()
     TurtleBot::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, 0);
 }
 
-void TurtleBot::moveForward()
+void TurtleBot::move(const float linearVelocity)
 {
-    TurtleBot::setMobileBaseCommandsVelocity(LINEAR_MAX_VELOCITY, 0, 0, 0, 0, 0);
+    TurtleBot::setMobileBaseCommandsVelocity(linearVelocity, 0, 0, 0, 0, 0);
 }
 
-void TurtleBot::moveBackward()
+void TurtleBot::turn(const float angularVelocity)
 {
-    TurtleBot::setMobileBaseCommandsVelocity(-LINEAR_MAX_VELOCITY, 0, 0, 0, 0, 0);
+    TurtleBot::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, angularVelocity);
 }
 
-void TurtleBot::turnRight()
+void TurtleBot::moveAndTurn(const float linearVelocity, const float angularVelocity)
 {
-    TurtleBot::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, -ANGULAR_MAX_VELOCITY);
-}
-
-void TurtleBot::turnLeft()
-{
-    TurtleBot::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, ANGULAR_MAX_VELOCITY);
-}
-
-void TurtleBot::moveForwardTurningRight()
-{
-    TurtleBot::setMobileBaseCommandsVelocity(LINEAR_MAX_VELOCITY, 0, 0, 0, 0, -ANGULAR_MAX_VELOCITY);
-}
-
-void TurtleBot::moveForwardTurningLeft()
-{
-    TurtleBot::setMobileBaseCommandsVelocity(LINEAR_MAX_VELOCITY, 0, 0, 0, 0, ANGULAR_MAX_VELOCITY);
-}
-
-void TurtleBot::moveBackwardTurningRight()
-{
-    TurtleBot::setMobileBaseCommandsVelocity(-LINEAR_MAX_VELOCITY, 0, 0, 0, 0, -ANGULAR_MAX_VELOCITY);
-}
-
-void TurtleBot::moveBackwardTurningLeft()
-{
-    TurtleBot::setMobileBaseCommandsVelocity(-LINEAR_MAX_VELOCITY, 0, 0, 0, 0, ANGULAR_MAX_VELOCITY);
+    TurtleBot::setMobileBaseCommandsVelocity(linearVelocity, 0, 0, 0, 0, angularVelocity);
 }
