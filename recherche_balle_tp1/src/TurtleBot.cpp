@@ -1,6 +1,7 @@
 #include "TurtleBot.hpp"
 
-TurtleBot::TurtleBot(ros::NodeHandle node):
+TurtleBot::TurtleBot(ros::NodeHandle& node):
+    m_node(node),
     //Publishers
     publisherMobileBaseCommandsVelocity(node.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1)),
     publisherMobileBaseCommandsSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
@@ -32,7 +33,6 @@ geometry_msgs::Twist TurtleBot::getMobileBaseCommandsVelocity()
     return mobileBaseCommandsVelocity;
 }
 
-//Setters
 void TurtleBot::setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ)
 {
     mobileBaseCommandsVelocity.linear.x=linearX;
@@ -57,6 +57,11 @@ void TurtleBot::callbackCameraRgbImageColor(const sensor_msgs::Image& msg)
     cameraRgbImageColor = msg;
     cameraRgbImageColorVec = msg.data;
     cameraRgbImageColorRaw = &cameraRgbImageColorVec[0];
+}
+
+void TurtleBot::callbackStop(const ros::WallTimerEvent& event)
+{
+    stop();
 }
 
     
@@ -100,42 +105,34 @@ void TurtleBot::stop()
     TurtleBot::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, 0);
 }
 
-void TurtleBot::moveForward()
+void TurtleBot::move(const float linearVelocity)
 {
-    TurtleBot::setMobileBaseCommandsVelocity(LINEAR_MAX_VELOCITY, 0, 0, 0, 0, 0);
+    TurtleBot::setMobileBaseCommandsVelocity(linearVelocity, 0, 0, 0, 0, 0);
 }
 
-void TurtleBot::moveBackward()
+//velocity m/s distance m duration s
+void TurtleBot::move(const float linearVelocity, const float distance)
 {
-    TurtleBot::setMobileBaseCommandsVelocity(-LINEAR_MAX_VELOCITY, 0, 0, 0, 0, 0);
+    move(linearVelocity);
+    float duration = 1/(linearVelocity/distance);
+    m_node.createWallTimer(ros::WallDuration(duration), &TurtleBot::callbackStop, this, true);
 }
 
-void TurtleBot::turnRight()
+//velocity rad/s angle rad duration s 
+void TurtleBot::turn(const float angularVelocity, const float angle)
 {
-    TurtleBot::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, -ANGULAR_MAX_VELOCITY);
+    turn(angularVelocity);
+    float duration = 1/(angularVelocity/angle);
+    m_node.createWallTimer(ros::WallDuration(duration), &TurtleBot::callbackStop, this, true);
 }
 
-void TurtleBot::turnLeft()
+
+void TurtleBot::turn(const float angularVelocity)
 {
-    TurtleBot::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, ANGULAR_MAX_VELOCITY);
+    TurtleBot::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, angularVelocity);
 }
 
-void TurtleBot::moveForwardTurningRight()
+void TurtleBot::moveAndTurn(const float linearVelocity, const float angularVelocity)
 {
-    TurtleBot::setMobileBaseCommandsVelocity(LINEAR_MAX_VELOCITY, 0, 0, 0, 0, -ANGULAR_MAX_VELOCITY);
-}
-
-void TurtleBot::moveForwardTurningLeft()
-{
-    TurtleBot::setMobileBaseCommandsVelocity(LINEAR_MAX_VELOCITY, 0, 0, 0, 0, ANGULAR_MAX_VELOCITY);
-}
-
-void TurtleBot::moveBackwardTurningRight()
-{
-    TurtleBot::setMobileBaseCommandsVelocity(-LINEAR_MAX_VELOCITY, 0, 0, 0, 0, -ANGULAR_MAX_VELOCITY);
-}
-
-void TurtleBot::moveBackwardTurningLeft()
-{
-    TurtleBot::setMobileBaseCommandsVelocity(-LINEAR_MAX_VELOCITY, 0, 0, 0, 0, ANGULAR_MAX_VELOCITY);
+    TurtleBot::setMobileBaseCommandsVelocity(linearVelocity, 0, 0, 0, 0, angularVelocity);
 }
