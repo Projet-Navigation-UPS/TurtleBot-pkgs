@@ -7,16 +7,13 @@ int main(int argc, char **argv)
 	std::cout<<"Launching recherche_balle_tp1 ..."<<std::endl;
 	ros::init(argc, argv, "recherche_balle_tp1");
 	ros::NodeHandle node;
-	ros::Rate loop_rate(2); // 2Hz 
+	ros::Rate loop_rate(0.5); // 0.5Hz 
 
 	TurtleBot turtleBot(node);
     GraphicServer graphicServer(node,"/image/display");
 	while(ros::ok())
 	{
 		//Displays
-		turtleBot.displaySensorMsgsImage("RAW", turtleBot.getCameraRgbImageRaw());
-		turtleBot.displaySensorMsgsImage("COLOR", turtleBot.getCameraRgbImageColor());
-		turtleBot.displaySensorMsgsImage("COLOR_RECT", turtleBot.getCameraRgbImageRectColor());
 		turtleBot.displayMobileBaseCommandsVelocity();
 		turtleBot.displayJointStates();
 		turtleBot.displayMobileBaseCommandsSound();

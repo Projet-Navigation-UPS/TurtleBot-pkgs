@@ -133,17 +133,22 @@ include_directories(
 
 ## Declare a C++ executable
 add_executable(recherche_balle_tp1_node src/mainTest.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer)
+add_executable(odom src/mainDemo.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer)
 add_executable(bgr_to_rgb_converter src/bgrConverter.cpp)
 ##add_executable(BallSearch src/BallSearch.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(recherche_balle_tp1_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(odom ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(bgr_to_rgb_converter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 ##add_dependencies(BallSearch ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(recherche_balle_tp1_node
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(odom
   ${catkin_LIBRARIES}
 )
 target_link_libraries(bgr_to_rgb_converter

@@ -6,38 +6,31 @@
 
 int main(int argc, char **argv)
 {
-    std::cout<<"Launching Demo ..."<<std::endl;
+    std::cout<<"Launching Odometrie ..."<<std::endl;
     ros::init(argc, argv, "recherche_balle_tp1_demo");
     ros::NodeHandle node;
     ros::Rate loop_rate(2); // 2Hz 
 
 
     TurtleBot turtleBot(node);
-    GraphicServer graphicServer(node,"/image/display");
     
     float time = 0.0f;
     
     while(ros::ok())
 	{
-        if(time>4) time = 0.0f;
+        
 	    
         //Motion example
-	   
-	    turtleBot.moveForwardTurningRight();
-        /*if (time<3) turtleBot.turnLeft();
-        else turtleBot.moveForward();  */            
+	    if(time>5 && time<10)  turtleBot.setMobileBaseCommandsVelocity(0.1, 0, 0, 0, 0, 0);           
         
-        //Displays
-        turtleBot.displaySensorMsgsImage("COLOR", turtleBot.getCameraRgbImageColor());
+	    if(time>10)  turtleBot.setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, 0);  
 	    
-	    
-        graphicServer.sendImageDisplay(turtleBot.getCameraRgbImageColor());
-		
+
+		std::cout<<time<<std::endl;
+	    time += 0.5f;
         //Launching Callbacks and synchronizing with loop_rate
         ros::spinOnce(); 
         loop_rate.sleep();
-	    
-	    time += 0.5f;
 	}
     return 0;
 }
