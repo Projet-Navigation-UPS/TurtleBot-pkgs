@@ -21,9 +21,7 @@ int main(int argc, char **argv)
         
 	    
         //Motion example
-	    if(time>5 && time<10)  turtleBot.setMobileBaseCommandsVelocity(0.1, 0, 0, 0, 0, 0);           
-        
-	    if(time>10)  turtleBot.setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, 0);  
+	    turtleBot.move(0.1f, 0.1f);  
 	    
 
 		std::cout<<time<<std::endl;

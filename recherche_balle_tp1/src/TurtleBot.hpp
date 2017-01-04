@@ -77,6 +77,7 @@ public:
     void move(const float linearVelocity);
     void move(const float linearVelocity, const float distance);
     void turn(const float angularVelocity);
+    void turn(const float angularVelocity, const float angle);
     void moveAndTurn(const float linearVelocity, const float angularVelocity);
 
 private:
