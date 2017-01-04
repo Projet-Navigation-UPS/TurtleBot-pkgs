@@ -43,7 +43,7 @@ void attente(int nsec, int sec) {
 Objet * Recherche_balle(TurtleBot turtlebot,       // objet de communication avec le robot
                          bool serveur_graphique, // présence ou pas d'un serveur graphique 
                                                  // pour envoyer les images
-			 bool debug,
+			             bool debug,
                          int couleur) { // couleur de la balle :
                                         // 0: rouge
                                         // 1: verte
