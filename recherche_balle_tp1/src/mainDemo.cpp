@@ -4,6 +4,12 @@
 #include "traitement.hpp"
 #include "analyse.hpp"
 
+void callbackStop(const ros::WallTimerEvent& event, const TurtleBot& turtleBot)
+{
+    turtleBot.stop();
+} 
+
+
 int main(int argc, char **argv)
 {
     std::cout<<"Launching Demo ..."<<std::endl;
@@ -13,31 +19,23 @@ int main(int argc, char **argv)
 
 
     TurtleBot turtleBot(node);
-    GraphicServer graphicServer(node,"/image/display");
     
-    float time = 0.0f;
+    float linearVelocity = 0.1f;
+    float distance = 0.2f;
+    bool stopSet = false;
     
     while(ros::ok())
 	{
-        if(time>4) time = 0.0f;
-	    
-        //Motion example
-	   
-	    turtleBot.moveForwardTurningRight();
-        /*if (time<3) turtleBot.turnLeft();
-        else turtleBot.moveForward();  */            
-        
-        //Displays
-        turtleBot.displaySensorMsgsImage("COLOR", turtleBot.getCameraRgbImageColor());
-	    
-	    
-        graphicServer.sendImageDisplay(turtleBot.getCameraRgbImageColor());
-		
-        //Launching Callbacks and synchronizing with loop_rate
-        ros::spinOnce(); 
-        loop_rate.sleep();
-	    
-	    time += 0.5f;
+	    turtleBot.move(linearVelocity);
+	    if(!stopSet)
+		{
+		    float duration = 1/(linearVelocity/distance);
+		    m_node.createWallTimer(ros::WallDuration(duration), callbackStop, turtleBot, true);
+		    stopSet = true;
+		}
+	    //Launching Callbacks and synchronizing with loop_rate
+	    ros::spinOnce(); 
+	    loop_rate.sleep();
 	}
     return 0;
 }
