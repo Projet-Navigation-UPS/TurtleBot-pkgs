@@ -37,6 +37,7 @@ private:
     
     //Subscrbers
     ros::Subscriber subscriberCameraRgbImageColor;
+    ros::Subscriber subscriberJointStates;
 
     //Publishers
     ros::Publisher publisherMobileBaseCommandsVelocity;
@@ -49,6 +50,7 @@ private:
     
     kobuki_msgs::Sound mobileBaseCommandsSound;
     geometry_msgs::Twist mobileBaseCommandsVelocity;
+    sensor_msgs::JointState JointStates;
     
     ros::NodeHandle& m_node;
 public:
@@ -85,6 +87,8 @@ private:
 
     // simple callback to receive image from camera 
     void callbackCameraRgbImageColor(const sensor_msgs::Image& msg);
+    
+    void callbackJointStates(const sensor_msgs::JointState& msg);
     
 };
 

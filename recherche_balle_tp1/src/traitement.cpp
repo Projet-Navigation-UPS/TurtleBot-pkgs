@@ -372,11 +372,8 @@ unsigned char* dilatation (unsigned char* image, int width, int height) {
                     for (dy =-size; dy <= size; dy++) {
                     {
                     temp[((h+dx)*width) + (w+dy)] = 255;
-                    //dilatee = true;
                     }
-                    //if (dilatee ) break;
                  }
-                //if (dilatee ) break;
            }
           }
            

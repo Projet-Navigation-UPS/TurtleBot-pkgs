@@ -7,6 +7,7 @@ TurtleBot::TurtleBot(ros::NodeHandle& node):
     publisherMobileBaseCommandsSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     //Subcribers
     subscriberCameraRgbImageColor(node.subscribe("/image_converter/output_video", 1, &TurtleBot::callbackCameraRgbImageColor,this)),
+    subscriberJointStates(node.subscribe("/joint_states", 1, &TurtleBot::callbackJointStates,this)),
     cameraRgbImageColorVec(CAMERA_HEIGHT*CAMERA_STEP_RGB)
 {
     cameraRgbImageColorRaw = new unsigned char[sizeof(unsigned char) * CAMERA_HEIGHT*CAMERA_STEP_RGB];
@@ -58,6 +59,11 @@ void TurtleBot::callbackCameraRgbImageColor(const sensor_msgs::Image& msg)
     cameraRgbImageColorVec = msg.data;
     cameraRgbImageColorRaw = &cameraRgbImageColorVec[0];
 }
+
+void TurtleBot::callbackJointStates(const sensor_msgs::JointState& msg)
+{
+    //std::cout<<msg<<std::endl;
+}
     
 sensor_msgs::Image TurtleBot::convertRawToSensorMsgsImage(const unsigned char* raw, const int height, const int width, const std::string& encoding, const char is_bigendian, const int step)
 {	
@@ -103,6 +109,8 @@ void TurtleBot::move(const float linearVelocity)
 {
     TurtleBot::setMobileBaseCommandsVelocity(linearVelocity, 0, 0, 0, 0, 0);
 }
+
+
 
 void TurtleBot::turn(const float angularVelocity)
 {
