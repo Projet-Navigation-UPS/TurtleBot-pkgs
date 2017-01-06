@@ -33,6 +33,7 @@ public:
     void move(const float linearVelocity);
     void turn(const float angularVelocity);
 
+    void displayMobileBaseCommandsVelocity();
     void moveAndTurn(const float linearVelocity, const float angularVelocity);
 
 private:

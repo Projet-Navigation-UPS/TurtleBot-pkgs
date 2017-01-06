@@ -3,7 +3,7 @@
 
 BallSearch::BallSearch(ros::NodeHandle& node):
     //Publishers
-    publisherBallReference(node.advertise<recherche_balle_tp1::command>("/nav/ballref", 1))
+    publisherBallReference(node.advertise<recherche_balle_tp1::command>("/nav/ball_reference", 1))
 {
 }
 

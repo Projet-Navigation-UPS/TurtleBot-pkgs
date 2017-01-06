@@ -2,7 +2,7 @@
 
 TurtleBotCommand::TurtleBotCommand(ros::NodeHandle& node):
     m_node(node),
-    publisherMobileBaseCommandsVelocity(node.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1)),
+    publisherMobileBaseCommandsVelocity(node.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1))
 {
     TurtleBotCommand::stop();
 }
