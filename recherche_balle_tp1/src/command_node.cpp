@@ -4,11 +4,13 @@
 
 #define FREQ 10
 
+
+
 void updateBallCB(const recherche_balle_tp1::command::ConstPtr& msg)
 {
     if(!busy)
 	{
-	    bool busy = true;
+	    busy = true;
 	    linearVelocity = msg->linearVelocity;
 	    angularVelocity = msg->angularVelocity;
 	    distance = msg->distance;

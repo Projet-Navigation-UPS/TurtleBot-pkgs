@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-#include "BallSearch.hpp"
-#include "command.h"
-
-BallSearch::BallSearch(ros::NodeHandle& node):
-    //Publishers
-    publisherBallReference(node.advertise<recherche_balle_tp1::command>("/nav/ballref", 1))
-{
-    
-=======
 #include <stdlib.h>
 #include <iostream>
 
@@ -43,22 +33,8 @@ void attente(int nsec, int sec) {
   delai_vie_appli.tv_nsec = nsec;  
   delai_vie_appli.tv_sec = sec;
   nanosleep(&delai_vie_appli,NULL);
->>>>>>> b6aff2b9fcc28513edcb6f1992b0c7c891d728a4
 }
 
-BallSearch::~BallSearch(){}
-
-<<<<<<< HEAD
-void BallSearch::sendBallReference(const float linearVelocity, const float angularVelocity, const float distance, const float angle)
-{
-    recherche_balle_tp1::command msgBallReference;
-    msgBallReference.linearVelocity = linearVelocity;
-    msgBallReference.angularVelocity = angularVelocity;
-    msgBallReference.distance = distance;
-    msgBallReference.angle = angle;
-    publisherBallReference.publish(msgBallReference);
-}
-=======
 //******************************************************************************
 // Recherche_fleche : Fonction qui permet de trouver la fleche verte sur fond rouge
 //******************************************************************************
@@ -196,6 +172,3 @@ obj->Wmax, obj->Hmin, obj->Hmax, obj->Hmax-obj->Hmin, obj->Wmax-obj->Wmin, z, ob
    
    return obj;
 }   
-
-
->>>>>>> b6aff2b9fcc28513edcb6f1992b0c7c891d728a4
