@@ -27,8 +27,8 @@ using namespace std;
 // Fonction qui permet d'endormir le process pendant qq secondes
 // Le temps que le robot commence à envoyer des données, comme par exemple des images
 //*********************************************************************************
-void attente(int nsec, int sec) {
 
+void attente(int nsec, int sec) {
   struct timespec delai_vie_appli;
   delai_vie_appli.tv_nsec = nsec;  
   delai_vie_appli.tv_sec = sec;
@@ -45,53 +45,18 @@ Objet * Recherche_balle(unsigned char* raw, int  width, int height, int couleur)
                                         // 1: verte
                                         // 2 : bleue
 
- int h,w;
-   Objet * listeObj; 
-   Objet * obj = NULL;
-  unsigned char* binRVB;
-   int nb_rotates = 0;
-  // unsigned char* raw;
-   bool recherche_finie = false; // on recherche la balle autour du robot
-   int current_rotate = 0; // rotation de la camera / axe robot 
+	 int h,w;
+	 Objet * listeObj; 
+	 Objet * obj = NULL;
+	 unsigned char* binRVB;
+	 int nb_rotates = 0;
 
-/*   while ( ! recherche_finie ) {
-	    rawFiltrageImage = filtrage_image(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 1);
-      // acquisition d'une image
-	  //   attente(0,1);
-	  
-      unsigned char* raw = turtlebot.convertSensor_msgsImageToRaw(turtlebot.getCameraRgbImageRaw());
-      int width = turtlebot.getCameraRgbImageRaw().width;
-      int height = turtlebot.getCameraRgbImageRaw().height;
+	 bool recherche_finie = false; // on recherche la balle autour du robot
+	 int current_rotate = 0; // rotation de la camera / axe robot 
 
-      // Si serveur graphique actif, envoi de l'image au serveur graphique
-      if ( serveur_graphique && debug ) {
-	//afficher_raw_image ((char*)raw, 1, width, height); //////////////////////////////////////////// 
-      }  
-
-
-
-      // Si serveur graphique actif, envoi de l'image filtree
-      if ( serveur_graphique ) {
-         // Allocation d'une image pour le bleu*/
-
-  	
+	  	
 
       binRVB = filtrage_image(raw,width,height,couleur); // Filtrage de l'image par des seuils rouges 
-
-/*
-         unsigned char* raw_1 = new unsigned char[width*height*3];
-         for ( h = 0; h < (int)height; h++) {
-            for ( w = 0; w < (int)width; w++) {
-               raw_1[h*width*3 + w*3] = 0;
-               raw_1[h*width*3 + w*3 + 1] = 0;
-               raw_1[h*width*3 + w*3 + 2]= binRVB[h*width+w];
-            }
-         }
-	return raw_1 ; 
-
-       // afficher_raw_image ((char *)raw_1, 2, width, height);  */
-
-
          
       // Analyse de l'image  : decoupage en regions      
       int nbRegions = Etiqueter_Region(binRVB,width,height);
@@ -190,13 +155,10 @@ Objet * Recherche_balle(unsigned char* raw, int  width, int height, int couleur)
          obj->Wmin = listeObj[num_obj].Wmin;
          obj->Wmax = listeObj[num_obj].Wmax;
 	 double focale = 8.6; // trouvée de facon empirique
-std::cout << "focale:" << focale<<endl;
+         std::cout << "focale:" << focale<<endl;
 	 double diametre_balle = 10.5;
-	 double k = 640.0/3.2; // 1/4" 3.2*2.4
-         // valeur initiale de z à commenter une fois on calcule la vraie profondeur
-	 double z = 80.0;
-         // A calculer la profondeur z en tentant compte que d (figurant dans la formule de la profondeur) est le diamètre de la balle dans l'image
-
+	 double diametre_balle_image = obj->Hmax - obj->Hmin ;
+	 double z = 55 / diametre_balle_image  ;
 
          double d = obj->Vcg - (double) (width)/2.0;
          double x = (d * diametre_balle) / (obj->Wmax - obj->Wmin);
