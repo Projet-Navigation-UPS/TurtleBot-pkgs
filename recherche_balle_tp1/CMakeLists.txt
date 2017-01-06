@@ -133,7 +133,7 @@ include_directories(
 
 ## Declare a C++ executable
 add_executable(recherche_balle_tp1_node src/mainTest.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer)
-add_executable(command_node src/command_node.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer)
+add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer)
 add_executable(bgr_to_rgb_converter src/bgrConverter.cpp)
 ##add_executable(BallSearch src/BallSearch.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp)
 
