@@ -136,16 +136,35 @@ include_directories(
 # add_dependencies(recherche_balle_tp1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
+<<<<<<< HEAD
 add_executable(bgr_to_rgb_converter src/bgrConverter_node.cpp )
 add_executable(ballSearch src/ballSearch_node.cpp src/BallSearch.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
+=======
+add_executable(recherche_balle_tp1_node src/mainTest.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer)
+add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer)
+add_executable(bgr_to_rgb_converter src/bgrConverter.cpp)
+##add_executable(BallSearch src/BallSearch.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp)
+
+## Add cmake target dependencies of the executable
+## same as for the library above
+add_dependencies(recherche_balle_tp1_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(command_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+>>>>>>> b6aff2b9fcc28513edcb6f1992b0c7c891d728a4
 add_dependencies(bgr_to_rgb_converter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ballSearch ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
+<<<<<<< HEAD
 target_link_libraries(ballSearch
+=======
+target_link_libraries(recherche_balle_tp1_node
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(command_node
+>>>>>>> b6aff2b9fcc28513edcb6f1992b0c7c891d728a4
   ${catkin_LIBRARIES}
 )
 target_link_libraries(bgr_to_rgb_converter
