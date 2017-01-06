@@ -8,10 +8,12 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   std_msgs
+  message_generation
   geometry_msgs
   kobuki_msgs
   cv_bridge
   image_transport
+  
 )
 
 ## System dependencies are found with CMake's conventions
@@ -48,11 +50,11 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
+ add_message_files(
+   FILES
+   command.msg
 #   Message2.msg
-# )
+ )
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -69,10 +71,11 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   sensor_msgs#   std_msgs
-# )
+ generate_messages(
+  DEPENDENCIES
+#   sensor_msgs
+   std_msgs
+ )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -106,7 +109,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES recherche_balle_tp1
-#  CATKIN_DEPENDS roscpp sensor_msgs std_msgs
+  CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
 )
 
@@ -116,9 +119,10 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
+#include_directories(include)
 include_directories(
-  ${catkin_INCLUDE_DIRS}
+    include
+  #${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -132,20 +136,26 @@ include_directories(
 # add_dependencies(recherche_balle_tp1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(recherche_balle_tp1_node src/mainTest.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer)
-add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer)
-add_executable(bgr_to_rgb_converter src/bgrConverter.cpp)
-##add_executable(BallSearch src/BallSearch.cpp src/TurtleBot.cpp src/analyse.cpp src/traitement.cpp)
+
+
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_dependencies(recherche_balle_tp1_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_executable(bgr_to_rgb_converter src/bgrConverter_node.cpp )
+add_executable(ballSearch src/ballSearch_node.cpp src/BallSearch.cpp)
+add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer)
+
+
+
+## Add cmake target dependencies of the executable
+## same as for the library above
 add_dependencies(command_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(bgr_to_rgb_converter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-##add_dependencies(BallSearch ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ballSearch ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(recherche_balle_tp1_node
+
+target_link_libraries(ballSearch
   ${catkin_LIBRARIES}
 )
 target_link_libraries(command_node
@@ -154,9 +164,7 @@ target_link_libraries(command_node
 target_link_libraries(bgr_to_rgb_converter
   ${catkin_LIBRARIES}
 )
-##target_link_libraries(BallSearch
-##  ${catkin_LIBRARIES}
-##)
+
 
 #############
 ## Install ##
