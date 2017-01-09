@@ -26,7 +26,7 @@ void TurtleBotCommand::setMobileBaseCommandsVelocity(const float linearX, const 
     publisherMobileBaseCommandsVelocity.publish(mobileBaseCommandsVelocity);
 }
 
-//Callbacks
+
 void TurtleBotCommand::displayMobileBaseCommandsVelocity()
 {
     std::cout<<mobileBaseCommandsVelocity<<std::endl;

@@ -2,7 +2,6 @@
 #define _BALLSEARCH_
 
 #include <ros/ros.h>
-
 #include "traitement.hpp"
 #include "analyse.hpp"
 #include "std_msgs/Bool.h"
@@ -23,7 +22,6 @@ private:
     std_msgs::Bool command_busy;
     
     
-    
 public:
 
     BallSearch(ros::NodeHandle& node);
@@ -34,10 +32,6 @@ public:
     Objet * Recherche_balle(unsigned char* raw, int  width, int height, int couleur);
     void attente(int nsec, int sec);
 
-
- 
-   
-    
 };
 
 #endif

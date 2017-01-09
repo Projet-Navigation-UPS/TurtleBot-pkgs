@@ -14,10 +14,8 @@ BallSearch::BallSearch(ros::NodeHandle& node):
 
 BallSearch::~BallSearch(){}
 
-
 void BallSearch::sendBallReference(const float linearVelocity, const float angularVelocity, const float distance, const float angle)
 {
-    ROS_INFO("Busy : %d",command_busy.data);
     if (!command_busy.data)
     {
         recherche_balle_tp1::command msgBallReference;
@@ -41,7 +39,6 @@ void BallSearch::callbackCommandBusy(const std_msgs::Bool& msg)
 // Fonction qui permet d'endormir le process pendant qq secondes
 // Le temps que le robot commence à envoyer des données, comme par exemple des images
 //*********************************************************************************
-
 void BallSearch::attente(int nsec, int sec) 
 {
   struct timespec delai_vie_appli;
@@ -53,7 +50,6 @@ void BallSearch::attente(int nsec, int sec)
 //******************************************************************************
 // Recherche_fleche : Fonction qui permet de trouver la fleche verte sur fond rouge
 //******************************************************************************
-
 Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, int couleur) 
 { // couleur de la balle :
                                         // 0: rouge
@@ -69,13 +65,11 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
 	 bool recherche_finie = false; // on recherche la balle autour du robot
 	 int current_rotate = 0; // rotation de la camera / axe robot 
 
-	  	
-
       binRVB = filtrage_image(raw,width,height,couleur); // Filtrage de l'image par des seuils rouges 
          
       // Analyse de l'image  : decoupage en regions      
       int nbRegions = Etiqueter_Region(binRVB,width,height);
-      printf("\nNombre de regions etiquetees : %d \n", nbRegions);
+      ROS_INFO("Nombre de regions etiquetees : %d \n", nbRegions);
       listeObj = new Objet[nbRegions];
 
       // Extraction des attributs de chaque région segmentée
@@ -105,56 +99,13 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
          }
       }
 	
-
-
-	// return num_obj  ;
-
-
-
-      if ( num_obj == -1 ) {
-         printf("\nPas de balle visible");
-	  //exit(0);
-         nb_rotates++;
-
-         if ( nb_rotates <= 12 ) {
-            if ( nb_rotates == 1 ) {
-               printf(" => rotate à gauche\n"); // on regarde à gauche de la camera
-	       //commandSensorCameraMove(-300,-200,0,1); //turtlebot.turnLeft()
-	       current_rotate = 30;
-	       attente(0,1);
-            }
-            else if ( nb_rotates == 2 ) {
-               printf(" => rotate à droite\n"); // on regarde à droite de la camera
-	       //commandSensorCameraMove(300,-200,0,1); //turtlebot.turnRight()
-	       current_rotate = -30;
-	       attente(0,2);
-            }	
-	    else if (nb_rotates <= 7) {
-               printf(" => rotate à droite\n"); // on regarde à droite de la camera
-	       //commandSensorCameraMove(300,0,0,0); //turtlebot.turnRight()
-	       current_rotate = current_rotate - 30;
-	       attente(0,1);
-            }	
-	    else if (nb_rotates == 8) {
-               printf(" => rotate à gauche\n"); // on regarde à droite de la camera
-	       // commandSensorCameraMove(-600,-200,0,1); //turtlebot.turnLeft()
-	       current_rotate = 60;
-	       attente(0,8);
-            }
-	    else if (nb_rotates > 8) {
-               printf(" => rotate à gauche\n"); // on regarde à droite de la camera
-	       //commandSensorCameraMove(-300,0,0,0); //turtlebot.turnLeft()
-	       current_rotate = current_rotate + 30;
-	       attente(0,1);
-            }	
-         }
-         else {
-            printf("\n");
-            recherche_finie = true;
-         } 
+	
+      if ( num_obj == -1 ) 
+      {
+         ROS_INFO("\nPas de balle visible");
       }
       else {         
-         printf("\nNuméro objet intéressant : %d \n", num_obj);
+         ROS_INFO("Numéro objet intéressant : %d \n", num_obj);
          recherche_finie = true;
 
          obj = new Objet;
@@ -177,14 +128,13 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
 
          double d = obj->Vcg - (double) (width)/2.0;
          double x = (d * diametre_balle) / diametre_balle_image;//(obj->Wmax - obj->Wmin);
-         printf("d : %.2lf\n",d);
-         printf("x : %.2lf\n",x);
-         printf("z : %.2lf\n",z);
+         //printf("d : %.2lf\n",d);
+         //printf("x : %.2lf\n",x);
+         //printf("z : %.2lf\n",z);
          double theta = asin(x/(z*100));
-         printf("Barycentre : (%d, %d), Wmin, Wmax : (%d,%d), Hmin, Hmax : (%d,%d), Bounding box : (%d,%d), distance : %.2lf, Surface : %d \n", obj->Vcg, obj->Ucg,obj->Wmin,
-obj->Wmax, obj->Hmin, obj->Hmax, obj->Hmax-obj->Hmin, obj->Wmax-obj->Wmin, z, obj->Surface); 
+         //printf("Barycentre : (%d, %d), Wmin, Wmax : (%d,%d), Hmin, Hmax : (%d,%d), Bounding box : (%d,%d), distance : %.2lf, Surface : %d \n", obj->Vcg, obj->Ucg,obj->Wmin,obj->Wmax, obj->Hmin, obj->Hmax, obj->Hmax-obj->Hmin, obj->Wmax-obj->Wmin, z, obj->Surface); 
          obj->Dist = z;
-         obj->Theta = theta*180.0/PI;//-current_rotate;
+         obj->Theta = theta*180.0/PI;
       }
    
    return obj;
