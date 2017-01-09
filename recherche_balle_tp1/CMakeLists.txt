@@ -122,7 +122,7 @@ catkin_package(
 #include_directories(include)
 include_directories(
     include
-  #${catkin_INCLUDE_DIRS}
+#  ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -141,27 +141,27 @@ include_directories(
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-add_executable(bgr_to_rgb_converter src/bgrConverter_node.cpp )
-add_executable(ballSearch src/ballSearch_node.cpp src/BallSearch.cpp)
-add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer)
+add_executable(bgr_to_rgb_converter_node src/bgrConverter_node.cpp )
+add_executable(ballSearch_node src/ballSearch_node.cpp src/BallSearch.cpp src/GraphicServer.cpp src/TurtleBotCamera.cpp src/analyse.cpp src/traitement.cpp)
+add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer.cpp)
 
 
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_dependencies(command_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(bgr_to_rgb_converter ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(ballSearch ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(bgr_to_rgb_converter_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ballSearch_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 
-target_link_libraries(ballSearch
+target_link_libraries(ballSearch_node
   ${catkin_LIBRARIES}
 )
 target_link_libraries(command_node
   ${catkin_LIBRARIES}
 )
-target_link_libraries(bgr_to_rgb_converter
+target_link_libraries(bgr_to_rgb_converter_node
   ${catkin_LIBRARIES}
 )
 

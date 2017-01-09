@@ -5,7 +5,7 @@
 
 #include <cmath>
 
-#define FREQ 2
+#define FREQ 10
 
 typedef struct ballNav
 
@@ -25,6 +25,8 @@ typedef struct ballNav
 
 void updateBallCB(const recherche_balle_tp1::command::ConstPtr& msg, BallNav* ballNav)
 {
+        ROS_INFO("COMMAND RECEIVED !");
+        std::cout<<*msg<<std::endl;
 	    ballNav->linearVelocity = msg->linearVelocity;
 	    ballNav->angularVelocity = msg->angularVelocity;
 	    ballNav->distance = msg->distance;
@@ -34,12 +36,13 @@ void updateBallCB(const recherche_balle_tp1::command::ConstPtr& msg, BallNav* ba
 	    ballNav->stop = false;
 	    ballNav->start = true;
 	    ballNav->busy.data = true;
-
+        
 } 
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "commande");
+    std::cout<<"Launching command_node ..."<<std::endl;
+    ros::init(argc, argv, "command");
     ros::NodeHandle node;
      
     TurtleBotCommand turtleBot(node);
@@ -66,7 +69,7 @@ int main(int argc, char **argv)
 
     while(ros::ok())
 	{
-	    std::cout << "############################################################" << std::endl;
+	    /*std::cout << "############################################################" << std::endl;
 	    std::cout << "linearVelocity : " << ballNav.linearVelocity << std::endl;
 	    std::cout << "angularVelocity : " << ballNav.angularVelocity << std::endl;
 	    std::cout << "distance : " << ballNav.distance << std::endl;
@@ -76,10 +79,9 @@ int main(int argc, char **argv)
 	    std::cout << "moving : " << ballNav.moving << std::endl;
 	    std::cout << "stop : " << ballNav.stop << std::endl;
 	    std::cout << "start : " << ballNav.start << std::endl;
-	    std::cout << "busy : " << ballNav.busy << std::endl;
+	    std::cout << "busy : " << ballNav.busy << std::endl;*/
 	    
-	
-	
+	    pubCommandState.publish(ballNav.busy);
 	
 	    if(ballNav.start) 
 		{
@@ -112,7 +114,7 @@ int main(int argc, char **argv)
 		}	    
 	    else if(ballNav.stop)
 		{
-		    std::cout << "STOP : " << ros::WallTime::now() << std::endl;
+		    //std::cout << "STOP : " << ros::WallTime::now() << std::endl;
 		    turtleBot.stop();
 		    ballNav.busy.data = false;
 		}
@@ -146,7 +148,6 @@ int main(int argc, char **argv)
 		}
 		
 		
-		pubCommandState.publish(ballNav.busy);
 	    ros::spinOnce();
 	    r.sleep();
 	}
