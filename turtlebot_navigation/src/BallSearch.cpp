@@ -143,7 +143,7 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
                 case 6:
                     ROS_INFO("Abandon recherche... \n");
                     etat_recherche = 7;
-                    ros::shutdown();
+                    //ros::shutdown();
                     break;
                 default:
                     ROS_INFO("Abandon recherche... \n");
