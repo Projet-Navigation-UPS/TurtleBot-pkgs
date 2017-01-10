@@ -1,8 +1,0 @@
-<launch>
-
-    <group ns="nav">
-        <node pkg="recherche_balle_tp1" name="commande" type="odom"/>
-    </group>
-    
-
-</launch>
