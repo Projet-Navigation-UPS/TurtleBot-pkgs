@@ -5,7 +5,7 @@ TurtleBotCamera::TurtleBotCamera(ros::NodeHandle& node):
     //Publishers
     publisherMobileBaseCommandsSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     //Subcribers
-    subscriberCameraRgbImageColor(node.subscribe("/image_converter/output_video", 1, &TurtleBotCamera::callbackCameraRgbImageColor,this)),
+    subscriberCameraRgbImageColor(node.subscribe("/nav/image_converter/output_video", 1, &TurtleBotCamera::callbackCameraRgbImageColor,this)),
     cameraRgbImageColorVec(CAMERA_HEIGHT*CAMERA_STEP_RGB)
 {
     cameraRgbImageColorRaw = new unsigned char[sizeof(unsigned char) * CAMERA_HEIGHT*CAMERA_STEP_RGB];

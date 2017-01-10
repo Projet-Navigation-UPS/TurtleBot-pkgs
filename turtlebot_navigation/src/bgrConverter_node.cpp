@@ -18,7 +18,7 @@ public:
     // Subscrive to input video feed and publish output video feed
     image_sub_ = it_.subscribe("/camera/rgb/image_color", 1, 
       &ImageConverter::imageCb, this);
-    image_pub_ = it_.advertise("/image_converter/output_video", 1);
+    image_pub_ = it_.advertise("/nav/image_converter/output_video", 1);
   }
 
   void imageCb(const sensor_msgs::ImageConstPtr& msg)
@@ -40,7 +40,7 @@ public:
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "image_converter");
+  ros::init(argc, argv, "image_converter_node");
   ImageConverter ic;
   ros::spin();
   return 0;

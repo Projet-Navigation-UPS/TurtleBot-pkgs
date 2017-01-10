@@ -100,7 +100,7 @@ int main(int argc, char **argv)
 		}	    
 	    else if(ballNav.stop)
 		{
-		    ROS_INFO("STOP\n");
+		    //ROS_INFO("STOP\n");
 		    turtleBot.stop();
 		    ballNav.busy.data = false;
 		}
