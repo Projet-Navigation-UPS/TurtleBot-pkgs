@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     ROS_INFO("Launching ballSearch_node ...\n");
     ros::init(argc, argv, "ballSearch_node");
     ros::NodeHandle n;
-    ros::Rate loop_rate(0.5); // 0.5Hz 
+    ros::Rate loop_rate(0.3); // 0.3Hz 
 
     BallSearch ballSearch(n);
     TurtleBotCamera turtleBotCamera(n);
@@ -27,8 +27,6 @@ int main(int argc, char **argv)
     unsigned char* raw;    
     unsigned char* rawFiltrageImage = new unsigned char[sizeof(unsigned char) * CAMERA_HEIGHT*(CAMERA_STEP_MONO)];
     
-    int etat_recherche=0;
-    int ES=0;
     
     
     ROS_INFO("Initiating ...\n");
@@ -52,41 +50,7 @@ int main(int argc, char **argv)
          
          if ( obj == NULL ) 
          {
-            
             ROS_INFO("Pas de balle trouvée. \n");
-            switch (etat_recherche)
-            {
-                case 0:
-                    ROS_INFO("On tourne à gauche de Pi/4 \n");
-                    ballSearch.sendBallReference(0, 1.5, 0, PI/4);
-                    etat_recherche = 1;
-                    break;
-                case 1:
-                    ROS_INFO("On tourne à droite de Pi/2 \n");
-                    ballSearch.sendBallReference(0, -1.5, 0, PI/2);
-                    etat_recherche = 2;
-                    break;
-                case 2:
-                    ROS_INFO("On tourne à gauche de 3Pi/4 \n");
-                    ballSearch.sendBallReference(0, 1.5, 0, 3*PI/4);
-                    etat_recherche = 3;
-                    break;
-                case 3:
-                    ROS_INFO("On tourne à droite de Pi \n");
-                    ballSearch.sendBallReference(0, -1.5, 0, PI);
-                    etat_recherche = 4;
-                    break;
-                case 4:
-                    ROS_INFO("Abandon recherche... \n");
-                    etat_recherche = 5;
-                    ros::shutdown();
-                    break;
-                default:
-                    ROS_INFO("Abandon recherche... \n");
-                    break;
-
-}
-            
          }
          else 
          {

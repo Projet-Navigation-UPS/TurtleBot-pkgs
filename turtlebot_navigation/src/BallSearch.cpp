@@ -10,6 +10,7 @@ BallSearch::BallSearch(ros::NodeHandle& node):
     publisherBallReference(node.advertise<recherche_balle_tp1::command>("/nav/ball_reference", 1))
 {
     command_busy.data = true;
+    etat_recherche = 0;
 }
 
 BallSearch::~BallSearch(){}
@@ -103,6 +104,53 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
       if ( num_obj == -1 ) 
       {
          ROS_INFO("\nPas de balle visible");
+         
+         if (!command_busy.data)
+         {
+         
+         switch (etat_recherche)
+            {
+                case 0:
+                    ROS_INFO("On tourne à gauche de Pi/3 \n");
+                    this->sendBallReference(0, 1.5, 0, PI/3);
+                    etat_recherche = 1;
+                    break;
+                case 1:
+                    ROS_INFO("On tourne à droite de 2Pi/3 \n");
+                    this->sendBallReference(0, -1.5, 0, 2*PI/3);
+                    etat_recherche = 2;
+                    break;
+                case 2:
+                    ROS_INFO("On tourne à gauche de Pi \n");
+                    this->sendBallReference(0, 1.5, 0, PI);
+                    etat_recherche = 3;
+                    break;
+                case 3:
+                    ROS_INFO("On tourne à droite de 4Pi/3 \n");
+                    this->sendBallReference(0, -1.5, 0, 4*PI/3);
+                    etat_recherche = 4;
+                    break;
+                case 4:
+                    ROS_INFO("On tourne à droite de 5Pi/3 \n");
+                    this->sendBallReference(0, 1.5, 0, 5*PI/3);
+                    etat_recherche = 5;
+                    break;
+                case 5:
+                    ROS_INFO("On tourne à droite de 2Pi \n");
+                    this->sendBallReference(0, -1.5, 0, 2*PI);
+                    etat_recherche = 6;
+                    break;
+                case 6:
+                    ROS_INFO("Abandon recherche... \n");
+                    etat_recherche = 7;
+                    ros::shutdown();
+                    break;
+                default:
+                    ROS_INFO("Abandon recherche... \n");
+                    break;
+
+            }
+         }
       }
       else {         
          ROS_INFO("Numéro objet intéressant : %d \n", num_obj);
@@ -135,6 +183,8 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
          //printf("Barycentre : (%d, %d), Wmin, Wmax : (%d,%d), Hmin, Hmax : (%d,%d), Bounding box : (%d,%d), distance : %.2lf, Surface : %d \n", obj->Vcg, obj->Ucg,obj->Wmin,obj->Wmax, obj->Hmin, obj->Hmax, obj->Hmax-obj->Hmin, obj->Wmax-obj->Wmin, z, obj->Surface); 
          obj->Dist = z;
          obj->Theta = theta*180.0/PI;
+         
+         etat_recherche=0;
       }
    
    return obj;

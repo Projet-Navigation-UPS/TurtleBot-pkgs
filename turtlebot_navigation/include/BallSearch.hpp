@@ -21,6 +21,8 @@ private:
     //Messages
     std_msgs::Bool command_busy;
     
+    int etat_recherche;
+    
     
 public:
 
