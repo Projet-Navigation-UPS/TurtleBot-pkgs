@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(recherche_balle_tp1)
+project(turtlebot_navigation)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -53,7 +53,6 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    command.msg
-#   Message2.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -72,8 +71,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate added messages and services with any dependencies listed here
  generate_messages(
-  DEPENDENCIES
-#   sensor_msgs
+   DEPENDENCIES
    std_msgs
  )
 
@@ -108,8 +106,8 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES recherche_balle_tp1
-  CATKIN_DEPENDS message_runtime
+#  LIBRARIES turtlebot_navigation
+  CATKIN_DEPENDS roscpp std_msgs message_runtime
 #  DEPENDS system_lib
 )
 
@@ -119,26 +117,23 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-#include_directories(include)
+# include_directories(include)
 include_directories(
     include
 #  ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-# add_library(recherche_balle_tp1
-#   src/${PROJECT_NAME}/recherche_balle_tp1.cpp
+# add_library(turtlebot_navigation
+#   src/${PROJECT_NAME}/turtlebot_navigation.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(recherche_balle_tp1 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(turtlebot_navigation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-
-
-
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 add_executable(bgr_to_rgb_converter_node src/bgrConverter_node.cpp )
@@ -165,7 +160,6 @@ target_link_libraries(bgr_to_rgb_converter_node
   ${catkin_LIBRARIES}
 )
 
-
 #############
 ## Install ##
 #############
@@ -181,7 +175,7 @@ target_link_libraries(bgr_to_rgb_converter_node
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS recherche_balle_tp1 recherche_balle_tp1_node
+# install(TARGETS turtlebot_navigation turtlebot_navigation_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -206,7 +200,7 @@ target_link_libraries(bgr_to_rgb_converter_node
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_recherche_balle_tp1.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_turtlebot_navigation.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

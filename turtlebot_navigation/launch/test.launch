@@ -1,0 +1,15 @@
+<launch>
+
+    <node pkg="recherche_balle_tp1" name="recherche_balle" type="recherche_balle_tp1_node"/>
+
+    <node pkg="recherche_balle_tp1" name="converter" type="bgr_to_rgb_converter"/>
+    
+    <node name="image_view_camera_RGB" pkg="image_view" type="image_view">
+        <remap from="image" to="/image/display" />
+    </node>
+    
+    <node name="image_view_traitement" pkg="image_view" type="image_view">
+        <remap from="image" to="/image/test" />
+    </node>
+
+</launch>

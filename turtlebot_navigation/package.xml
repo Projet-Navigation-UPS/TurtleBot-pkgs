@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>recherche_balle_tp1</name>
+  <name>turtlebot_navigation</name>
   <version>0.0.0</version>
   <description>The recherche_balle_tp1 package</description>
 
