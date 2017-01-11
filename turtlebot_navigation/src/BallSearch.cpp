@@ -182,7 +182,7 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
          double theta = asin(x/(z*100));
          //printf("Barycentre : (%d, %d), Wmin, Wmax : (%d,%d), Hmin, Hmax : (%d,%d), Bounding box : (%d,%d), distance : %.2lf, Surface : %d \n", obj->Vcg, obj->Ucg,obj->Wmin,obj->Wmax, obj->Hmin, obj->Hmax, obj->Hmax-obj->Hmin, obj->Wmax-obj->Wmin, z, obj->Surface); 
          obj->Dist = z;
-         obj->Theta = theta*180.0/PI;
+         obj->Theta = -theta*180.0/PI;
          
          etat_recherche=0;
       }
