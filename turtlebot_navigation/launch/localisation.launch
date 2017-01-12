@@ -1,3 +1,20 @@
 <launch>
+<!-- Set QR tracker -->	
+<node pkg="visp_auto_tracker" type="visp_auto_tracker" name="visp_auto_tracker" output="screen">
+<param name="model_path" value="$(find visp_auto_tracker)/models" />
+<param name="model_name" value="pattern" />
+<param name="debug_display" value="True" />
+
+<remap from="/visp_auto_tracker/camera_info" to="/camera/rgb/camera_info"/>
+<remap from="/visp_auto_tracker/image_raw" to="/camera/rgb/image_raw"/>
+</node>
+
+<!-- Set map server -->	
+
+<arg name="map_file" default="/home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_navigation/map/aip_hall.yaml"/>
+<node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+<!-- Set odom to map tf -->	
 <node pkg="tf" type="static_transform_publisher" name="static_transform_publisher" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 odom map 100" />
+
 </launch>
