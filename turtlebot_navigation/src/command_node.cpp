@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 	    if(ballNav.turning)
 		{
 		    ROS_INFO("Turning... \n"); 
-		    turtleBot.turn(ballNav.angularVelocity);
+		    turtleBot.turn(ballNav.angularVelocity*1.42);
 		}
 	    else if(ballNav.moving)
 		{

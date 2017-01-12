@@ -26,7 +26,6 @@ int main(int argc, char **argv)
     sensor_msgs::Image image;
     unsigned char* raw;    
     unsigned char* rawFiltrageImage = new unsigned char[sizeof(unsigned char) * CAMERA_HEIGHT*(CAMERA_STEP_MONO)];
-    bool recherche_finie = false;
     
     
     
@@ -47,9 +46,7 @@ int main(int argc, char **argv)
 	     graphicServerConvert.sendImageDisplay(image);
 	     graphicServer.sendImageDisplay(turtleBotCamera.getCameraRgbImageColor());
 	     
-	     if(!recherche_finie)
-	     {
-	        ROS_INFO("Recherche de la balle...\n");
+	    ROS_INFO("Recherche de la balle...\n");
             Objet * obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 0) ;
          
             if ( obj == NULL ) 
@@ -66,10 +63,9 @@ int main(int argc, char **argv)
 	           if (obj->Theta<0) ballSearch.sendBallReference(0.2, -1.5, (obj->Dist)-0.5,-(obj->Theta)*PI/180);
 	           else ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5,(obj->Theta)*PI/180);
              
-               recherche_finie = true;
+               
             }
-         }
-         else ROS_INFO("Recherche finie...\n");
+
          
          loop_rate.sleep();
     }
