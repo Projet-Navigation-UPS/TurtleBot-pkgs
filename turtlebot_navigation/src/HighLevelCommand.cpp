@@ -3,16 +3,27 @@
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     //Subsribers
-    subscriberTest(node.subscribe("/nav/sub_test", 1, &HighLevelCommand::callbackTest,this)),
+    subPathFound(node.subscribe("/nav/PathFound", 1, &HighLevelCommand::callbackPathFound,this)),
+    subCommandFinished(node.subscribe("/nav/CommandFinished", 1, &HighLevelCommand::callbackCommandFinished,this)),
     //Publishers
-    publisherTest(node.advertise<std_msgs::Bool>("/nav/pub_test", 1))
+    pubPathAsked(node.advertise<std_msgs::Bool>("/nav/PathAsked", 1)),
+    pubCommandAsked(node.advertise<std_msgs::Bool>("/nav/CommandAsked", 1))
 {
-    test.data = true;
+    pathFound.data = false; 
+    pathAsked.data = false;
+    commandFinished.data = false; 
+    commandAsked.data = false;
 }
 
 HighLevelCommand::~HighLevelCommand(){}
 
-void HighLevelCommand::callbackTest(const std_msgs::Bool& msg)
+void HighLevelCommand::callbackPathFound(const std_msgs::Bool& msg)
 {
-    test = msg;
+    pathFound = msg;
+}
+
+
+void HighLevelCommand::callbackCommandFinished(const std_msgs::Bool& msg)
+{
+    commandFinished = msg;
 }

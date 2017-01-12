@@ -5,21 +5,25 @@
 #include "std_msgs/Bool.h"
 
 
+
+
 class HighLevelCommand 
 {
     
 private:
     
     //Subscrbers
-    ros::Subscriber subscriberTest;
+    ros::Subscriber subPathFound, subCommandFinished ;
 
     //Publishers
-    ros::Publisher publisherTest;
+    ros::Publisher pubPathAsked, pubCommandAsked;
 
     //Messages
-    std_msgs::Bool test;
+    std_msgs::Bool pathFound, pathAsked;
+    std_msgs::Bool commandFinished, commandAsked;
     
-    void callbackTest(const std_msgs::Bool& msg);
+    void callbackPathFound(const std_msgs::Bool& msg);
+    void callbackCommandFinished(const std_msgs::Bool& msg);
     
 public:
 

@@ -3,6 +3,8 @@
 #include <stdlib.h>
 
 
+
+
 int main(int argc, char **argv)
 {
     ROS_INFO("Launching highLevelCommande_node ...\n");
