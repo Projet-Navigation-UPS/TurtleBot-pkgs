@@ -30,6 +30,14 @@ public:
     HighLevelCommand(ros::NodeHandle& node);
     ~HighLevelCommand();
     
+    bool path_Found();
+    bool command_Finished();
+    
+    void ask_Path();
+    void ask_Command();
+    
+    void publish();
+    
 
 };
 

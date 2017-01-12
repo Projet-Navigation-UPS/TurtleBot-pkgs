@@ -20,10 +20,30 @@ HighLevelCommand::~HighLevelCommand(){}
 void HighLevelCommand::callbackPathFound(const std_msgs::Bool& msg)
 {
     pathFound = msg;
+    if(pathFound.data) pathAsked.data = false;
 }
 
 
 void HighLevelCommand::callbackCommandFinished(const std_msgs::Bool& msg)
 {
     commandFinished = msg;
+    if(commandFinished.data) commandAsked.data = false;
+}
+
+bool HighLevelCommand::path_Found()
+{
+    return pathFound.data;
+}
+bool HighLevelCommand::command_Finished()
+{
+    return commandFinished.data;
+}
+
+void HighLevelCommand::ask_Path(){pathAsked.data = true;}
+void HighLevelCommand::ask_Command(){commandAsked.data = true;}
+
+void HighLevelCommand::publish()
+{
+    pubPathAsked.publish(pathAsked);
+    pubCommandAsked.publish(commandAsked);
 }
