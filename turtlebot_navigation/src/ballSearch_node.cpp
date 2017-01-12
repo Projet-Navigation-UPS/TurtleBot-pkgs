@@ -26,6 +26,7 @@ int main(int argc, char **argv)
     sensor_msgs::Image image;
     unsigned char* raw;    
     unsigned char* rawFiltrageImage = new unsigned char[sizeof(unsigned char) * CAMERA_HEIGHT*(CAMERA_STEP_MONO)];
+    bool recherche_finie = false;
     
     
     
@@ -36,7 +37,7 @@ int main(int argc, char **argv)
    {
          ros::spinOnce();
          
-         ROS_INFO("Recherche de la balle...\n");
+         
               	    	    
 	     raw = turtleBotCamera.getCameraRgbImageColorRaw();
 	     rawFiltrageImage = filtrage_image(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 0);
@@ -46,24 +47,30 @@ int main(int argc, char **argv)
 	     graphicServerConvert.sendImageDisplay(image);
 	     graphicServer.sendImageDisplay(turtleBotCamera.getCameraRgbImageColor());
 	     
-         Objet * obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 0) ;
+	     if(!recherche_finie)
+	     {
+	        ROS_INFO("Recherche de la balle...\n");
+            Objet * obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 0) ;
          
-         if ( obj == NULL ) 
-         {
-            ROS_INFO("Pas de balle trouvée. \n");
-         }
-         else 
-         {
-            ROS_INFO("distance estimée à la balle en m : %lf \n",  (obj->Dist));
-            ROS_INFO("angle estimé par rapport à la balle (degrés) : %lf \n", obj->Theta);
-            ROS_INFO("centre de la balle : (%d,%d) \n", obj->Ucg, obj->Vcg);
-            ROS_INFO("=> on tourne de %lf degrés\n", (obj->Theta));
-	    if (obj->Theta<0) ballSearch.sendBallReference(0.2, -1.5, (obj->Dist)-0.5,-(obj->Theta)*PI/180);
-	    else ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5,(obj->Theta)*PI/180);
+            if ( obj == NULL ) 
+            {
+               ROS_INFO("Pas de balle trouvée. \n");
+            }
+            else 
+            {
+               ROS_INFO("distance estimée à la balle en m : %lf \n",  (obj->Dist));
+               ROS_INFO("angle estimé par rapport à la balle (degrés) : %lf \n", obj->Theta);
+               ROS_INFO("centre de la balle : (%d,%d) \n", obj->Ucg, obj->Vcg);
+               ROS_INFO("=> on tourne de %lf degrés\n", (obj->Theta));
+            
+	           if (obj->Theta<0) ballSearch.sendBallReference(0.2, -1.5, (obj->Dist)-0.5,-(obj->Theta)*PI/180);
+	           else ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5,(obj->Theta)*PI/180);
              
+               recherche_finie = true;
+            }
          }
+         else ROS_INFO("Recherche finie...\n");
          
-         ROS_INFO("Ending ...\n");
          loop_rate.sleep();
     }
     

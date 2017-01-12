@@ -61,10 +61,7 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
 	 Objet * listeObj; 
 	 Objet * obj = NULL;
 	 unsigned char* binRVB;
-	 int nb_rotates = 0;
 
-	 bool recherche_finie = false; // on recherche la balle autour du robot
-	 int current_rotate = 0; // rotation de la camera / axe robot 
 
       binRVB = filtrage_image(raw,width,height,couleur); // Filtrage de l'image par des seuils rouges 
          
@@ -142,8 +139,6 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
                     break;
                 case 6:
                     ROS_INFO("Abandon recherche... \n");
-                    etat_recherche = 7;
-                    //ros::shutdown();
                     break;
                 default:
                     ROS_INFO("Abandon recherche... \n");
@@ -154,7 +149,6 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
       }
       else {         
          ROS_INFO("Numéro objet intéressant : %d \n", num_obj);
-         recherche_finie = true;
 
          obj = new Objet;
          obj->Ucg = listeObj[num_obj].Ucg;
@@ -184,7 +178,6 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
          obj->Dist = z;
          obj->Theta = -theta*180.0/PI;
          
-         etat_recherche=0;
       }
    
    return obj;
