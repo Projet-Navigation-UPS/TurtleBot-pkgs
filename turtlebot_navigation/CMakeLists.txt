@@ -13,7 +13,8 @@ find_package(catkin REQUIRED COMPONENTS
   kobuki_msgs
   cv_bridge
   image_transport
-  
+  nav_msgs
+  actionlib_msgs
 )
 
 ## System dependencies are found with CMake's conventions

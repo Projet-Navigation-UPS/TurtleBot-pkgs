@@ -3,6 +3,9 @@
 
 #include <ros/ros.h>
 #include "std_msgs/Bool.h"
+#include "nav_msgs/Odometry.h"
+#include "nav_msgs/Path.h"
+#include "actionlib_msgs/GoalStatus.h"
 
 
 
@@ -13,16 +16,17 @@ class HighLevelCommand
 private:
     
     //Subscrbers
-    ros::Subscriber subPathFound, subCommandFinished ;
+    ros::Subscriber subPathFound, subCommandFinished , subLocationReady;
 
     //Publishers
-    ros::Publisher pubPathAsked, pubCommandAsked;
+    ros::Publisher pubPlanPath, pubFollowPath;
 
     //Messages
-    std_msgs::Bool pathFound, pathAsked;
-    std_msgs::Bool commandFinished, commandAsked;
+    std_msgs::Bool locationReady, commandFinished, pathFound;
+    actionlib_msgs::GoalStatus followPath, planPath;
     
-    void callbackPathFound(const std_msgs::Bool& msg);
+    void callbackLocationReady(const nav_msgs::Odometry& msg);
+    void callbackPathFound(const nav_msgs::Path& msg);
     void callbackCommandFinished(const std_msgs::Bool& msg);
     
 public:
@@ -30,11 +34,12 @@ public:
     HighLevelCommand(ros::NodeHandle& node);
     ~HighLevelCommand();
     
+    bool location_Ready();
     bool path_Found();
     bool command_Finished();
     
-    void ask_Path();
-    void ask_Command();
+    void plan_Path();
+    void follow_Path();
     
     void publish();
     

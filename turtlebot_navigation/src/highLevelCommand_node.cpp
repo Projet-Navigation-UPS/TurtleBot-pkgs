@@ -26,44 +26,42 @@ int main(int argc, char **argv)
         switch (currentState)
         {
             case 0:
-                ROS_INFO("Wait location...");
-                currentState = 0;
-                //if(HLC.locationReady())
+                ROS_INFO("Wait for location...");
+                if(HLC.location_Ready())
                 {
-                    HLC.ask_Path();
+                    HLC.plan_Path();
                     currentState = 1;
                 }
+                else currentState = 0;
                 break;
             case 1:
-                ROS_INFO("Wait path...");
-                currentState = 1;
+                ROS_INFO("Wait for path planning...");
                 if(HLC.path_Found())
                 {
-                    HLC.ask_Command();
+                    HLC.follow_Path();
                     currentState = 2;
                 }
+                else currentState = 1;
                 break;
             case 2:
-                ROS_INFO("Wait command...");
-                currentState = 2;
+                ROS_INFO("Wait for the command to follow the path...");
                 if(HLC.command_Finished())
                 {
                     currentState = 3;
                 }
+                else currentState = 2;
                 break;
             case 3:
                 ROS_INFO("You've arrived !");
                 currentState = 3;
                 break;
             default:
-                ROS_INFO("FATAL ERROR... ");
+                currentState = 0;
+                
                 break;
 
         }
-        
 
-
-        HLC.publish();
         loop_rate.sleep();
     }
     

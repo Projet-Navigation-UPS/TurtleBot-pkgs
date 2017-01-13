@@ -3,33 +3,46 @@
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     //Subsribers
-    subPathFound(node.subscribe("/nav/PathFound", 1, &HighLevelCommand::callbackPathFound,this)),
+    subLocationReady(node.subscribe("/nav/Location", 1, &HighLevelCommand::callbackLocationReady,this)),
+    subPathFound(node.subscribe("/nav/PathToFollow", 1, &HighLevelCommand::callbackPathFound,this)),
     subCommandFinished(node.subscribe("/nav/CommandFinished", 1, &HighLevelCommand::callbackCommandFinished,this)),
     //Publishers
-    pubPathAsked(node.advertise<std_msgs::Bool>("/nav/PathAsked", 1)),
-    pubCommandAsked(node.advertise<std_msgs::Bool>("/nav/CommandAsked", 1))
+    pubPlanPath(node.advertise<actionlib_msgs::GoalStatus>("/nav/PlanPath", 1)),
+    pubFollowPath(node.advertise<actionlib_msgs::GoalStatus>("/nav/FollowPath", 1))
 {
+    locationReady.data = false;
     pathFound.data = false; 
-    pathAsked.data = false;
     commandFinished.data = false; 
-    commandAsked.data = false;
+    
+    //planPath.data = false;
+    //followPath.data = false;
 }
 
 HighLevelCommand::~HighLevelCommand(){}
 
-void HighLevelCommand::callbackPathFound(const std_msgs::Bool& msg)
+
+//Callbacks
+void HighLevelCommand::callbackLocationReady(const nav_msgs::Odometry& msg)
 {
-    pathFound = msg;
-    if(pathFound.data) pathAsked.data = false;
+    locationReady.data = true;
 }
 
+void HighLevelCommand::callbackPathFound(const nav_msgs::Path& msg)
+{
+    pathFound.data = true;
+}
 
 void HighLevelCommand::callbackCommandFinished(const std_msgs::Bool& msg)
 {
     commandFinished = msg;
-    if(commandFinished.data) commandAsked.data = false;
 }
 
+
+//States
+bool HighLevelCommand::location_Ready()
+{
+    return locationReady.data;
+}
 bool HighLevelCommand::path_Found()
 {
     return pathFound.data;
@@ -39,11 +52,33 @@ bool HighLevelCommand::command_Finished()
     return commandFinished.data;
 }
 
-void HighLevelCommand::ask_Path(){pathAsked.data = true;}
-void HighLevelCommand::ask_Command(){commandAsked.data = true;}
+//Hight Level Commands
+void HighLevelCommand::plan_Path()
+{
+    planPath.goal_id.stamp = ros::Time::now();
+    planPath.goal_id.id = "path_planning";
+    planPath.status = 1;
+    planPath.text = "";
+    //std::cout<<planPath<<std::endl;
+    pubPlanPath.publish(planPath);
+}
 
+void HighLevelCommand::follow_Path()
+{
+    followPath.goal_id.stamp = ros::Time::now();
+    followPath.goal_id.id = "path_following";
+    followPath.status = 1;
+    followPath.text = "";
+    //std::cout<<followPath<<std::endl;
+    pubFollowPath.publish(followPath);
+}
+
+
+//
 void HighLevelCommand::publish()
 {
-    pubPathAsked.publish(pathAsked);
-    pubCommandAsked.publish(commandAsked);
+    pubPlanPath.publish(planPath);
+    pubFollowPath.publish(followPath);
 }
+
+
