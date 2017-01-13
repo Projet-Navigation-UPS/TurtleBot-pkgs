@@ -2,19 +2,13 @@
 
 TurtleBotCommand::TurtleBotCommand(ros::NodeHandle& node):
     m_node(node),
-    publisherMobileBaseCommandsVelocity(node.advertise<geometry_msgs::Twist>("/mobile_base/commands/velocity", 1))
+    publisherOdom(node.advertise<nav_msgs::Odometry>("/odom", 50))
 {
     TurtleBotCommand::stop();
 }
 
 TurtleBotCommand::~TurtleBotCommand()
 {}
-
-
-geometry_msgs::Twist TurtleBotCommand::getMobileBaseCommandsVelocity() 
-{
-    return mobileBaseCommandsVelocity;
-}
 
 
 void TurtleBotCommand::displayOdom()
@@ -28,14 +22,20 @@ void TurtleBotCommand::stop()
     TurtleBotCommand::setOdom(0, 0, 0, 0, 0, 0);
 }
 
-void TurtleBotCommand::move(const float linearVelocity)
+void TurtleBotCommand::move(const float linearVelocity, const float mile)
 {
-    TurtleBotCommand::setodom(linearVelocity, 0, 0, 0, 0, 0);
+    float px0=0, px1=0;
+    px0=odom.pose.pose.position.x;
+
+    while((px1=odom.pose.pose.position.x-px0) < mile) TurtleBotCommand::setOdom(linearVelocity, 0, 0, 0, 0, 0);
 }
 
-void TurtleBotCommand::turn(const float angularVelocity)
+void TurtleBotCommand::turn(const float angularVelocity, const float angu)
 {
-    TurtleBotCommand::setOdom(0, 0, 0, 0, 0, angularVelocity);
+    float theta0=0, theta1=0;
+    theta0=odom.pose.pose.orientation.z;
+
+    while((theta1=odom.pose.pose.orientation.z-theta0) < angu) TurtleBotCommand::setOdom(0, 0, 0, 0, 0, angularVelocity);
 }
 
 void TurtleBotCommand::moveAndTurn(const float linearVelocity, const float angularVelocity)
@@ -44,39 +44,40 @@ void TurtleBotCommand::moveAndTurn(const float linearVelocity, const float angul
 }
 
 /************************Follow Command************************/
-sensor_msgs::Imu TurtleCommand::getOdom()
+nav_msgs::Odometry TurtleBotCommand::getOdom()
 {
 	return odom;
 }
 
-sensor_msgs::JointState TurtleCommand::getWheel()
+sensor_msgs::JointState TurtleBotCommand::getWheel()
 {
 	return wheel;
 }
 
 void TurtleBotCommand::setOdom(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ)
 {
-	odom.twist.linear.x=linearX;	 // speed linear
-	odom.twist.linear.y=linearY;
-	odom.twist.linear.z=linearZ;
-	odom.twist.angular.x=angularX;
-	odom.twist.angular.y=angularY;
-	odom.twist.angular.z=angularZ;	 // speed angular
+	odom.twist.twist.linear.x=linearX;	 // speed linear
+	odom.twist.twist.linear.y=linearY;
+	odom.twist.twist.linear.z=linearZ;
+	odom.twist.twist.angular.x=angularX;
+	odom.twist.twist.angular.y=angularY;
+	odom.twist.twist.angular.z=angularZ;	 // speed angular
 	publisherOdom.publish(odom);
 }
 
-void TurtleBotCommabd::setWheel(const float whp, const float whv, const float whef)
+/*void TurtleBotCommand::setWheel(const float whv, const float whef)
 {
     wheel.position=whp;
     wheel.velocity=whv;
     wheel.effort=whef;
     wheel.publish(wheel);
-}
+}*/
 
 // For each point, calculate difference between p and p+1
-void TurtleBotCommand::folcom(float tabp[][], const float linearVelocity, const float angularVelocity) 
+/*void TurtleBotCommand::folcom(std::vector<std::vector<const float> > tabp, const float linearVelocity, const float angularVelocity) 
 {
-	int T=max(size(tabp);
+	int T=tabp.max_size();
+
 	float distx=0, disty=0, alpha=0;
 	float px0=0, py0=0, theta0=0, px1=0, py1=0, theta1=0;
 	float pxe=0, pye=0, thetae=0;
@@ -85,7 +86,7 @@ void TurtleBotCommand::folcom(float tabp[][], const float linearVelocity, const 
 		distx=tabp[1][i]-tabp[1][i-1];
 		disty=tabp[2][i]-tabp[2][i-1];
 
-		alpha= acos(distx/sqrt(distx^2+disty^2));
+		alpha= acos(distx/sqrt(exp2(distx)+exp2(disty)));
 		
 		if(alpha<0) alpha=-alpha;
 		
@@ -94,15 +95,15 @@ void TurtleBotCommand::folcom(float tabp[][], const float linearVelocity, const 
 		else if(distx<=0 && disty<=0) alpha=alpha+pi/2;
 		else if(distx>=0 && disty<=0) alpha=-alpha-pi/2;
 
-		px0=odom.pose.position.x;
-		py0=odom.pose.position.y;
-		theta0=odom.pose.orientation.z;
+		px0=odom.pose.pose.position.x;
+		py0=odom.pose.pose.position.y;
+		theta0=odom.pose.pose.orientation.z;
 
-		TurtleBotCommand::setodom(linearVelocity, 0, 0, 0, 0, angularVelocity);
+		TurtleBotCommand::setOdom(linearVelocity, 0, 0, 0, 0, angularVelocity);
 
-		px1=odom.pose.position.x-px0;
-		py1=odom.pose.position.y-py0;
-		theta1=odom.pose.orientation.z-alpha0;
+		px1=odom.pose.pose.position.x-px0;
+		py1=odom.pose.pose.position.y-py0;
+		theta1=odom.pose.pose.orientation.z-theta0;
 	
 		pxe=px1-distx;
 		pye=py1-disty;
@@ -113,7 +114,7 @@ void TurtleBotCommand::folcom(float tabp[][], const float linearVelocity, const 
 		if(thetae!=0)
 	}
 }
-
+*/
 
 
 

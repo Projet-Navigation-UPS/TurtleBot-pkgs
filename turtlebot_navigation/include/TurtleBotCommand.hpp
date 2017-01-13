@@ -2,6 +2,7 @@
 #define _TURTLEBOTCOMMAND_
 
 #include <ros/ros.h>
+#include <iostream>
 #include <string>
 #include <vector>
 #include <cmath>
@@ -9,6 +10,10 @@
 #include "nav_msgs/Odometry.h"
 #include "sensor_msgs/Imu.h"
 #include "sensor_msgs/JointState.h"
+
+#ifndef pi
+   #define pi 3.14159265358979323846
+#endif
 
 const float ROBOT_LINEAR_MAX_VELOCITY = 0.25;
 const float ROBOT_ANGULAR_MAX_VELOCITY = 2;
@@ -21,7 +26,6 @@ class TurtleBotCommand
 private:
         
     //Publishers
-    ros::Publisher publisherMobileBaseCommandsVelocity;
 	ros::Publisher publisherOdom;
 	ros::Publisher publisherIm;
 	ros::Publisher publisherWheel;
@@ -40,9 +44,9 @@ public:
     
     //Motion
     void stop();
-    void move(const float linearVelocity);
-    void turn(const float angularVelocity);
-	void TurtleBotCommand::folcom(const float tabp[][], const float linearVelocity, const float angularVelocity);
+    void move(const float linearVelocity, const float mile);
+    void turn(const float angularVelocity, const float angu);
+	//void folcom(std::vector<std::vector<const float> > tabp, const float linearVelocity, const float angularVelocity);
 
     //Diplays
     void displayOdom();
@@ -50,14 +54,12 @@ public:
 
 private:
     geometry_msgs::Twist getMobileBaseCommandsVelocity();
-	sensor_msgs::JointState TurtleCommand::Wheel();
-	sensor_msgs::Imu TurtleCommand::getOdom();
-	
-	void TurtleBotCommand::setOdom(const float posecov, const float twist);
-	void TurtleBotCommabd::setWheel(const float whp, const float whv, const float whef);
-	void TurtleBotCommand::setOdom(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ, const float posX, const float posY, const float posZ, const float angleX, const float angleY, const float angleZ, const float anglew)
+	sensor_msgs::JointState getWheel();
+	//sensor_msgs::Imu getOdom();
+	nav_msgs::Odometry getOdom();	
 
-
+	void setOdom(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
+	//void setWheel(const float whv, const float whef);
     
 };
 

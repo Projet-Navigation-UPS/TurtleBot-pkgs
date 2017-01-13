@@ -108,12 +108,12 @@ int main(int argc, char **argv)
 	    if(ballNav.turning)
 		{
 		    ROS_INFO("Turning... \n"); 
-		    turtleBot.turn(ballNav.angularVelocity);
+		    turtleBot.turn(ballNav.angularVelocity, ballNav.angle);
 		}
 	    else if(ballNav.moving)
 		{
 		    ROS_INFO("Moving...\n"); 
-		    turtleBot.move(ballNav.linearVelocity);
+		    turtleBot.move(ballNav.linearVelocity, ballNav.distance);
 		}
 		    
 	    if((ros::WallTime::now() - startTime) > duration && (ballNav.turning || ballNav.moving)) 
