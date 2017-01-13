@@ -1,0 +1,43 @@
+Start testing: Jan 13 14:42 CET
+----------------------------------------------------------
+1/2 Testing: _ctest_base_local_planner_gtest_base_local_planner_utest
+1/2 Test: _ctest_base_local_planner_gtest_base_local_planner_utest
+Command: "/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/catkin_generated/env_cached.sh" "/usr/bin/python" "/opt/ros/indigo/share/catkin/cmake/test/run_tests.py" "/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/test_results/base_local_planner/gtest-base_local_planner_utest.xml" "--return-code" "/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/devel/lib/base_local_planner/base_local_planner_utest --gtest_output=xml:/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/test_results/base_local_planner/gtest-base_local_planner_utest.xml"
+Directory: /home/projturtlebot/catkin_ws/src/navigation/base_local_planner
+"_ctest_base_local_planner_gtest_base_local_planner_utest" start time: Jan 13 14:42 CET
+Output:
+----------------------------------------------------------
+/bin/sh: 1: /home/projturtlebot/catkin_ws/src/navigation/base_local_planner/devel/lib/base_local_planner/base_local_planner_utest: not found
+Cannot find results, writing failure results to '/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/test_results/base_local_planner/MISSING-gtest-base_local_planner_utest.xml'
+-- run_tests.py: execute commands
+  /home/projturtlebot/catkin_ws/src/navigation/base_local_planner/devel/lib/base_local_planner/base_local_planner_utest --gtest_output=xml:/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/test_results/base_local_planner/gtest-base_local_planner_utest.xml
+-- run_tests.py: verify result "/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/test_results/base_local_planner/gtest-base_local_planner_utest.xml"
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Failed.
+"_ctest_base_local_planner_gtest_base_local_planner_utest" end time: Jan 13 14:42 CET
+"_ctest_base_local_planner_gtest_base_local_planner_utest" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/2 Testing: _ctest_base_local_planner_gtest_line_iterator
+2/2 Test: _ctest_base_local_planner_gtest_line_iterator
+Command: "/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/catkin_generated/env_cached.sh" "/usr/bin/python" "/opt/ros/indigo/share/catkin/cmake/test/run_tests.py" "/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/test_results/base_local_planner/gtest-line_iterator.xml" "--return-code" "/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/devel/lib/base_local_planner/line_iterator --gtest_output=xml:/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/test_results/base_local_planner/gtest-line_iterator.xml"
+Directory: /home/projturtlebot/catkin_ws/src/navigation/base_local_planner
+"_ctest_base_local_planner_gtest_line_iterator" start time: Jan 13 14:42 CET
+Output:
+----------------------------------------------------------
+/bin/sh: 1: /home/projturtlebot/catkin_ws/src/navigation/base_local_planner/devel/lib/base_local_planner/line_iterator: not found
+Cannot find results, writing failure results to '/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/test_results/base_local_planner/MISSING-gtest-line_iterator.xml'
+-- run_tests.py: execute commands
+  /home/projturtlebot/catkin_ws/src/navigation/base_local_planner/devel/lib/base_local_planner/line_iterator --gtest_output=xml:/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/test_results/base_local_planner/gtest-line_iterator.xml
+-- run_tests.py: verify result "/home/projturtlebot/catkin_ws/src/navigation/base_local_planner/test_results/base_local_planner/gtest-line_iterator.xml"
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Failed.
+"_ctest_base_local_planner_gtest_line_iterator" end time: Jan 13 14:42 CET
+"_ctest_base_local_planner_gtest_line_iterator" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Jan 13 14:42 CET

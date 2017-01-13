@@ -49,13 +49,13 @@ void printPoint(pcl::PointXYZ pt){
 }
 
 void printPSHeader(){
-  printf("%%!PS\n");
-  printf("%%%%Creator: Eitan Marder-Eppstein (Willow Garage)\n");
-  printf("%%%%EndComments\n");
+  printf("%\n");
+  printf("%%Launching point_grid\n");
+  printf("%---***---Turtlebot project---***---\n\n");
 }
 
 void printPSFooter(){
-  printf("showpage\n%%%%EOF\n");
+  printf("\n%%%%__________________________________\n");
 }
 
 void printPolygonPS(const std::vector<geometry_msgs::Point>& poly, double line_width){

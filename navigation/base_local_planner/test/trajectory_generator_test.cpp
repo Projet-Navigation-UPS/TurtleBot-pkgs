@@ -1,10 +1,3 @@
-/*
- * footprint_helper_test.cpp
- *
- *  Created on: May 2, 2012
- *      Author: tkruse
- */
-
 #include <gtest/gtest.h>
 
 #include <vector>

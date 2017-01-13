@@ -1,10 +1,3 @@
-/*
- * gtest_main.cpp
- *
- *  Created on: Apr 6, 2012
- *      Author: tkruse
- */
-
 #include <iostream>
 
 #include <gtest/gtest.h>

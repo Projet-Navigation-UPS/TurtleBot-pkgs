@@ -127,7 +127,7 @@ install(DIRECTORY include/${PROJECT_NAME}/
   PATTERN ".svn" EXCLUDE
 )
 
-if(CATKIN_ENABLE_TESTING)
+#if(CATKIN_ENABLE_TESTING)
   catkin_add_gtest(base_local_planner_utest
     test/gtest_main.cpp
     test/utest.cpp
@@ -142,4 +142,4 @@ if(CATKIN_ENABLE_TESTING)
 
   catkin_add_gtest(line_iterator
       test/line_iterator_test.cpp)
-endif()
+#endif()

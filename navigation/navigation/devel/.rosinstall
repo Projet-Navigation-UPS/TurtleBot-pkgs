@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/projturtlebot/catkin_ws/src/navigation/navigation/devel/setup.sh
