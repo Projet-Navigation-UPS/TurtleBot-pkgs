@@ -26,38 +26,58 @@ int main(int argc, char **argv)
         switch (currentState)
         {
             case 0:
-                ROS_INFO("Wait for location...");
+                
                 if(HLC.location_Ready())
                 {
-                    HLC.plan_Path();
+                    ROS_INFO("Location ready...");
                     currentState = 1;
                 }
-                else currentState = 0;
+                else 
+                {
+                    ROS_INFO("Wait for location...");
+                    currentState = 0;
+                }    
                 break;
             case 1:
-                ROS_INFO("Wait for path planning...");
-                if(HLC.path_Found())
+                if(HLC.near_Goal())
                 {
-                    HLC.follow_Path();
+                    ROS_INFO("Goal reached...");
+                    currentState = 1;
+                }
+                else 
+                {   
+                    ROS_INFO("Search path to reach goal...");
+                    HLC.plan_Path();
                     currentState = 2;
                 }
-                else currentState = 1;
                 break;
             case 2:
-                ROS_INFO("Wait for the command to follow the path...");
-                if(HLC.command_Finished())
+                if(HLC.path_Found())
                 {
+                    ROS_INFO("Launch mouvement...");
+                    HLC.follow_Path();
                     currentState = 3;
                 }
-                else currentState = 2;
+                else
+                {
+                    ROS_INFO("Wait for path planning...");
+                    currentState = 2;
+                }
                 break;
             case 3:
-                ROS_INFO("You've arrived !");
-                currentState = 3;
+                if(HLC.command_Finished())
+                {
+                    ROS_INFO("Mouvement finished...");
+                    currentState = 0;
+                }
+                else
+                {
+                    ROS_INFO("Wait for the robot to follow the path...");
+                    currentState = 3;
+                }
                 break;
             default:
                 currentState = 0;
-                
                 break;
 
         }
