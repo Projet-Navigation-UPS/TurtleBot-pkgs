@@ -30,20 +30,20 @@ void HighLevelCommand::callbackLocationReady(const nav_msgs::Odometry& msg)
 {
     locationReady.data = true;
     currentLocation.pose = msg.pose.pose;
-    std::cout<<currentLocation<<std::endl;
+    //std::cout<<currentLocation<<std::endl;
 }
 
 void HighLevelCommand::callbackPathFound(const nav_msgs::Path& msg)
 {
     pathFound.data = true;
     currentGoal = msg.poses.back();
-    std::cout<<currentGoal<<std::endl;
+    //std::cout<<currentGoal<<std::endl;
 }
 
 void HighLevelCommand::callbackCommandFinished(const std_msgs::Bool& msg)
 {
     commandFinished = msg;
-    std::cout<<commandFinished<<std::endl;
+    //std::cout<<commandFinished<<std::endl;
 }
 
 

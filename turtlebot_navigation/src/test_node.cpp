@@ -61,17 +61,28 @@ int main(int argc, char **argv)
     location.pose.pose.orientation.w = 2.05;
 
     commandFinished.data = true;
-    
+    float time = 0;
     while (ros::ok()) 
     {
         ros::spinOnce();
-
+        
         pubLocation.publish(location);
         //std::cout<<location<<std::endl;
-        pubCmdFinished.publish(commandFinished);
-        pubPath.publish(path);
-        //std::cout<<path<<std::endl;
-
+        
+        if(time>5)
+        {
+            pubPath.publish(path);
+            //std::cout<<path<<std::endl;
+        }
+        
+        if(time>10)
+        {
+            pubCmdFinished.publish(commandFinished);
+        }
+        
+        
+        //std::cout<<time<<std::endl;
+        time = time + 0.5;
         loop_rate.sleep();
     }
     
