@@ -1,4 +1,6 @@
 <launch>
+
+        <node pkg="rostopic" type="rostopic" name="rest_odom" args="pub /mobile_base/commands/reset_odometry std_msgs/Empty" output="screen"/>
         <!-- Set QR tracker -->	
         <node pkg="visp_auto_tracker" type="visp_auto_tracker" name="visp_auto_tracker" output="screen">
         <param name="model_path" value="$(find visp_auto_tracker)/models" />
@@ -16,6 +18,7 @@
 
         <!-- Set tf broadcaster-->
         <node pkg="turtlebot_navigation" type="localisation_node" name="localisation_node"/>
+<node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher" args="2.0 1.0 0.0 0.0 0.0 0.0 1.0 map marker1 100" />
 <!--    <node pkg="tf" type="static_transform_publisher" name="map_tf_publisher" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 map odom 100" /> 
         <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher" args="2.0 1.0 0.0 0.0 0.0 0.0 1.0 map marker1 100" />
         <node pkg="tf" type="static_transform_publisher" name="bl_tf_publisher" args="2.0 1.0 0.0 0.0 0.0 0.0 1.0 odom base_link 100" /> -->
