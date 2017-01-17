@@ -26,6 +26,7 @@ class TurtleBotCommand
 private:
         
     //Publishers
+	ros::Publisher publisherMobileBaseCommandsVelocity;
 	ros::Publisher publisherOdom;
 	ros::Publisher publisherIm;
 	ros::Publisher publisherWheel;
@@ -49,7 +50,7 @@ public:
 	//void folcom(std::vector<std::vector<const float> > tabp, const float linearVelocity, const float angularVelocity);
 
     //Diplays
-    void displayOdom();
+    void displayMobileBaseCommandsVelocity();
     void moveAndTurn(const float linearVelocity, const float angularVelocity);
 
 private:
@@ -57,8 +58,10 @@ private:
 	sensor_msgs::JointState getWheel();
 	//sensor_msgs::Imu getOdom();
 	nav_msgs::Odometry getOdom();	
+	
 
-	void setOdom(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
+	void setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
+	//void setOdom(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
 	//void setWheel(const float whv, const float whef);
     
 };

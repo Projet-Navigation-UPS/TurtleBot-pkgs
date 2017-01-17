@@ -70,6 +70,7 @@ int main(int argc, char **argv)
     while(ros::ok())
 	{
 	    
+		std::cout<<"Test absolue: "<< fabs(-2/3);
 	    pubCommandState.publish(ballNav.busy);
 	
 	    if(ballNav.start) 

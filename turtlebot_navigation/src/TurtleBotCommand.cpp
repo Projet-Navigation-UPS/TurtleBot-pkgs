@@ -11,7 +11,7 @@ TurtleBotCommand::~TurtleBotCommand()
 {}
 
 
-void TurtleBotCommand::displayOdom()
+void TurtleBotCommand::displayMobileBaseCommandsVelocity()
 {
     std::cout<<odom<<std::endl;
 }
@@ -19,7 +19,7 @@ void TurtleBotCommand::displayOdom()
 //Motions
 void TurtleBotCommand::stop()
 {
-    TurtleBotCommand::setOdom(0, 0, 0, 0, 0, 0);
+    TurtleBotCommand::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, 0);
 }
 
 void TurtleBotCommand::move(const float linearVelocity, const float mile)
@@ -27,7 +27,7 @@ void TurtleBotCommand::move(const float linearVelocity, const float mile)
     float px0=0, px1=0;
     px0=odom.pose.pose.position.x;
 
-    while((px1=odom.pose.pose.position.x-px0) < mile) TurtleBotCommand::setOdom(linearVelocity, 0, 0, 0, 0, 0);
+    if((px1=odom.pose.pose.position.x-px0) < mile) TurtleBotCommand::setMobileBaseCommandsVelocity(linearVelocity, 0, 0, 0, 0, 0);
 }
 
 void TurtleBotCommand::turn(const float angularVelocity, const float angu)
@@ -35,12 +35,12 @@ void TurtleBotCommand::turn(const float angularVelocity, const float angu)
     float theta0=0, theta1=0;
     theta0=odom.pose.pose.orientation.z;
 
-    while((theta1=odom.pose.pose.orientation.z-theta0) < angu) TurtleBotCommand::setOdom(0, 0, 0, 0, 0, angularVelocity);
+    if((theta1=odom.pose.pose.orientation.z-theta0) < angu) TurtleBotCommand::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, angularVelocity);
 }
 
 void TurtleBotCommand::moveAndTurn(const float linearVelocity, const float angularVelocity)
 {
-    TurtleBotCommand::setOdom(linearVelocity, 0, 0, 0, 0, angularVelocity);
+    TurtleBotCommand::setMobileBaseCommandsVelocity(linearVelocity, 0, 0, 0, 0, angularVelocity);
 }
 
 /************************Follow Command************************/
@@ -54,7 +54,24 @@ sensor_msgs::JointState TurtleBotCommand::getWheel()
 	return wheel;
 }
 
-void TurtleBotCommand::setOdom(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ)
+geometry_msgs::Twist TurtleBotCommand::getMobileBaseCommandsVelocity()
+{
+	return mobileBaseCommandsVelocity;
+}
+
+void TurtleBotCommand::setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ)
+{
+	mobileBaseCommandsVelocity.linear.x=linearX;	 // speed linear
+	mobileBaseCommandsVelocity.linear.y=linearY;
+	mobileBaseCommandsVelocity.linear.z=linearZ;
+	mobileBaseCommandsVelocity.angular.x=angularX;
+	mobileBaseCommandsVelocity.angular.y=angularY;
+	mobileBaseCommandsVelocity.angular.z=angularZ;	 // speed angular
+	publisherMobileBaseCommandsVelocity.publish(mobileBaseCommandsVelocity);
+}
+
+
+/*void TurtleBotCommand::setOdom(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ)
 {
 	odom.twist.twist.linear.x=linearX;	 // speed linear
 	odom.twist.twist.linear.y=linearY;
@@ -63,7 +80,7 @@ void TurtleBotCommand::setOdom(const float linearX, const float linearY, const f
 	odom.twist.twist.angular.y=angularY;
 	odom.twist.twist.angular.z=angularZ;	 // speed angular
 	publisherOdom.publish(odom);
-}
+}*/
 
 /*void TurtleBotCommand::setWheel(const float whv, const float whef)
 {
