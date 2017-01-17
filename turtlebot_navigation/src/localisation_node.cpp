@@ -16,7 +16,8 @@ int main(int argc, char** argv){
     while(ros::ok())
     {    
         br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "map", "odom"));
-        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "base_link"));       
+        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "odom", "base_link"));
+        br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "base_footprint", "base_link"));         
         ros::spinOnce();
         loop_rate.sleep();
     }
