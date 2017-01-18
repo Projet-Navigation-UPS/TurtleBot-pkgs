@@ -20,7 +20,7 @@ private:
     ros::Subscriber subPathFound, subCommandFinished , subLocationReady;
 
     //Publishers
-    ros::Publisher pubPlanPath, pubFollowPath;
+    ros::Publisher pubPlanPath, pubFollowPath, pubGoal;
 
     //Messages
     std_msgs::Bool locationReady, commandFinished, pathFound, nearGoal;
@@ -28,8 +28,6 @@ private:
     geometry_msgs::PoseStamped currentGoal, currentLocation;
     
     void callbackLocationReady(const nav_msgs::Odometry& msg);
-    void callbackPathFound(const nav_msgs::Path& msg);
-    void callbackCommandFinished(const std_msgs::Bool& msg);
     
 public:
 
@@ -37,12 +35,7 @@ public:
     ~HighLevelCommand();
     
     bool location_Ready();
-    bool path_Found();
-    bool command_Finished();
-    bool near_Goal();
     
-    void plan_Path();
-    void follow_Path();
     
     void publish();
     

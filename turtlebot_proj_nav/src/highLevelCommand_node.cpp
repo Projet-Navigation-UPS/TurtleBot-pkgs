@@ -14,16 +14,15 @@ int main(int argc, char **argv)
 
     HighLevelCommand HLC(node);
     
-    int currentState, nextState;
+    int currentState;
     
     currentState = 0;
-    //nextState = 0;
 
     while (ros::ok()) 
     {
         ros::spinOnce();
 
-        switch (currentState)
+        /*switch (currentState)
         {
             case 0:
                 
@@ -80,7 +79,7 @@ int main(int argc, char **argv)
                 currentState = 0;
                 break;
 
-        }
+        }*/
 
         loop_rate.sleep();
     }

@@ -6,6 +6,40 @@
 
 #include "nav_msgs/Path.h"
 #include "geometry_msgs/PoseStamped.h"
+#include "actionlib_msgs/GoalStatusArray.h"
+
+#include "move_base_msgs/MoveBaseResult.h"
+#include "move_base_msgs/MoveBaseActionResult.h"
+#include "move_base_msgs/MoveBaseFeedback.h"
+#include "move_base_msgs/MoveBaseActionFeedback.h"
+#include "move_base_msgs/MoveBaseActionGoal.h"
+#include "move_base_msgs/MoveBaseGoal.h"
+#include "move_base_msgs/MoveBaseAction.h"
+
+
+
+
+void callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg)
+{
+    std::cout<<"MoveBaseActionResult"<<std::endl;
+    std::cout<<msg<<std::endl;
+}
+void callbackMoveBaseActionFeedback(const move_base_msgs::MoveBaseActionFeedback& msg)
+{
+    std::cout<<"MoveBaseActionFeedback"<<std::endl;
+    std::cout<<msg<<std::endl;
+}
+void callbackMoveBaseActionGoal(const move_base_msgs::MoveBaseActionGoal& msg)
+{
+    std::cout<<"MoveBaseActionGoal"<<std::endl;
+    std::cout<<msg<<std::endl;
+}
+void callbackGoalStatusArray(const actionlib_msgs::GoalStatusArray& msg)
+{
+    //std::cout<<"GoalStatusArray"<<std::endl;
+    //std::cout<<msg<<std::endl;
+}
+
 
 int main(int argc, char **argv)
 {
@@ -19,6 +53,12 @@ int main(int argc, char **argv)
     ros::Publisher pubLocation(node.advertise<nav_msgs::Odometry>("/nav/Location", 1));
     ros::Publisher pubCmdFinished(node.advertise<std_msgs::Bool>("/nav/CommandFinished", 1));
     ros::Publisher pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1));
+    
+    ros::Subscriber subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &callbackMoveBaseActionResult));
+    ros::Subscriber subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &callbackMoveBaseActionFeedback));
+    ros::Subscriber subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &callbackMoveBaseActionGoal));
+    ros::Subscriber subGoalStatusArray(node.subscribe("/move_base/status", 1, &callbackGoalStatusArray));
+    
 
     nav_msgs::Path path;
     geometry_msgs::PoseStamped pose1, pose2, pose3, goal;
@@ -80,23 +120,17 @@ int main(int argc, char **argv)
     {
         ros::spinOnce();
         
+        
+        
+        
+        
         //pubLocation.publish(location);
         //std::cout<<location<<std::endl;
-        
-        if(time>=5 && time<5.5)
-        {
-            //pubPath.publish(path);
-            //std::cout<<path<<std::endl;
-            pubGoal.publish(goal);
-            std::cout<<goal<<std::endl;
-        }
-        
-        if(time>10)
-        {
-            //pubCmdFinished.publish(commandFinished);
-        }
-        
-        
+        //pubPath.publish(path);
+        //std::cout<<path<<std::endl;
+        //pubGoal.publish(goal);
+        //std::cout<<goal<<std::endl;
+        //pubCmdFinished.publish(commandFinished);
         //std::cout<<time<<std::endl;
         time = time + 0.5;
         loop_rate.sleep();
