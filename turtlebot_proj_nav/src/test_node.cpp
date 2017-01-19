@@ -5,6 +5,7 @@
 #include <cmath> 
 
 #include "nav_msgs/Path.h"
+#include "nav_msgs/Odometry.h"
 #include "geometry_msgs/PoseStamped.h"
 #include "actionlib_msgs/GoalStatusArray.h"
 
@@ -15,6 +16,7 @@
 #include "move_base_msgs/MoveBaseActionGoal.h"
 #include "move_base_msgs/MoveBaseGoal.h"
 #include "move_base_msgs/MoveBaseAction.h"
+#include <tf/transform_listener.h>
 
 
 
@@ -40,30 +42,54 @@ void callbackGoalStatusArray(const actionlib_msgs::GoalStatusArray& msg)
     //std::cout<<msg<<std::endl;
 }
 
+void callbackLocation(const nav_msgs::Odometry& msg)
+{
+    tf::TransformListener tfListener;
+
+    std::cout<<"Odometry"<<std::endl;
+    std::cout<<msg<<std::endl;
+    
+    nav_msgs::Odometry currentLocation(msg);
+    
+    geometry_msgs::PoseStamped location;
+    location.header = msg.header;
+    location.pose = msg.pose.pose;
+            
+    geometry_msgs::PoseStamped transformed_location;
+    tfListener.transformPose("map", location, transformed_location);       
+    currentLocation.pose.pose = transformed_location.pose;
+    
+    std::cout<<currentLocation<<std::endl;
+}
+
+
 
 int main(int argc, char **argv)
 {
     ROS_INFO("Launching test_node ...");
     ros::init(argc, argv, "test_node");
     ros::NodeHandle node;
-    ros::Rate loop_rate(2); // 2Hz 
+    ros::Rate loop_rate(0.5); // 2Hz 
 
 
-    ros::Publisher pubPath(node.advertise<nav_msgs::Path>("/nav/PathToFollow", 1));
-    ros::Publisher pubLocation(node.advertise<nav_msgs::Odometry>("/nav/Location", 1));
-    ros::Publisher pubCmdFinished(node.advertise<std_msgs::Bool>("/nav/CommandFinished", 1));
-    ros::Publisher pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1));
+    //ros::Publisher pubPath(node.advertise<nav_msgs::Path>("/nav/PathToFollow", 1));
+    //ros::Publisher pubLocation(node.advertise<nav_msgs::Odometry>("/nav/Location", 1));
+    //ros::Publisher pubCmdFinished(node.advertise<std_msgs::Bool>("/nav/CommandFinished", 1));
+    //ros::Publisher pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1));
     
     ros::Subscriber subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &callbackMoveBaseActionResult));
     ros::Subscriber subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &callbackMoveBaseActionFeedback));
     ros::Subscriber subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &callbackMoveBaseActionGoal));
     ros::Subscriber subGoalStatusArray(node.subscribe("/move_base/status", 1, &callbackGoalStatusArray));
+    ros::Subscriber subLocation(node.subscribe("/odom", 1, &callbackLocation));
     
 
     nav_msgs::Path path;
     geometry_msgs::PoseStamped pose1, pose2, pose3, goal;
     nav_msgs::Odometry location;
     std_msgs::Bool commandFinished;
+    
+    
     
     pose1.pose.position.x = 0;
     pose1.pose.position.y = 0;
@@ -116,12 +142,13 @@ int main(int argc, char **argv)
 
     commandFinished.data = true;
     float time = 0;
+    
+    
+    
+    
     while (ros::ok()) 
     {
         ros::spinOnce();
-        
-        
-        
         
         
         //pubLocation.publish(location);

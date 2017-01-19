@@ -6,52 +6,89 @@
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     //Subsribers
-    subLocationReady(node.subscribe("/odom", 1, &HighLevelCommand::callbackLocationReady,this)),
+    subLocation(node.subscribe("/odom", 1, &HighLevelCommand::callbackLocation,this)),
+    subGoalStatus(node.subscribe("/move_base/status", 1, &HighLevelCommand::callbackGoalStatus,this)),
+    subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &HighLevelCommand::callbackMoveBaseActionFeedback,this)),
+    subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &HighLevelCommand::callbackMoveBaseActionGoal,this)),
+    subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
+
     //Publishers
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
-    locationReady.data = false;
-    pathFound.data = false; 
-    commandFinished.data = false; 
-    nearGoal.data = false;
+    locationAvailable.data = false;
     
-    //planPath.data = false;
-    //followPath.data = false;
+    //tfListener.lookupTransform("map", "odom", ros::Time::now(), transform);
 }
 
 HighLevelCommand::~HighLevelCommand(){}
 
 
 //Callbacks
-void HighLevelCommand::callbackLocationReady(const nav_msgs::Odometry& msg)
+void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
 {
-    locationReady.data = true;
-    currentLocation.pose = msg.pose.pose;
-    //std::cout<<currentLocation<<std::endl;
+    currentLocation = msg;
+           
+    geometry_msgs::PoseStamped location;
+    location.header = msg.header;
+    location.pose = msg.pose.pose;
+            
+    geometry_msgs::PoseStamped transformed_location;
+    tfListener.transformPose("map", location, transformed_location);       
+    currentLocation.pose.pose = transformed_location.pose;
+    std::cout<<currentLocation<<std::endl;
+}
+
+
+void HighLevelCommand::callbackGoalStatus(const actionlib_msgs::GoalStatusArray& msg)
+{
+    //std::cout<<"GoalStatusArray"<<std::endl;
+    //std::cout<<msg<<std::endl;
+    goalStatus = msg;
+}
+
+void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg)
+{
+    //std::cout<<"MoveBaseActionResult"<<std::endl;
+    //std::cout<<msg<<std::endl;
+    moveBaseActionResult = msg;
+}
+void HighLevelCommand::callbackMoveBaseActionFeedback(const move_base_msgs::MoveBaseActionFeedback& msg)
+{
+    //std::cout<<"MoveBaseActionFeedback"<<std::endl;
+    //std::cout<<msg<<std::endl;
+    moveBaseActionFeedback = msg;
+}
+void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBaseActionGoal& msg)
+{
+    //std::cout<<"MoveBaseActionGoal"<<std::endl;
+    //std::cout<<msg<<std::endl;
+    moveBaseActionGoal = msg;
 }
 
 
 
-
-
-
 //States
-bool HighLevelCommand::location_Ready()
+bool HighLevelCommand::location()
 {
-    return locationReady.data;
+    return locationAvailable.data;
 }
 
 
 
 //Hight Level Commands
-
-
-
-//
-void HighLevelCommand::publish()
+void HighLevelCommand::sendGoal()
 {
-    pubPlanPath.publish(planPath);
-    pubFollowPath.publish(followPath);
+    currentGoal.header.seq = 1;
+    currentGoal.header.stamp = ros::Time::now();
+    currentGoal.header.frame_id = "map";
+    currentGoal.pose.position.x = currentLocation.pose.pose.position.x + 0.2;
+    currentGoal.pose.position.y = currentLocation.pose.pose.position.y;
+    currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
+    currentGoal.pose.orientation = currentLocation.pose.pose.orientation;
+    
+    pubGoal.publish(currentGoal);
 }
+
+
 
 
