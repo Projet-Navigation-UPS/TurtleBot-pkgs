@@ -70,7 +70,6 @@ int main(int argc, char **argv)
     while(ros::ok())
 	{
 	    
-		std::cout<<"Test absolue: "<< fabs(-2/3);
 	    pubCommandState.publish(ballNav.busy);
 	
 	    if(ballNav.start) 
@@ -122,7 +121,6 @@ int main(int argc, char **argv)
 	    else if(ballNav.moving)
 		{
 		    ROS_INFO("Moving...\n"); 
-		    turtleBot.move(ballNav.linearVelocity, ballNav.distance);
 		    turtleBot.move(ballNav.linearVelocity);
 		}
 		    
