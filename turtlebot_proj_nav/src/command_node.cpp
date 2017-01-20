@@ -82,7 +82,11 @@ int main(int argc, char **argv)
                         {
                             duration = ros::WallDuration(0);
                         }
-                        else duration = ros::WallDuration(std::abs(ballNav.angle/ballNav.angularVelocity));
+                        else 
+                        {
+                            if (ballNav.angularVelocity<0) duration = ros::WallDuration(-ballNav.angle/ballNav.angularVelocity);
+                            else duration = ros::WallDuration(ballNav.angle/ballNav.angularVelocity);
+                        }
                     }
                     
                 else 
@@ -91,7 +95,11 @@ int main(int argc, char **argv)
                         {
                             duration = ros::WallDuration(0);
                         }
-                        else duration = ros::WallDuration(std::abs(ballNav.distance/ballNav.linearVelocity));
+                        else 
+                        {
+                            if (ballNav.linearVelocity<0) duration = ros::WallDuration(-ballNav.distance/ballNav.linearVelocity);
+                            else duration = ros::WallDuration(ballNav.distance/ballNav.linearVelocity);
+                        }
                     }
                   
             ROS_INFO("Duration  : %lf\n",duration.toSec() );       
@@ -109,12 +117,13 @@ int main(int argc, char **argv)
 	    if(ballNav.turning)
 		{
 		    ROS_INFO("Turning... \n"); 
-		    turtleBot.turn(ballNav.angularVelocity, ballNav.angle);
+		    turtleBot.turn(ballNav.angularVelocity*1.42);
 		}
 	    else if(ballNav.moving)
 		{
 		    ROS_INFO("Moving...\n"); 
 		    turtleBot.move(ballNav.linearVelocity, ballNav.distance);
+		    turtleBot.move(ballNav.linearVelocity);
 		}
 		    
 	    if((ros::WallTime::now() - startTime) > duration && (ballNav.turning || ballNav.moving)) 
