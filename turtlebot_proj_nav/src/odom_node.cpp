@@ -1,14 +1,14 @@
 #include "ros/ros.h"
 #include "TurtleBotCommand.hpp"
+#include "Odom.hpp"
 #include "command.h"
 #include "std_msgs/Bool.h"
 
 #include <cmath>
 
 #define FREQ 20 //10 Hz
-#define LINEAR_VELOCITY 0.25 //m.s-1 max 0.25
-#define ANGULAR_VELOCITY 3.0 //rad.s-1  max 2
-
+//#define LINEAR_VELOCITY 0.25 //m.s-1 max 0.25
+//#define ANGULAR_VELOCITY 3.0 //rad.s-1  max 2
 
 
 
@@ -20,6 +20,7 @@ int main(int argc, char **argv)
     ros::NodeHandle node;
      
     TurtleBotCommand turtleBot(node);
+	Odom odom(node);
 
        	    
     ros::WallTime startTime;
@@ -30,7 +31,7 @@ int main(int argc, char **argv)
     int currentState = 0;
     bool start = false;
     
-    float angularVelocity = 3.0;
+    float angularVelocity = 4.0;
     float linearVelocity = 0.2;
     float angle = 3.1416/2;
     float distance = 1.0;
@@ -48,12 +49,13 @@ int main(int argc, char **argv)
     std::cout<<"distance : "<<distance<<std::endl;
     std::cout<<"durationAngle : "<<durationAngle<<std::endl;
     std::cout<<"durationLine : "<<durationLine<<std::endl;
+	//std::cout<<"ticR: "<<odomy.getMobileBaseSensorsCore()<<std::endl;
+	//std::cout<<"ticL: "<<odomy.left_encoder<<std::endl;
 
     while(ros::ok())
 	{
 	    
 	    //std::cout<<"currentState : "<<currentState<<std::endl;
-	    
 	    switch (currentState)
         {
             case 0:
@@ -76,12 +78,15 @@ int main(int argc, char **argv)
                     startTime = ros::WallTime::now();
                     start = true;
                 }
-                turtleBot.turn(angularVelocity);
+                turtleBot.move(angularVelocity);
+				
                 //ROS_INFO("Turning...");
                 if ((ros::WallTime::now() - startTime) > durationAngle ) 
                 {
                     currentState = 0;
-                    start = false;    
+                    start = false;  
+					//std::cout<<"ticR: "<<right_encoder<<std::endl;
+					//std::cout<<"ticL: "<<left_encoder<<std::endl;  
                 }
                 break;
             default:
