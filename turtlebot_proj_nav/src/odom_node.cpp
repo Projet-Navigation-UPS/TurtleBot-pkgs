@@ -20,7 +20,7 @@ int main(int argc, char **argv)
     ros::NodeHandle node;
      
     TurtleBotCommand turtleBot(node);
-	Odom odom(node);
+	//Odom odom(node);
 
        	    
     ros::WallTime startTime;
