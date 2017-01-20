@@ -144,6 +144,7 @@ add_executable(ballSearch_node src/ballSearch_node.cpp src/BallSearch.cpp src/Gr
 add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer.cpp)
 add_executable(highLevelCommand_node src/highLevelCommand_node.cpp src/HighLevelCommand.cpp)
 add_executable(test_node src/test_node.cpp)
+add_executable(odom_tests_node src/odom_node.cpp src/TurtleBotCommand.cpp )
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -152,6 +153,7 @@ add_dependencies(bgr_to_rgb_converter_node ${${PROJECT_NAME}_EXPORTED_TARGETS} $
 add_dependencies(ballSearch_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(highLevelCommand_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(test_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(odom_tests_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 # add_dependencies(turtlebot_proj_nav_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
@@ -171,6 +173,9 @@ target_link_libraries(highLevelCommand_node
   ${catkin_LIBRARIES}
 )
 target_link_libraries(test_node
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(odom_tests_node
   ${catkin_LIBRARIES}
 )
 
