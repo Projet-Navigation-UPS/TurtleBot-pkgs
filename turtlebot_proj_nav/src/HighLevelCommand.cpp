@@ -40,6 +40,8 @@ void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
     std::cout<<"TRANSFORMED"<<std::endl;
     std::cout<<currentLocation.pose.pose.position<<std::endl;
     std::cout<<currentLocation.pose.pose.orientation<<std::endl;
+
+    locationAvailable.data = true;
 }
 
 
@@ -85,7 +87,7 @@ void HighLevelCommand::sendGoal()
     currentGoal.header.seq = 1;
     currentGoal.header.stamp = ros::Time::now();
     currentGoal.header.frame_id = "map";
-    currentGoal.pose.position.x = currentLocation.pose.pose.position.x + 0.2;
+    currentGoal.pose.position.x = currentLocation.pose.pose.position.x + 1;
     currentGoal.pose.position.y = currentLocation.pose.pose.position.y;
     currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
     currentGoal.pose.orientation = currentLocation.pose.pose.orientation;
