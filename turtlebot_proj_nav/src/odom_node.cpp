@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     bool start = false;
     
     float angularVelocity = 3.0;
-    float linearVelocity = 0.25;
+    float linearVelocity = 0.2;
     float angle = 3.1416/2;
     float distance = 1.0;
     
