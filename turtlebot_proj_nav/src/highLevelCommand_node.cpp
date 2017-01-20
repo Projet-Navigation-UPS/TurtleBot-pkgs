@@ -20,9 +20,9 @@ int main(int argc, char **argv)
 
     while (ros::ok()) 
     {
-        ros::spinOnce();
+        
 
-        switch (currentState)
+        /*switch (currentState)
         {
             case 0:
                 
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
                     currentState = 1;
                 }*/
                 //else 
-                {   
+                /*{   
                     ROS_INFO("Send goal...");
                     HLC.sendGoal();
                     currentState = 2;
@@ -62,7 +62,7 @@ int main(int argc, char **argv)
                     ROS_INFO("Wait for path planning...");
                     currentState = 2;
                 }*/
-                ROS_INFO("Launch mouvement...");
+                /*ROS_INFO("Launch mouvement...");
                 break;
             /*case 3:
                 if(HLC.command_Finished())
@@ -76,12 +76,13 @@ int main(int argc, char **argv)
                     currentState = 3;
                 }
                 break;*/
-            default:
+            /*default:
                 currentState = 0;
                 break;
 
-        }
+        }*/
 
+        ros::spinOnce();
         loop_rate.sleep();
     }
     
