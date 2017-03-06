@@ -22,6 +22,7 @@ int main(int argc, char **argv)
     GraphicServer graphicServer(n,"/nav/camera/color");
     GraphicServer graphicServerConvert(n,"/nav/traitement_image");
     
+    int currentState = 0;
     
     sensor_msgs::Image image;
     unsigned char* raw;    
@@ -46,25 +47,42 @@ int main(int argc, char **argv)
 	     graphicServerConvert.sendImageDisplay(image);
 	     graphicServer.sendImageDisplay(turtleBotCamera.getCameraRgbImageColor());
 	     
-	    ROS_INFO("Recherche de la balle...\n");
-            Objet * obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 0) ;
-         
-            if ( obj == NULL ) 
-            {
-               ROS_INFO("Pas de balle trouvée. \n");
-            }
-            else 
-            {
-               ROS_INFO("distance estimée à la balle en m : %lf \n",  (obj->Dist));
-               ROS_INFO("angle estimé par rapport à la balle (degrés) : %lf \n", obj->Theta);
-               ROS_INFO("centre de la balle : (%d,%d) \n", obj->Ucg, obj->Vcg);
-               ROS_INFO("=> on tourne de %lf degrés\n", (obj->Theta));
+	     ROS_INFO("Recherche de la balle...\n");
+       Objet * obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 0) ;
             
-	           if (obj->Theta<0) ballSearch.sendBallReference(0.2, -1.5, (obj->Dist)-0.5,-(obj->Theta)*PI/180);
-	           else ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5,(obj->Theta)*PI/180);
-             
-               
-            }
+            switch (currentState)
+            {
+            case 0:
+                if(obj == NULL) 
+                {
+                    ROS_INFO("Pas de balle trouvée. \n");
+                }
+                else 
+                {
+                  ROS_INFO("distance estimée à la balle en m : %lf \n",  (obj->Dist));
+                  ROS_INFO("angle estimé par rapport à la balle (degrés) : %lf \n", obj->Theta);
+                  ROS_INFO("centre de la balle : (%d,%d) \n", obj->Ucg, obj->Vcg);
+                  currentState=1;
+                }   
+                break;
+            case 1:
+                ROS_INFO("=> on tourne de %lf degrés\n", (obj->Theta));
+                if (obj->Theta<0 && obj->Theta>-5) 
+                ballSearch.sendBallReference(0.2, -1.5, 0, -(obj->Theta)*PI/180);
+	              else if (obj->Theta>0 && obj->Theta<5) 
+	              ballSearch.sendBallReference(0.2, 1.5, 0, (obj->Theta)*PI/180);
+	              else
+	              currentState=2;
+                break;
+            case 2:
+                ROS_INFO("=> on avance de %lf m\n", (obj->Dist)-0.5);
+	              ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5, 0);
+                break;    
+                
+            default:
+                currentState = 0;
+                break;
+		      }
 
          
          loop_rate.sleep();
