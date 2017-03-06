@@ -1,6 +1,6 @@
 <launch>
   <!-- 3D sensor -->
-  <arg name="3d_sensor" default="$(env TURTLEBOT_3D_SENSOR)"/>  <!-- r200, kinect, asus_xtion_pro -->
+  <arg name="custom_param_file" default="$(find turtlebot_proj_launch)/param/dummy.yaml"/>
   <include file="$(find turtlebot_bringup)/launch/3dsensor.launch">
     <arg name="rgb_processing" value="false" />
     <arg name="depth_registration" value="false" />
@@ -16,7 +16,6 @@
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <!-- E2 -->
-  <arg name="custom_amcl_launch_file" default="$(find turtlebot_proj_launch)/launch/includes/$(arg 3d_sensor)_amcl.launch.xml"/>
   <arg name="initial_pose_x" default="0.0"/> 
   <arg name="initial_pose_y" default="0.0"/> 
   <arg name="initial_pose_a" default="0.0"/>
@@ -27,7 +26,6 @@
   </include>
 
   <!-- Move base -->
-  <arg name="custom_param_file" default="$(find turtlebot_proj_launch)/param/$(arg 3d_sensor)_costmap_params.yaml"/>
   <include file="$(find turtlebot_proj_launch)/launch/includes/move_base.launch.xml">
     <arg name="custom_param_file" value="$(arg custom_param_file)"/>
   </include>
