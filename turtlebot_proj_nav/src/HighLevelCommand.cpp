@@ -4,6 +4,7 @@
 #include <vector>
 #include <cmath> 
 
+
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     //Subsribers
     subLocation(node.subscribe("/odom", 1, &HighLevelCommand::callbackLocation,this)),
@@ -13,6 +14,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
 
     //Publishers
+    pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
     locationAvailable.data = false;
@@ -50,6 +52,7 @@ void HighLevelCommand::callbackGoalStatus(const actionlib_msgs::GoalStatusArray&
     //std::cout<<"GoalStatusArray"<<std::endl;
     //std::cout<<msg<<std::endl;
     goalStatus = msg;
+    
 }
 
 void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg)
@@ -57,6 +60,13 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
     //std::cout<<"MoveBaseActionResult"<<std::endl;
     //std::cout<<msg<<std::endl;
     moveBaseActionResult = msg;
+    
+    if(moveBaseActionResult.status.status == 3) 
+    {
+      playSound(SOUND_ON);
+      std::cout<<"MoveBaseActionResult"<<std::endl;
+      std::cout<<msg<<std::endl;
+     }
 }
 void HighLevelCommand::callbackMoveBaseActionFeedback(const move_base_msgs::MoveBaseActionFeedback& msg)
 {
@@ -79,6 +89,12 @@ bool HighLevelCommand::location()
     return locationAvailable.data;
 }
 
+//Sound Commands
+void HighLevelCommand::playSound(int sound)
+{
+    mobileBaseCommandsSound.value = sound;
+    pubSound.publish(mobileBaseCommandsSound);
+}
 
 
 //Hight Level Commands

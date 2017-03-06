@@ -6,11 +6,19 @@
 #include "nav_msgs/Odometry.h"
 #include "actionlib_msgs/GoalStatusArray.h"
 #include "geometry_msgs/PoseStamped.h"
+#include "kobuki_msgs/Sound.h"
 #include "move_base_msgs/MoveBaseActionResult.h"
 #include "move_base_msgs/MoveBaseActionFeedback.h"
 #include "move_base_msgs/MoveBaseActionGoal.h"
 #include <tf/transform_listener.h>
 
+#define SOUND_ON 0
+#define SOUND_OFF 1
+#define SOUND_RECHARGE 2
+#define SOUND_BUTTON 3
+#define SOUND_ERROR 4
+#define SOUND_CLEANINGSTART 5
+#define SOUND_CLEANINGEND 6
 
 class HighLevelCommand 
 {
@@ -21,7 +29,7 @@ private:
     ros::Subscriber subLocation, subGoalStatus, subMoveBaseActionFeedback, subMoveBaseActionGoal, subMoveBaseActionResult;
     
     //Publishers
-    ros::Publisher pubGoal;
+    ros::Publisher pubGoal, pubSound;
 
     //Messages
     std_msgs::Bool locationAvailable, goalReached;
@@ -35,6 +43,7 @@ private:
     move_base_msgs::MoveBaseActionResult  moveBaseActionResult;
     move_base_msgs::MoveBaseActionFeedback moveBaseActionFeedback;
     move_base_msgs::MoveBaseActionGoal moveBaseActionGoal;
+    kobuki_msgs::Sound mobileBaseCommandsSound;
     
     geometry_msgs::PoseStamped currentGoal;
     
@@ -53,6 +62,7 @@ public:
     
     
     void sendGoal();
+    void playSound(int sound);
     
 
 };
