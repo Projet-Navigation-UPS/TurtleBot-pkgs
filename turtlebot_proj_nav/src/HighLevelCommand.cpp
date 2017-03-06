@@ -16,7 +16,6 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
     locationAvailable.data = false;
-    
     //tfListener.lookupTransform("map", "odom", ros::Time::now(), transform);
 }
 
@@ -26,6 +25,9 @@ HighLevelCommand::~HighLevelCommand(){}
 //Callbacks
 void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
 {
+    std::cout<<"MESSAGE"<<std::endl;
+    std::cout<<msg.pose.pose.position<<std::endl;
+    std::cout<<msg.pose.pose.orientation<<std::endl;
     currentLocation = msg;
            
     geometry_msgs::PoseStamped location;
@@ -33,9 +35,13 @@ void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
     location.pose = msg.pose.pose;
             
     geometry_msgs::PoseStamped transformed_location;
-    tfListener.transformPose("map", location, transformed_location);       
+    tfListener.transformPose("map", location, transformed_location);      
     currentLocation.pose.pose = transformed_location.pose;
-    std::cout<<currentLocation<<std::endl;
+    std::cout<<"TRANSFORMED"<<std::endl;
+    std::cout<<currentLocation.pose.pose.position<<std::endl;
+    std::cout<<currentLocation.pose.pose.orientation<<std::endl;
+
+    locationAvailable.data = true;
 }
 
 
@@ -81,7 +87,7 @@ void HighLevelCommand::sendGoal()
     currentGoal.header.seq = 1;
     currentGoal.header.stamp = ros::Time::now();
     currentGoal.header.frame_id = "map";
-    currentGoal.pose.position.x = currentLocation.pose.pose.position.x + 0.2;
+    currentGoal.pose.position.x = currentLocation.pose.pose.position.x + 1;
     currentGoal.pose.position.y = currentLocation.pose.pose.position.y;
     currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
     currentGoal.pose.orientation = currentLocation.pose.pose.orientation;
