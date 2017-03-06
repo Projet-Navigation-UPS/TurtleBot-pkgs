@@ -67,10 +67,10 @@ int main(int argc, char **argv)
                 break;
             case 1:
                 ROS_INFO("=> on tourne de %lf degrés\n", (obj->Theta));
-                if (obj->Theta<0 && obj->Theta>-5) 
-                ballSearch.sendBallReference(0.2, -1.5, 0, -(obj->Theta)*PI/180);
-	              else if (obj->Theta>0 && obj->Theta<5) 
-	              ballSearch.sendBallReference(0.2, 1.5, 0, (obj->Theta)*PI/180);
+                if (obj->Theta<-2) 
+                ballSearch.sendBallReference(0.2, -1, 0, -(obj->Theta)*PI/180);
+	              else if (obj->Theta>2) 
+	              ballSearch.sendBallReference(0.2, 1, 0, (obj->Theta)*PI/180);
 	              else
 	              currentState=2;
                 break;

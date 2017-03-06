@@ -113,12 +113,12 @@ int main(int argc, char **argv)
 		    ballNav.busy.data = false;
 		}
 		    
-	    if(ballNav.turning)
+	    if(ballNav.turning && (ballNav.angle != 0))
 		{
 		    ROS_INFO("Turning... \n"); 
 		    turtleBot.turn(ballNav.angularVelocity*1.42);
 		}
-	    else if(ballNav.moving)
+	    else if(ballNav.moving && (ballNav.distance != 0))
 		{
 		    ROS_INFO("Moving...\n"); 
 		    turtleBot.move(ballNav.linearVelocity);

@@ -2,11 +2,11 @@
 
     <group ns="nav">
     
-        <node pkg="turtlebot_navigation" name="bgr_to_rgb_converter" type="bgr_to_rgb_converter_node"/>
+        <node pkg="turtlebot_proj_nav" name="bgr_to_rgb_converter" type="bgr_to_rgb_converter_node"/>
     
-        <node pkg="turtlebot_navigation" name="command" type="command_node"/>
+        <node pkg="turtlebot_proj_nav" name="command" type="command_node"/>
     
-        <node pkg="turtlebot_navigation" name="ballSearch" type="ballSearch_node"/>
+        <node pkg="turtlebot_proj_nav" name="ballSearch" type="ballSearch_node"/>
 
         <node name="image_view_camera_color" pkg="image_view" type="image_view">
             <remap from="image" to="/nav/camera/color" />
