@@ -89,6 +89,42 @@ bool HighLevelCommand::location()
     return locationAvailable.data;
 }
 
+bool HighLevelCommand::finalGoal()
+{ 
+    if(distance(X_GOAL3, Y_GOAL3, currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y) < 0.3) return true; 
+}
+
+
+//Other
+float HighLevelCommand::distance(float x1, float y1, float x2, float y2)
+{
+    return sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+}
+
+int HighLevelCommand::nearestGoal(float x, float y)
+{
+    int goal;
+    float crit = 100.0;
+    
+    if(distance(X_GOAL1, Y_GOAL1, x, y) < crit) 
+    {
+      crit = distance(X_GOAL1, Y_GOAL1, x, y);
+      goal = 1;
+    }
+    if(distance(X_GOAL2, Y_GOAL2, x, y) < crit) 
+    {
+      crit = distance(X_GOAL2, Y_GOAL2, x, y);
+      goal = 2;
+    }
+    if(distance(X_GOAL3, Y_GOAL3, x, y) < crit) 
+    {
+      crit = distance(X_GOAL3, Y_GOAL3, x, y);
+      goal = 3;
+    }
+    
+    return goal;
+}
+
 //Sound Commands
 void HighLevelCommand::playSound(int sound)
 {
@@ -103,8 +139,30 @@ void HighLevelCommand::sendGoal()
     currentGoal.header.seq = 1;
     currentGoal.header.stamp = ros::Time::now();
     currentGoal.header.frame_id = "map";
-    currentGoal.pose.position.x = currentLocation.pose.pose.position.x + 1;
-    currentGoal.pose.position.y = currentLocation.pose.pose.position.y;
+    
+     switch (nearestGoal(currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y))
+        {
+            case 1:
+                ROS_INFO("Goal 1...");
+                currentGoal.pose.position.x = X_GOAL1;
+                currentGoal.pose.position.y = Y_GOAL1;
+                break;
+            case 2:
+                ROS_INFO("Goal 2...");
+                currentGoal.pose.position.x = X_GOAL2;
+                currentGoal.pose.position.y = Y_GOAL2;
+                break;
+            case 3:
+                ROS_INFO("Goal 3...");
+                currentGoal.pose.position.x = X_GOAL3;
+                currentGoal.pose.position.y = Y_GOAL3;
+                break;
+            default:
+                ROS_INFO("Default...");
+                break;
+
+        }
+        
     currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
     currentGoal.pose.orientation = currentLocation.pose.pose.orientation;
     

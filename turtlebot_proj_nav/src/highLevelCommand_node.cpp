@@ -4,7 +4,6 @@
 
 
 
-
 int main(int argc, char **argv)
 {
     ROS_INFO("Launching highLevelCommande_node ...");
@@ -38,12 +37,11 @@ int main(int argc, char **argv)
                 }    
                 break;
             case 1:
-                /*if(HLC.near_Goal())
+                if(HLC.finalGoal())
                 {
-                    ROS_INFO("Goal reached...");
-                    currentState = 1;
-                }*/
-                //else 
+                    currentState = 3;
+                }
+                else 
                 {   
                     ROS_INFO("Send goal...");
                     HLC.sendGoal();
@@ -64,18 +62,9 @@ int main(int argc, char **argv)
                 }*/
                 ROS_INFO("Launch mouvement...");
                 break;
-            /*case 3:
-                if(HLC.command_Finished())
-                {
-                    ROS_INFO("Mouvement finished...");
-                    currentState = 0;
-                }
-                else
-                {
-                    ROS_INFO("Wait for the robot to follow the path...");
-                    currentState = 3;
-                }
-                break;*/
+            case 3:
+                ROS_INFO("Goal reached...");
+                break;
             default:
                 currentState = 0;
                 break;

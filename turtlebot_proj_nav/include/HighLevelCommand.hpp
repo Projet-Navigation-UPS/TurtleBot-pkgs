@@ -20,6 +20,13 @@
 #define SOUND_CLEANINGSTART 5
 #define SOUND_CLEANINGEND 6
 
+#define X_GOAL1 2
+#define Y_GOAL1 2
+#define X_GOAL2 2
+#define Y_GOAL2 4
+#define X_GOAL3 4
+#define Y_GOAL3 4
+
 class HighLevelCommand 
 {
     
@@ -59,7 +66,10 @@ public:
     ~HighLevelCommand();
     
     bool location();
+    bool finalGoal();
     
+    float distance(float x1, float y1, float x2, float y2);
+    int nearestGoal(float x, float y);
     
     void sendGoal();
     void playSound(int sound);
