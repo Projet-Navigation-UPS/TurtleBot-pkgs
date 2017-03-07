@@ -13,28 +13,24 @@ private:
         
     //Publishers
 
-    
 	//Subscribers
 	ros::Subscriber subscriberMobileBaseSensorsCore;
 
-    //Messages
+    	//Messages
 	kobuki_msgs::SensorState mobileBaseSensorsCore;
-	
-        
-    ros::NodeHandle& m_node;
-
 
 public:
 
     Odom(ros::NodeHandle& node);
     ~Odom();
-	kobuki_msgs::SensorState getMobileBaseSensorsCore();
 
+    kobuki_msgs::SensorState getMobileBaseSensorsCore();
 
-    //Motion
+    //CB
+    void callbackTicWheel(const kobuki_msgs::SensorState& msg);
 
     //Diplays
-	void displayMobileBaseSenorsCore();
+    void displayMobileBaseSenorsCore();
 
 private:
 	

@@ -159,7 +159,7 @@ int main(int argc, char **argv)
     while (ros::ok()) 
     {
         ros::spinOnce();
-        
+        std::cout<<tic<<std::endl;
     	    
         //pubLocation.publish(location);
         //std::cout<<location<<std::endl;

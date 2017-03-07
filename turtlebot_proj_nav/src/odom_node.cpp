@@ -20,12 +20,12 @@ int main(int argc, char **argv)
     ros::NodeHandle node;
      
     TurtleBotCommand turtleBot(node);
-	//Odom odom(node);
+	Odom odom(node);
 
        	    
     ros::WallTime startTime;
-    ros::WallDuration durationLine, durationAngle;
-    
+    ros::WallDuration durationLine, durationAngle, durationWait(10);
+    kobuki_msgs::SensorState tic;
     ros::Rate r(FREQ); 
     
     int currentState = 0;
@@ -33,11 +33,11 @@ int main(int argc, char **argv)
     
 
     float angularVelocity =4.0;
-
     float linearVelocity = 0.2;
     float angle = 3.1416/2;
-    float distance = 0.4;
-    
+    float distance = .4;
+	int ticR= tic.right_encoder;
+    int ticL= tic.left_encoder;
     
     if (angularVelocity<0) durationAngle = ros::WallDuration(-angle/angularVelocity);
     else durationAngle = ros::WallDuration(angle/angularVelocity);
@@ -51,12 +51,17 @@ int main(int argc, char **argv)
     std::cout<<"distance : "<<distance<<std::endl;
     std::cout<<"durationAngle : "<<durationAngle<<std::endl;
     std::cout<<"durationLine : "<<durationLine<<std::endl;
-	//std::cout<<"ticR:<<std::endl;
+	//std::cout<<"ticR:"<<ticR<<std::endl;
+	//std::cout<<"ticL:"<<ticL<<std::endl;
+
 	//std::cout<<"ticL: "<<odomy.left_encoder<<std::endl;
 
+	
+
     while(ros::ok())
-	{
-	    
+	{	
+        ros::spinOnce();
+
 	    //std::cout<<"currentState : "<<currentState<<std::endl;
 	    switch (currentState)
         {
@@ -65,13 +70,23 @@ int main(int argc, char **argv)
                 {
                     startTime = ros::WallTime::now();
                     start = true;
+					ROS_INFO("Before Moving...");
+					odom.displayMobileBaseSenorsCore();
+					ROS_INFO("Moving...");
                 }
                 turtleBot.move(linearVelocity);
-                ROS_INFO("Moving...");
+                
+				//ticR= tic.right_encoder;
+	    		//std::cout<<"ticR:"<<ticR<<std::endl;
+				ticL= tic.left_encoder;
+	    			//std::cout<<"ticL:"<<ticL<<std::endl;
                 if ((ros::WallTime::now() - startTime) > durationLine ) 
                 {
                     currentState = 3;
-                    start = false;    
+                    start = false;  
+	  				//ticR= tic.right_encoder;
+	    			//std::cout<<"ticR:"<<ticR<<std::endl;
+					
                 }    
                 break;
             case 1:
@@ -79,14 +94,17 @@ int main(int argc, char **argv)
                 {
                     startTime = ros::WallTime::now();
                     start = true;
+					ROS_INFO("Before Turning...");
+					odom.displayMobileBaseSenorsCore();
+					ROS_INFO("Turning...");
                 }
                 turtleBot.turn(angularVelocity);
 				
-                ROS_INFO("Turning...");
+                
                 if ((ros::WallTime::now() - startTime) > durationAngle ) 
                 {
-                    currentState = 2;
-                    start = false;  
+                    currentState = 2; //18008  10276
+                    start = false;    //14379  13876 turn gauche
 			//ROS_INFO("Turning...");
 					//std::cout<<"ticR: "<<right_encoder<<std::endl;
 					//std::cout<<"ticL: "<<left_encoder<<std::endl;  
@@ -96,12 +114,14 @@ int main(int argc, char **argv)
 		if(!start) 
                 {
                     startTime = ros::WallTime::now();
+					ROS_INFO("After Turning...");
+					odom.displayMobileBaseSenorsCore();
                     start = true;
                 }
                 
 				
-                ROS_INFO("Waiting...");
-                if ((ros::WallTime::now() - startTime) > durationAngle+durationLine ) 
+                //ROS_INFO("Waiting...");
+                if ((ros::WallTime::now() - startTime) > durationWait) 
                 {
                     currentState = 0;
                     start = false;   
@@ -111,12 +131,14 @@ int main(int argc, char **argv)
 		if(!start) 
                 {
                     startTime = ros::WallTime::now();
+					ROS_INFO("After Moving...");
+					odom.displayMobileBaseSenorsCore();
                     start = true;
                 }
                 
 				
-                ROS_INFO("Waiting2...");
-                if ((ros::WallTime::now() - startTime) > durationAngle+durationLine ) 
+                //ROS_INFO("Waiting2...");
+                if ((ros::WallTime::now() - startTime) > durationWait ) 
                 {
                     currentState = 1;
                     start = false;   
@@ -127,7 +149,7 @@ int main(int argc, char **argv)
                 break;
 		}
 		
-	    ros::spinOnce();
+	    
 	    r.sleep();
 	}
 

@@ -144,7 +144,7 @@ add_executable(ballSearch_node src/ballSearch_node.cpp src/BallSearch.cpp src/Gr
 add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer.cpp)
 add_executable(highLevelCommand_node src/highLevelCommand_node.cpp src/HighLevelCommand.cpp)
 add_executable(test_node src/test_node.cpp)
-add_executable(odom_tests_node src/odom_node.cpp src/TurtleBotCommand.cpp )
+add_executable(odom_tests_node src/odom_node.cpp src/TurtleBotCommand.cpp src/Odom.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
