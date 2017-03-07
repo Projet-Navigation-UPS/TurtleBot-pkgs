@@ -45,6 +45,7 @@ private:
     tf::TransformListener tfListener;
     tf::StampedTransform transform;
     
+
     actionlib_msgs::GoalStatusArray goalStatus;
     nav_msgs::Odometry currentLocation;
     move_base_msgs::MoveBaseActionResult  moveBaseActionResult;
@@ -67,6 +68,7 @@ public:
     
     bool location();
     bool finalGoal();
+    bool intermediateGoal();
     
     float distance(float x1, float y1, float x2, float y2);
     int nearestGoal(float x, float y);

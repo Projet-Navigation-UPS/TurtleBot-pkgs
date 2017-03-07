@@ -49,18 +49,8 @@ int main(int argc, char **argv)
                 }
                 break;
             case 2:
-                /*if(HLC.path_Found())
-                {
-                    ROS_INFO("Launch mouvement...");
-                    HLC.follow_Path();
-                    currentState = 3;
-                }
-                else
-                {
-                    ROS_INFO("Wait for path planning...");
-                    currentState = 2;
-                }*/
-                ROS_INFO("Launch mouvement...");
+                if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
+                else currentState = 0;
                 break;
             case 3:
                 ROS_INFO("Goal reached...");

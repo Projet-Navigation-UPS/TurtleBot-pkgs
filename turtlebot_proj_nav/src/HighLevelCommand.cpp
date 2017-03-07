@@ -18,6 +18,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
     locationAvailable.data = false;
+    goalReached.data = false;
     //tfListener.lookupTransform("map", "odom", ros::Time::now(), transform);
 }
 
@@ -66,6 +67,7 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
       playSound(SOUND_ON);
       std::cout<<"MoveBaseActionResult"<<std::endl;
       std::cout<<msg<<std::endl;
+      goalReached.data = true;
      }
 }
 void HighLevelCommand::callbackMoveBaseActionFeedback(const move_base_msgs::MoveBaseActionFeedback& msg)
@@ -94,6 +96,11 @@ bool HighLevelCommand::finalGoal()
     if(distance(X_GOAL3, Y_GOAL3, currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y) < 0.3) return true; 
 }
 
+bool HighLevelCommand::intermediateGoal()
+{ 
+    return goalReached.data; 
+}
+
 
 //Other
 float HighLevelCommand::distance(float x1, float y1, float x2, float y2)
@@ -106,17 +113,17 @@ int HighLevelCommand::nearestGoal(float x, float y)
     int goal;
     float crit = 100.0;
     
-    if(distance(X_GOAL1, Y_GOAL1, x, y) < crit) 
+    if((distance(X_GOAL1, Y_GOAL1, x, y) < crit) && (distance(X_GOAL1, Y_GOAL1, x, y) > 0.5)) 
     {
       crit = distance(X_GOAL1, Y_GOAL1, x, y);
       goal = 1;
     }
-    if(distance(X_GOAL2, Y_GOAL2, x, y) < crit) 
+    if((distance(X_GOAL2, Y_GOAL2, x, y) < crit) && (distance(X_GOAL2, Y_GOAL2, x, y) > 0.5))
     {
       crit = distance(X_GOAL2, Y_GOAL2, x, y);
       goal = 2;
     }
-    if(distance(X_GOAL3, Y_GOAL3, x, y) < crit) 
+    if((distance(X_GOAL3, Y_GOAL3, x, y) < crit ) && (distance(X_GOAL3, Y_GOAL3, x, y) < 0.5) )
     {
       crit = distance(X_GOAL3, Y_GOAL3, x, y);
       goal = 3;
@@ -136,6 +143,8 @@ void HighLevelCommand::playSound(int sound)
 //Hight Level Commands
 void HighLevelCommand::sendGoal()
 {
+    goalReached.data = false;
+
     currentGoal.header.seq = 1;
     currentGoal.header.stamp = ros::Time::now();
     currentGoal.header.frame_id = "map";
