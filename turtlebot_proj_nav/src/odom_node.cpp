@@ -31,14 +31,12 @@ int main(int argc, char **argv)
     int currentState = 0;
     bool start = false;
     
-<<<<<<< HEAD
-    float angularVelocity = 3.0;
-=======
-    float angularVelocity = 4.0;
->>>>>>> origin/highLevelCommand
+
+    float angularVelocity =4.0;
+
     float linearVelocity = 0.2;
     float angle = 3.1416/2;
-    float distance = 1.0;
+    float distance = 0.4;
     
     
     if (angularVelocity<0) durationAngle = ros::WallDuration(-angle/angularVelocity);
@@ -53,7 +51,7 @@ int main(int argc, char **argv)
     std::cout<<"distance : "<<distance<<std::endl;
     std::cout<<"durationAngle : "<<durationAngle<<std::endl;
     std::cout<<"durationLine : "<<durationLine<<std::endl;
-	//std::cout<<"ticR: "<<odomy.getMobileBaseSensorsCore()<<std::endl;
+	//std::cout<<"ticR:<<std::endl;
 	//std::cout<<"ticL: "<<odomy.left_encoder<<std::endl;
 
     while(ros::ok())
@@ -69,10 +67,10 @@ int main(int argc, char **argv)
                     start = true;
                 }
                 turtleBot.move(linearVelocity);
-                //ROS_INFO("Moving...");
+                ROS_INFO("Moving...");
                 if ((ros::WallTime::now() - startTime) > durationLine ) 
                 {
-                    currentState = 1;
+                    currentState = 3;
                     start = false;    
                 }    
                 break;
@@ -82,15 +80,46 @@ int main(int argc, char **argv)
                     startTime = ros::WallTime::now();
                     start = true;
                 }
-                turtleBot.move(angularVelocity);
+                turtleBot.turn(angularVelocity);
 				
-                //ROS_INFO("Turning...");
+                ROS_INFO("Turning...");
                 if ((ros::WallTime::now() - startTime) > durationAngle ) 
                 {
-                    currentState = 0;
+                    currentState = 2;
                     start = false;  
+			//ROS_INFO("Turning...");
 					//std::cout<<"ticR: "<<right_encoder<<std::endl;
 					//std::cout<<"ticL: "<<left_encoder<<std::endl;  
+                }
+                break;
+	    case 2:
+		if(!start) 
+                {
+                    startTime = ros::WallTime::now();
+                    start = true;
+                }
+                
+				
+                ROS_INFO("Waiting...");
+                if ((ros::WallTime::now() - startTime) > durationAngle+durationLine ) 
+                {
+                    currentState = 0;
+                    start = false;   
+                }
+                break;
+	   case 3:
+		if(!start) 
+                {
+                    startTime = ros::WallTime::now();
+                    start = true;
+                }
+                
+				
+                ROS_INFO("Waiting2...");
+                if ((ros::WallTime::now() - startTime) > durationAngle+durationLine ) 
+                {
+                    currentState = 1;
+                    start = false;   
                 }
                 break;
             default:

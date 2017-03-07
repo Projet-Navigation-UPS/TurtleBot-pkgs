@@ -8,6 +8,7 @@
 #include "nav_msgs/Odometry.h"
 #include "geometry_msgs/PoseStamped.h"
 #include "actionlib_msgs/GoalStatusArray.h"
+#include "kobuki_msgs/SensorState.h"
 
 #include "move_base_msgs/MoveBaseResult.h"
 #include "move_base_msgs/MoveBaseActionResult.h"
@@ -62,6 +63,14 @@ void callbackLocation(const nav_msgs::Odometry& msg)
     std::cout<<currentLocation<<std::endl;
 }
 
+void callabacktic(const kobuki_msgs::SensorState& msg)
+{
+	std::cout<<"Tic R & L"<<std::endl; 
+	kobuki_msgs::SensorState tic;
+	tic.left_encoder = msg.left_encoder;
+	tic.right_encoder = msg.right_encoder;
+}
+
 
 
 int main(int argc, char **argv)
@@ -82,12 +91,13 @@ int main(int argc, char **argv)
     ros::Subscriber subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &callbackMoveBaseActionGoal));
     ros::Subscriber subGoalStatusArray(node.subscribe("/move_base/status", 1, &callbackGoalStatusArray));
     ros::Subscriber subLocation(node.subscribe("/odom", 1, &callbackLocation));
-    
+    //ros::Subscriber subTic(node.subscribe("/  ",1, &callabacktic));
 
-    nav_msgs::Path path;
+    //nav_msgs::Path path;
     geometry_msgs::PoseStamped pose1, pose2, pose3, goal;
     nav_msgs::Odometry location;
     std_msgs::Bool commandFinished;
+	kobuki_msgs::SensorState tic;
     
     
     
@@ -115,9 +125,9 @@ int main(int argc, char **argv)
     pose3.pose.orientation.z = 2;
     pose3.pose.orientation.w = 2;
     
-    path.poses.push_back(pose1);
-    path.poses.push_back(pose2);
-    path.poses.push_back(pose3);
+    //path.poses.push_back(pose1);
+    //path.poses.push_back(pose2);
+    //path.poses.push_back(pose3);
     
     location.pose.pose.position.x = 2.05;
     location.pose.pose.position.y = 2.05;
@@ -126,8 +136,8 @@ int main(int argc, char **argv)
     location.pose.pose.orientation.y = 2.05;
     location.pose.pose.orientation.z = 2.05;
     location.pose.pose.orientation.w = 2.05;
-    
-    
+
+  
     
     goal.header.seq = 1;
     goal.header.stamp = ros::Time::now();
@@ -150,7 +160,7 @@ int main(int argc, char **argv)
     {
         ros::spinOnce();
         
-        
+    	    
         //pubLocation.publish(location);
         //std::cout<<location<<std::endl;
         //pubPath.publish(path);
