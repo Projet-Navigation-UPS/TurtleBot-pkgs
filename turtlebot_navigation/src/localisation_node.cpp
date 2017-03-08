@@ -17,17 +17,13 @@ int main(int argc, char** argv){
     q.setRPY(0, 0, 0);
     transform_empty.setRotation(q);
 
-	tf::Transform transform_y;
-    transform_empty.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
-    tf::Quaternion q;
-    q.setRPY(0, 0, 1);
-    transform_empty.setRotation(q);
+
+    tf::Quaternion rot_y(1.0, 0.0, 0.0); 
 
     bool reset_odom = false;
 
     tf::Transform transform_markermap;    
-	tf::Transform transform_markercamera ;	
-	tf::StampedTransform stamped_transform_markercamera ;
+	tf::StampedTransform transform_markercamera ;	;
     tf::Transform transform_mapodom = transform_empty;
     
     ros::Publisher pub_resetodom = node.advertise<std_msgs::Empty>("/mobile_base/commands/reset_odometry", 1000);   
@@ -39,9 +35,9 @@ int main(int argc, char** argv){
 
 	    try
 		{
-			li.lookupTransform("/camera_rgb_optical_frame", "/ar_marker_0", ros::Time(0), stamped_transform_markercamera);
-			transform_markercamera = stamped_transform_markercamera.getData();
-			transform_markercamera *= 
+			li.lookupTransform("/camera_rgb_optical_frame", "/ar_marker_0", ros::Time(0), transform_markercamera);
+            transform_markercamera.setRotation(rot_y);
+			transform_markercamera.setData(transform_markercamera.inverse());
 		    if(reset_odom)
 			{ 
 			    pub_resetodom.publish(std_msgs::Empty());
