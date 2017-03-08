@@ -7,18 +7,18 @@
       <Node Id="4" Label="ARMarker4"  PositionX="0.0" PositionY="0.0"/> 
    </Nodes>  
    <Links>  
-      <Link Source="ARMarker1" Target="ARMarker2" Cost="1"  />  
-      <Link Source="ARMarker2" Target="ARMarker3" Cost="1"  /> 
-      <Link Source="ARMarker3" Target="ARMarker4" Cost="1"  /> 
+      <Link Source="1" Target="2" Cost="1"  />  
+      <Link Source="2" Target="3" Cost="1"  /> 
+      <Link Source="3" Target="4" Cost="1"  /> 
    </Links>  
    <Properties>  
        <Property Id="PositionX" Label="Position X" DataType="float64" /> 
        <Property Id="PositionY" Label="Position Y" DataType="float64" /> 
        <Property Id="PositionZ" Label="Position Z" DataType="float64" /> 
-       <Property Id="OriantationX" Label="Oriantation X" DataType="float64" /> 
-       <Property Id="OriantationY" Label="Oriantation Y" DataType="float64" /> 
-       <Property Id="OriantationZ" Label="Oriantation Z" DataType="float64" /> 
-       <Property Id="OriantationW" Label="Oriantation W" DataType="float64" /> 
+       <Property Id="OrientationX" Label="Orientation X" DataType="float64" /> 
+       <Property Id="OrientationY" Label="Orientation Y" DataType="float64" /> 
+       <Property Id="OrientationZ" Label="Orientation Z" DataType="float64" /> 
+       <Property Id="OrientationW" Label="Orientation W" DataType="float64" /> 
        <Property Id="Cost" Label="Cost" DataType="int32" /> 
    </Properties>  
 </DirectedGraph>  
