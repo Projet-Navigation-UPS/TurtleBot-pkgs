@@ -17,11 +17,12 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib_msgs
   move_base_msgs
   tf
+  cmake_modules
 )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-
+find_package(TinyXML REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -108,10 +109,10 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES turtlebot_proj_nav
   CATKIN_DEPENDS roscpp std_msgs message_runtime
-#  DEPENDS system_lib
+  DEPENDS TinyXML
 )
 
 ###########
@@ -123,7 +124,8 @@ catkin_package(
 # include_directories(include)
 include_directories(
     include
-#  ${catkin_INCLUDE_DIRS}
+  ${catkin_INCLUDE_DIRS}
+  ${TinyXML_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -182,6 +184,7 @@ target_link_libraries(odom_tests_node
 )
 target_link_libraries(directedGraph_node
   ${catkin_LIBRARIES}
+  ${TinyXML_LIBRARIES}
 )
 #############
 ## Install ##

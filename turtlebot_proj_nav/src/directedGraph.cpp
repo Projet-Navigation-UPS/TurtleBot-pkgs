@@ -1,28 +1,35 @@
-//=======================================================================
-// Copyright 2012
-// Authors: David Doria
-//
-// Distributed under the Boost Software License, Version 1.0. (See
-// accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
-//=======================================================================
+#include <stdlib.h>
+#include "tinyxml.h"
+#include <iostream>
 
-#include <boost/graph/directed_graph.hpp> // A subclass to provide reasonable arguments to adjacency_list for a typical directed graph
-
-int main(int,char*[])
+int main(int argc, char* argv[])
 {
-  // directed_graph is a subclass of adjacency_list which gives you object oriented access to functions
-  // like add_vertex and add_edge, which makes the code easier to understand. However, it hard codes many
-  // of the template parameters, so it is much less flexible.
-
-  typedef boost::directed_graph<> Graph;
-  Graph g;
-  boost::graph_traits<Graph>::vertex_descriptor v0 = g.add_vertex();
-  boost::graph_traits<Graph>::vertex_descriptor v1 = g.add_vertex();
-
-  g.add_edge(v0, v1);
-  
-  std::cout<<g<<std::endl;
-
-  return 0;
+	
+	// Load the xml file, I put your XML in a file named test.xml
+    TiXmlDocument XMLdoc("graph.xml");
+    bool loadOkay = XMLdoc.LoadFile();
+    if (loadOkay)
+    {
+        std::cout << "grah.xml loaded" << std::endl;
+        TiXmlElement *pDirectedGraph, *pNodes, *pNode, *pApp, *pLineFormat;
+        pDirectedGraph = XMLdoc.FirstChildElement( "DirectedGraph" );
+        if ( pDirectedGraph )
+        {
+            // Parse Nodes
+            pNodes = pDirectedGraph->FirstChildElement("Nodes");
+            if (pNodes)
+            {
+              pNode = pNodes->FirstChildElement("Node");
+            while ( pNode )
+            {
+                std::cout << "Node : Id= '" << pNode->Attribute("Id") << "', Label='" << pNode->Attribute("Label") << "'" << std::endl;
+                pNode = pNode->NextSiblingElement( "Node" );
+            }
+            }
+        }
+    }
+    else std::cout << "not found" << std::endl;
+	
+	
+	return 0;
 }
