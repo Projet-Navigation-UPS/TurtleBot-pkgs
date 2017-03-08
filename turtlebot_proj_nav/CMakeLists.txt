@@ -18,10 +18,11 @@ find_package(catkin REQUIRED COMPONENTS
   move_base_msgs
   tf
   cmake_modules
+  
 )
 
 ## System dependencies are found with CMake's conventions
- find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system thread)
 find_package(TinyXML REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -126,6 +127,7 @@ include_directories(
     include
   ${catkin_INCLUDE_DIRS}
   ${TinyXML_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
