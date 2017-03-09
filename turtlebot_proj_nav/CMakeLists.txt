@@ -131,7 +131,7 @@ include_directories(
 
 ## Declare a C++ library
 
-# add_library(turtlebot_proj_nav
+m# add_library(turtlebot_proj_nav
 #   src/${PROJECT_NAME}/turtlebot_proj_nav.cpp
 # )
 
@@ -141,7 +141,7 @@ include_directories(
 # add_dependencies(turtlebot_proj_nav ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(turtlebot_proj_nav_node src/turtlebot_proj_nav_node.cpp)
+add_executable(localisation_node src/localisation_node.cpp)
 add_executable(bgr_to_rgb_converter_node src/bgrConverter_node.cpp )
 add_executable(ballSearch_node src/ballSearch_node.cpp src/BallSearch.cpp src/GraphicServer.cpp src/TurtleBotCamera.cpp src/analyse.cpp src/traitement.cpp)
 add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer.cpp)
