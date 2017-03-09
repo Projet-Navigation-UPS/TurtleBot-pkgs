@@ -14,6 +14,8 @@
 #include <iterator>
 #include <boost/utility.hpp>
 
+#include <boost/graph/bellman_ford_shortest_paths.hpp>
+
 
 struct NodeProperty
 {
@@ -128,7 +130,8 @@ int main(int argc, char* argv[])
     std::cout << "distance(" << g[*vP.first].id << ") = " << d[*vP.first] <<  ", ";
     std::cout << "parent(" << g[*vP.first].id << ") = " << g[p[*vP.first]].id << std::endl;
     }
-    std::cout << std::endl;                      
+    std::cout << std::endl;    
+    
     
 	
 	return 0;

@@ -9,7 +9,8 @@
       <Node Id="5" Label="ARMarker5"  PositionX="4.0" PositionY="4.0" Orientation="3.14"/>
    </Nodes>  
    <Links>  
-      <Link Source="0" Target="1" Cost="2"  /> 
+      <Link Source="0" Target="1" Cost="2"  />
+      <Link Source="5" Target="0" Cost="2"  /> 
       <Link Source="1" Target="3" Cost="2"  />
       <Link Source="3" Target="4" Cost="2"  />
       <Link Source="4" Target="5" Cost="2"  />
