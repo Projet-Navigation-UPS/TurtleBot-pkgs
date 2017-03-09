@@ -1,24 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>  
 <DirectedGraph Title="ARMarkers" >  
    <Nodes>  
-      <Node Id="1" Label="ARMarker1"  PositionX="0.1" PositionY="0.1"/>  
-      <Node Id="2" Label="ARMarker2"  PositionX="0.2" PositionY="0.2"/>
-      <Node Id="3" Label="ARMarker3"  PositionX="0.3" PositionY="0.3"/>
-      <Node Id="4" Label="ARMarker4"  PositionX="0.4" PositionY="0.4"/> 
+      <Node Id="0" Label="ARMarker0"  PositionX="0.1" PositionY="0.1" Orientation="3.14"/>  
+      <Node Id="1" Label="ARMarker1"  PositionX="0.2" PositionY="0.2" Orientation="3.14"/>
+      <Node Id="2" Label="ARMarker2"  PositionX="0.3" PositionY="0.3" Orientation="3.14"/>
+      <Node Id="3" Label="ARMarker3"  PositionX="0.4" PositionY="0.4" Orientation="3.14"/> 
    </Nodes>  
    <Links>  
-      <Link Source="1" Target="2" Cost="1"  />  
-      <Link Source="2" Target="3" Cost="2"  /> 
-      <Link Source="3" Target="4" Cost="3"  /> 
+      <Link Source="0" Target="1" Cost="1"  />  
+      <Link Source="1" Target="2" Cost="2"  /> 
+      <Link Source="2" Target="3" Cost="3"  /> 
    </Links>  
    <Properties>  
        <Property Id="PositionX" Label="Position X" DataType="float64" /> 
        <Property Id="PositionY" Label="Position Y" DataType="float64" /> 
-       <Property Id="PositionZ" Label="Position Z" DataType="float64" /> 
-       <Property Id="OrientationX" Label="Orientation X" DataType="float64" /> 
-       <Property Id="OrientationY" Label="Orientation Y" DataType="float64" /> 
-       <Property Id="OrientationZ" Label="Orientation Z" DataType="float64" /> 
-       <Property Id="OrientationW" Label="Orientation W" DataType="float64" /> 
+       <Property Id="Orientation" Label="Orientation" DataType="float64" /> 
        <Property Id="Cost" Label="Cost" DataType="int32" /> 
    </Properties>  
 </DirectedGraph>  
