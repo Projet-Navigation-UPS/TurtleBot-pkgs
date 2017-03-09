@@ -131,7 +131,7 @@ include_directories(
 
 ## Declare a C++ library
 
-m# add_library(turtlebot_proj_nav
+# add_library(turtlebot_proj_nav
 #   src/${PROJECT_NAME}/turtlebot_proj_nav.cpp
 # )
 
