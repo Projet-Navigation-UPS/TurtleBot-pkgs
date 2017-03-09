@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(turtlebot_navigation)
+project(turtlebot_proj_nav)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -13,7 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   kobuki_msgs
   cv_bridge
   image_transport
-  
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -106,7 +106,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES turtlebot_navigation
+#  LIBRARIES turtlebot_proj_nav
   CATKIN_DEPENDS roscpp std_msgs message_runtime
 #  DEPENDS system_lib
 )
@@ -139,6 +139,7 @@ include_directories(
 add_executable(bgr_to_rgb_converter_node src/bgrConverter_node.cpp )
 add_executable(ballSearch_node src/ballSearch_node.cpp src/BallSearch.cpp src/GraphicServer.cpp src/TurtleBotCamera.cpp src/analyse.cpp src/traitement.cpp)
 add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer.cpp)
+add_executable(localisation_node src/localisation_node.cpp)
 
 
 
@@ -157,6 +158,9 @@ target_link_libraries(command_node
   ${catkin_LIBRARIES}
 )
 target_link_libraries(bgr_to_rgb_converter_node
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(localisation_node 
   ${catkin_LIBRARIES}
 )
 
