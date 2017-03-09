@@ -142,6 +142,7 @@ add_executable(ballSearch_node src/ballSearch_node.cpp src/BallSearch.cpp src/Gr
 add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer.cpp)
 add_executable(highLevelCommand_node src/highLevelCommand_node.cpp src/HighLevelCommand.cpp)
 add_executable(test_node src/test_node.cpp)
+add_executable(visib src/visib.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -169,6 +170,9 @@ target_link_libraries(highLevelCommand_node
   ${catkin_LIBRARIES}
 )
 target_link_libraries(test_node
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(visib
   ${catkin_LIBRARIES}
 )
 
