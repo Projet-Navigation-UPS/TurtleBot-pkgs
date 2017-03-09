@@ -1,5 +1,7 @@
 <launch>
+
   <!-- 3D sensor -->
+
   <arg name="custom_param_file" default="$(find turtlebot_proj_nav)/param/dummy.yaml"/>
   <include file="$(find turtlebot_bringup)/launch/3dsensor.launch">
     <arg name="rgb_processing" value="false" />
@@ -25,7 +27,9 @@
     <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
   </include>
 
+
   <!-- Move base -->
+
   <include file="$(find turtlebot_proj_nav)/launch/includes/move_base.launch.xml">
     <arg name="custom_param_file" value="$(arg custom_param_file)"/>
   </include>
