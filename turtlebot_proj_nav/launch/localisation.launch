@@ -4,11 +4,11 @@
       
 
         <!-- Set map server -->	
-        <arg name="map_file" default="/home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_navigation/map/aip_hall.yaml"/>
+        <arg name="map_file" default="/home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_proj_nav/map/aip_hall.yaml"/>
         <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
         <!-- Set tf broadcaster-->
-        <node pkg="turtlebot_navigation" type="localisation_node" name="localisation_node" output="screen"/>
+        <node pkg="turtlebot_proj_nav" type="localisation_node" name="localisation_node" output="screen"/>
         <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher" args="2.0 1.0 0.0 0.0 0.0 0.0 1.0 map marker_0 100" />
 
 
@@ -31,6 +31,6 @@
 	</node>
 
         <!-- Set rviz -->
-        <node pkg="rviz" type="rviz" name="rviz" args="-d /home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_navigation/config/localisation.rviz" />
+        <node pkg="rviz" type="rviz" name="rviz" args="-d /home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_proj_nav/config/localisation.rviz" />
 
 </launch>
