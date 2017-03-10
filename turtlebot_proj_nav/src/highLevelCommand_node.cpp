@@ -4,30 +4,28 @@
 
 
 
-
 int main(int argc, char **argv)
 {
     ROS_INFO("Launching highLevelCommande_node ...");
     ros::init(argc, argv, "highLevelCommande_node");
     ros::NodeHandle node;
-    ros::Rate loop_rate(1); // 1Hz 
+    ros::Rate loop_rate(0.5); // 1Hz 
 
     HighLevelCommand HLC(node);
     
-    int currentState, nextState;
+    int currentState;
     
     currentState = 0;
-    //nextState = 0;
 
     while (ros::ok()) 
     {
-        ros::spinOnce();
+        
 
         switch (currentState)
         {
             case 0:
                 
-                if(HLC.location_Ready())
+                if(HLC.location())
                 {
                     ROS_INFO("Location ready...");
                     currentState = 1;
@@ -39,42 +37,23 @@ int main(int argc, char **argv)
                 }    
                 break;
             case 1:
-                if(HLC.near_Goal())
+                if(HLC.finalGoal())
                 {
-                    ROS_INFO("Goal reached...");
-                    currentState = 1;
+                    currentState = 3;
                 }
                 else 
                 {   
-                    ROS_INFO("Search path to reach goal...");
-                    HLC.plan_Path();
+                    ROS_INFO("Send goal...");
+                    HLC.sendGoal();
                     currentState = 2;
                 }
                 break;
             case 2:
-                if(HLC.path_Found())
-                {
-                    ROS_INFO("Launch mouvement...");
-                    HLC.follow_Path();
-                    currentState = 3;
-                }
-                else
-                {
-                    ROS_INFO("Wait for path planning...");
-                    currentState = 2;
-                }
+                if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
+                else currentState = 0;
                 break;
             case 3:
-                if(HLC.command_Finished())
-                {
-                    ROS_INFO("Mouvement finished...");
-                    currentState = 0;
-                }
-                else
-                {
-                    ROS_INFO("Wait for the robot to follow the path...");
-                    currentState = 3;
-                }
+                ROS_INFO("Goal reached...");
                 break;
             default:
                 currentState = 0;
@@ -82,6 +61,7 @@ int main(int argc, char **argv)
 
         }
 
+        ros::spinOnce();
         loop_rate.sleep();
     }
     

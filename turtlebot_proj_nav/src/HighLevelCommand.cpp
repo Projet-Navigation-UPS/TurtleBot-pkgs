@@ -4,126 +4,180 @@
 #include <vector>
 #include <cmath> 
 
+
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     //Subsribers
-    subLocationReady(node.subscribe("/nav/Location", 1, &HighLevelCommand::callbackLocationReady,this)),
-    subPathFound(node.subscribe("/nav/PathToFollow", 1, &HighLevelCommand::callbackPathFound,this)),
-    subCommandFinished(node.subscribe("/nav/CommandFinished", 1, &HighLevelCommand::callbackCommandFinished,this)),
+    subLocation(node.subscribe("/odom", 1, &HighLevelCommand::callbackLocation,this)),
+    subGoalStatus(node.subscribe("/move_base/status", 1, &HighLevelCommand::callbackGoalStatus,this)),
+    subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &HighLevelCommand::callbackMoveBaseActionFeedback,this)),
+    subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &HighLevelCommand::callbackMoveBaseActionGoal,this)),
+    subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
+
     //Publishers
-    pubPlanPath(node.advertise<actionlib_msgs::GoalStatus>("/nav/PlanPath", 1)),
-    pubFollowPath(node.advertise<actionlib_msgs::GoalStatus>("/nav/FollowPath", 1))
+    pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
+    pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
-    locationReady.data = false;
-    pathFound.data = false; 
-    commandFinished.data = false; 
-    nearGoal.data = false;
-    
-    //planPath.data = false;
-    //followPath.data = false;
+    locationAvailable.data = false;
+    goalReached.data = false;
+    //tfListener.lookupTransform("map", "odom", ros::Time::now(), transform);
 }
 
 HighLevelCommand::~HighLevelCommand(){}
 
 
 //Callbacks
-void HighLevelCommand::callbackLocationReady(const nav_msgs::Odometry& msg)
+void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
 {
-    locationReady.data = true;
-    currentLocation.pose = msg.pose.pose;
-    //std::cout<<currentLocation<<std::endl;
+    //std::cout<<"MESSAGE"<<std::endl;
+    //std::cout<<msg.pose.pose.position<<std::endl;
+    //std::cout<<msg.pose.pose.orientation<<std::endl;
+    currentLocation = msg;
+           
+    geometry_msgs::PoseStamped location;
+    location.header = msg.header;
+    location.pose = msg.pose.pose;
+            
+    geometry_msgs::PoseStamped transformed_location;
+    tfListener.transformPose("map", location, transformed_location);      
+    currentLocation.pose.pose = transformed_location.pose;
+    //std::cout<<"TRANSFORMED"<<std::endl;
+    //std::cout<<currentLocation.pose.pose.position<<std::endl;
+    //std::cout<<currentLocation.pose.pose.orientation<<std::endl;
+
+    locationAvailable.data = true;
 }
 
-void HighLevelCommand::callbackPathFound(const nav_msgs::Path& msg)
+
+void HighLevelCommand::callbackGoalStatus(const actionlib_msgs::GoalStatusArray& msg)
 {
-    pathFound.data = true;
-    currentGoal = msg.poses.back();
-    //std::cout<<currentGoal<<std::endl;
+    //std::cout<<"GoalStatusArray"<<std::endl;
+    //std::cout<<msg<<std::endl;
+    goalStatus = msg;
+    
 }
 
-void HighLevelCommand::callbackCommandFinished(const std_msgs::Bool& msg)
+void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg)
 {
-    commandFinished = msg;
-    //std::cout<<commandFinished<<std::endl;
+    //std::cout<<"MoveBaseActionResult"<<std::endl;
+    //std::cout<<msg<<std::endl;
+    moveBaseActionResult = msg;
+    
+    if(moveBaseActionResult.status.status == 3) 
+    {
+      playSound(SOUND_ON);
+      std::cout<<"MoveBaseActionResult"<<std::endl;
+      std::cout<<msg<<std::endl;
+      goalReached.data = true;
+     }
 }
+void HighLevelCommand::callbackMoveBaseActionFeedback(const move_base_msgs::MoveBaseActionFeedback& msg)
+{
+    //std::cout<<"MoveBaseActionFeedback"<<std::endl;
+    //std::cout<<msg<<std::endl;
+    moveBaseActionFeedback = msg;
+}
+void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBaseActionGoal& msg)
+{
+    //std::cout<<"MoveBaseActionGoal"<<std::endl;
+    //std::cout<<msg<<std::endl;
+    moveBaseActionGoal = msg;
+}
+
 
 
 //States
-bool HighLevelCommand::location_Ready()
+bool HighLevelCommand::location()
 {
-    return locationReady.data;
+    return locationAvailable.data;
 }
-bool HighLevelCommand::path_Found()
-{
-    return pathFound.data;
-}
-bool HighLevelCommand::command_Finished()
-{
-    return commandFinished.data;
-}
-bool HighLevelCommand::near_Goal()
-{
-    if(abs(currentGoal.pose.position.x-currentLocation.pose.position.x)<0.1)
-    {
-        if(abs(currentGoal.pose.position.y-currentLocation.pose.position.y)<0.1)
-        {
-            if(abs(currentGoal.pose.position.z-currentLocation.pose.position.z)<0.1)
-            {
-                if(abs(currentGoal.pose.orientation.x-currentLocation.pose.orientation.x)<0.1)
-                {
-                    if(abs(currentGoal.pose.orientation.y-currentLocation.pose.orientation.y)<0.1)
-                    {
-                        if(abs(currentGoal.pose.orientation.z-currentLocation.pose.orientation.z)<0.1)
-                        {
-                            if(abs(currentGoal.pose.orientation.w-currentLocation.pose.orientation.w)<0.1)
-                            {
-                                nearGoal.data = true;
-                            }
-                            else nearGoal.data = false;
-                        }
-                        else nearGoal.data = false;
-                    }
-                    else nearGoal.data = false;
-                }
-                else nearGoal.data = false;
-            }
-            else nearGoal.data = false;
-        }
-        else nearGoal.data = false;
-    }
-    else nearGoal.data = false;
 
-    return nearGoal.data;
+bool HighLevelCommand::finalGoal()
+{ 
+    if(distance(X_GOAL3, Y_GOAL3, currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y) < 0.3) return true; 
+}
+
+bool HighLevelCommand::intermediateGoal()
+{ 
+    return goalReached.data; 
+}
+
+
+//Other
+float HighLevelCommand::distance(float x1, float y1, float x2, float y2)
+{
+    return sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+}
+
+int HighLevelCommand::nearestGoal(float x, float y)
+{
+    int goal;
+    float crit = 100.0;
+    
+    if((distance(X_GOAL1, Y_GOAL1, x, y) < crit) && (distance(X_GOAL1, Y_GOAL1, x, y) > 0.5)) 
+    {
+      crit = distance(X_GOAL1, Y_GOAL1, x, y);
+      goal = 1;
+    }
+    if((distance(X_GOAL2, Y_GOAL2, x, y) < crit) && (distance(X_GOAL2, Y_GOAL2, x, y) > 0.5))
+    {
+      crit = distance(X_GOAL2, Y_GOAL2, x, y);
+      goal = 2;
+    }
+    if((distance(X_GOAL3, Y_GOAL3, x, y) < crit ) && (distance(X_GOAL3, Y_GOAL3, x, y) < 0.5) )
+    {
+      crit = distance(X_GOAL3, Y_GOAL3, x, y);
+      goal = 3;
+    }
+    
+    return goal;
+}
+
+//Sound Commands
+void HighLevelCommand::playSound(int sound)
+{
+    mobileBaseCommandsSound.value = sound;
+    pubSound.publish(mobileBaseCommandsSound);
 }
 
 
 //Hight Level Commands
-void HighLevelCommand::plan_Path()
+void HighLevelCommand::sendGoal()
 {
-    planPath.goal_id.stamp = ros::Time::now();
-    planPath.goal_id.id = "path_planning";
-    planPath.status = 1;
-    planPath.text = "";
-    //std::cout<<planPath<<std::endl;
-    pubPlanPath.publish(planPath);
+    goalReached.data = false;
+
+    currentGoal.header.seq = 1;
+    currentGoal.header.stamp = ros::Time::now();
+    currentGoal.header.frame_id = "map";
+    
+     switch (nearestGoal(currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y))
+        {
+            case 1:
+                ROS_INFO("Goal 1...");
+                currentGoal.pose.position.x = X_GOAL1;
+                currentGoal.pose.position.y = Y_GOAL1;
+                break;
+            case 2:
+                ROS_INFO("Goal 2...");
+                currentGoal.pose.position.x = X_GOAL2;
+                currentGoal.pose.position.y = Y_GOAL2;
+                break;
+            case 3:
+                ROS_INFO("Goal 3...");
+                currentGoal.pose.position.x = X_GOAL3;
+                currentGoal.pose.position.y = Y_GOAL3;
+                break;
+            default:
+                ROS_INFO("Default...");
+                break;
+
+        }
+        
+    currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
+    currentGoal.pose.orientation = currentLocation.pose.pose.orientation;
+    
+    pubGoal.publish(currentGoal);
 }
 
-void HighLevelCommand::follow_Path()
-{
-    followPath.goal_id.stamp = ros::Time::now();
-    followPath.goal_id.id = "path_following";
-    followPath.status = 1;
-    followPath.text = "";
-    //std::cout<<followPath<<std::endl;
-    pubFollowPath.publish(followPath);
-    pathFound.data = false; 
-}
 
-
-//
-void HighLevelCommand::publish()
-{
-    pubPlanPath.publish(planPath);
-    pubFollowPath.publish(followPath);
-}
 
 

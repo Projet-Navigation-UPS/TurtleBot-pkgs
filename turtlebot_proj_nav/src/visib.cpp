@@ -108,15 +108,23 @@ int main(int argc, char **argv)
 
 	int n=20;
 	int m=2;
-	int x[]={10, 5};
-    int y[]={10, 5};     
-	int t[]={45, 90}; 
+	int x[]={10,2};
+    int y[]={10,2};     
+	float t[]={70,70}; 
 	
 	int i,j,k,l,o;
-	float dist ;
+	float dist=1.0 ;
 	int pix[n][n];
+	int v[m][m];
+	float yn[m];
     float angle[]={0.0,0.0};
+	float alphamax[]={70,70};
+	float distancemax=4.0;
+	float distancemin=0.0;	
+	
     ros::Rate loop_rate(5); // 2Hz 
+
+	
 
     while (ros::ok()) 
     {
@@ -129,29 +137,38 @@ int main(int argc, char **argv)
 				for(k=0;k<m;k++) // amers
 				{
 					
-					
-					
-				// if((theta==pi/4 && i>=x[k] && j<=y[k]) || (theta==pi/2) || (theta==3*pi/4 && i<=x[k] && j<=y[k]) || (theta==pi && i<=x[k] && j<=y[k]) || (theta==5*pi/4 && i<=x[k] && j>=y[k]) || (theta==-pi/2 && i<=x[k] && j>=y[k]) || (theta==-pi/4 && i<=x[k] && j>=y[k]))
+					if(t[k]>-90 && t[k]<90)
+						v[k][1]=x[k];
+					else if (t[k]<-90 && t[k]>90)
+						v[k][1]=-x[k];
+						else v[k][1]=0;
 				
-					dist = sqrt(pow(i-x[k],2)+pow(j-y[k],2));
-					//hypv = 1/cos(t[k]) ;
-					//v = (1 tan(t[k])) 
-					//distangle = arctan((u*v)/(
+				yn[k]=sin(t[k]);
+				angle[k]=acos(((i-x[k])+((j-y[k])*yn[k]))/(sqrt(pow((i-x[k]),2)+pow((j-y[k]),2))*(sqrt(1+pow(yn[k],2)))))*180/pi;					
+					//printf("Angle : %f \n", angle[k]);
+				dist = sqrt(pow(i-x[k],2)+pow(j-y[k],2));
+/*
+					//4eme quadrant
 					if(i<x[k] && j<y[k])
 						angle[k]=180-(asin((y[k]-j)/dist)*180/pi);
+					//3eme quadrant
 					else if (i>x[k] && j<y[k])
-						angle[k]=(asin((y[k]-j)/dist))*180/pi;
-						else angle[k]=90;
-
+						angle[k]=-180+(asin((y[k]-j)/dist))*180/pi;
+						else if(i==(x[k]+1) && j==(y[k]+1)) angle[k]=0;
+							else if(i==(x[k]+1) && j<y[k]) angle[k]=90;
+					//2eme quadrant
 					if(i<x[k] && j>y[k])
-						angle[k]=-180+(asin((j-y[k])/dist)*180/pi);
+						angle[k]=(asin((j-y[k])/dist)*180/pi);
+					//1er quadrant
 					else if (i>x[k] && j>y[k])
 						angle[k]=-(asin((j-y[k])/dist))*180/pi;
-						else angle[k]=90;
+						else if(i==(x[k]+1) && j==(y[k]+1)) angle[k]=0;
+							else if(i==(x[k]+1) && j>y[k]) angle[k]=-90;
+*/
+					//printf("Angle : %f", angle[k]);
+					//printf("\t theta : %f\n", t[k]);
 
-					//printf("Angle : %f", angle);
-					//printf("\n theta : %d", t[k]);
-					if(dist<4.0 && dist>1.0 && (angle[k]<=t[k] && angle[k]>=0)) 
+					if((dist<distancemax && dist>distancemin) && (angle[k]<alphamax[k] && angle[k]>-alphamax[k]))
 						pix[i][j]+=30;
 					else 
 						if(dist == 0.0)
