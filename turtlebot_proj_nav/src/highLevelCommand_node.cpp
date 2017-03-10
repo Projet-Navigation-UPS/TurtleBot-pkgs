@@ -23,6 +23,7 @@ int main(int argc, char **argv)
 
         switch (currentState)
         {
+            //Location
             case 0:
                 
                 if(HLC.location())
@@ -36,6 +37,8 @@ int main(int argc, char **argv)
                     currentState = 0;
                 }    
                 break;
+            
+            //Goals    
             case 1:
                 if(HLC.finalGoal())
                 {
@@ -48,15 +51,27 @@ int main(int argc, char **argv)
                     currentState = 2;
                 }
                 break;
+            
+            //Movement    
             case 2:
                 if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
                 else currentState = 0;
                 break;
+            
+            //Final goal reached    
             case 3:
                 ROS_INFO("Goal reached...");
+                currentState = 4;
                 break;
+            
+            //Find new global goal
+            case 4:
+                ROS_INFO("Choosing new global Goal...");
+                currentState = 0;
+                break;    
             default:
                 currentState = 0;
+                HLC.findGlobalGoal();
                 break;
 
         }

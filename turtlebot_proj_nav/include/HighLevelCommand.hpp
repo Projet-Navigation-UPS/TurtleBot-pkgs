@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 #include "std_msgs/Bool.h"
+#include "std_msgs/Int16.h"
 #include "nav_msgs/Odometry.h"
 #include "actionlib_msgs/GoalStatusArray.h"
 #include "geometry_msgs/PoseStamped.h"
@@ -11,6 +12,8 @@
 #include "move_base_msgs/MoveBaseActionFeedback.h"
 #include "move_base_msgs/MoveBaseActionGoal.h"
 #include <tf/transform_listener.h>
+#include <string>
+#include "graph.hpp"
 
 #define SOUND_ON 0
 #define SOUND_OFF 1
@@ -40,6 +43,7 @@ private:
 
     //Messages
     std_msgs::Bool locationAvailable, goalReached;
+    std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId;
     
     //TF
     tf::TransformListener tfListener;
@@ -64,6 +68,7 @@ private:
 public:
 
     HighLevelCommand(ros::NodeHandle& node);
+    HighLevelCommand(ros::NodeHandle& node, int finalGoal);
     ~HighLevelCommand();
     
     bool location();
@@ -71,9 +76,9 @@ public:
     bool intermediateGoal();
     
     float distance(float x1, float y1, float x2, float y2);
-    int nearestGoal(float x, float y);
     
     void sendGoal();
+    void findGlobalGoal();
     void playSound(int sound);
     
 

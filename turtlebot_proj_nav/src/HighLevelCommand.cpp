@@ -19,7 +19,26 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
 {
     locationAvailable.data = false;
     goalReached.data = false;
-    //tfListener.lookupTransform("map", "odom", ros::Time::now(), transform);
+    closestMarkerId.data = 0;
+    GlobalGoalMarkerId.data = 5;
+}
+
+HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
+    //Subsribers
+    subLocation(node.subscribe("/odom", 1, &HighLevelCommand::callbackLocation,this)),
+    subGoalStatus(node.subscribe("/move_base/status", 1, &HighLevelCommand::callbackGoalStatus,this)),
+    subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &HighLevelCommand::callbackMoveBaseActionFeedback,this)),
+    subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &HighLevelCommand::callbackMoveBaseActionGoal,this)),
+    subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
+
+    //Publishers
+    pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
+    pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
+{
+    locationAvailable.data = false;
+    goalReached.data = false;
+    closestMarkerId.data = 0;
+    GlobalGoalMarkerId.data = finalGoal;
 }
 
 HighLevelCommand::~HighLevelCommand(){}
@@ -64,11 +83,24 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
     
     if(moveBaseActionResult.status.status == 3) 
     {
-      playSound(SOUND_ON);
-      std::cout<<"MoveBaseActionResult"<<std::endl;
-      std::cout<<msg<<std::endl;
-      goalReached.data = true;
-     }
+        playSound(SOUND_ON);
+        std::cout<<"MoveBaseActionResult"<<std::endl;
+        std::cout<<msg<<std::endl;
+        goalReached.data = true;
+      
+        float dist = 100.0;
+        Graph g = xmlToGraph("graph.xml");
+        typedef boost::graph_traits<Graph>::vertex_iterator vertex_iter;
+        std::pair<vertex_iter, vertex_iter> vertexPair;
+        for (vertexPair = vertices(g); vertexPair.first != vertexPair.second; ++vertexPair.first)
+        {
+            if(distance(g[*vertexPair.first].x, g[*vertexPair.first].y, currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y)<dist) 
+            {
+                closestMarkerId.data = g[*vertexPair.first].id;
+                dist = distance(g[*vertexPair.first].x, g[*vertexPair.first].y, currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y);
+            }
+        }
+    }
 }
 void HighLevelCommand::callbackMoveBaseActionFeedback(const move_base_msgs::MoveBaseActionFeedback& msg)
 {
@@ -93,7 +125,7 @@ bool HighLevelCommand::location()
 
 bool HighLevelCommand::finalGoal()
 { 
-    if(distance(X_GOAL3, Y_GOAL3, currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y) < 0.3) return true; 
+    if(closestMarkerId.data == GlobalGoalMarkerId.data) return true; 
 }
 
 bool HighLevelCommand::intermediateGoal()
@@ -108,29 +140,6 @@ float HighLevelCommand::distance(float x1, float y1, float x2, float y2)
     return sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 }
 
-int HighLevelCommand::nearestGoal(float x, float y)
-{
-    int goal;
-    float crit = 100.0;
-    
-    if((distance(X_GOAL1, Y_GOAL1, x, y) < crit) && (distance(X_GOAL1, Y_GOAL1, x, y) > 0.5)) 
-    {
-      crit = distance(X_GOAL1, Y_GOAL1, x, y);
-      goal = 1;
-    }
-    if((distance(X_GOAL2, Y_GOAL2, x, y) < crit) && (distance(X_GOAL2, Y_GOAL2, x, y) > 0.5))
-    {
-      crit = distance(X_GOAL2, Y_GOAL2, x, y);
-      goal = 2;
-    }
-    if((distance(X_GOAL3, Y_GOAL3, x, y) < crit ) && (distance(X_GOAL3, Y_GOAL3, x, y) < 0.5) )
-    {
-      crit = distance(X_GOAL3, Y_GOAL3, x, y);
-      goal = 3;
-    }
-    
-    return goal;
-}
 
 //Sound Commands
 void HighLevelCommand::playSound(int sound)
@@ -144,33 +153,15 @@ void HighLevelCommand::playSound(int sound)
 void HighLevelCommand::sendGoal()
 {
     goalReached.data = false;
+    
+    NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
 
     currentGoal.header.seq = 1;
     currentGoal.header.stamp = ros::Time::now();
     currentGoal.header.frame_id = "map";
     
-     switch (nearestGoal(currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y))
-        {
-            case 1:
-                ROS_INFO("Goal 1...");
-                currentGoal.pose.position.x = X_GOAL1;
-                currentGoal.pose.position.y = Y_GOAL1;
-                break;
-            case 2:
-                ROS_INFO("Goal 2...");
-                currentGoal.pose.position.x = X_GOAL2;
-                currentGoal.pose.position.y = Y_GOAL2;
-                break;
-            case 3:
-                ROS_INFO("Goal 3...");
-                currentGoal.pose.position.x = X_GOAL3;
-                currentGoal.pose.position.y = Y_GOAL3;
-                break;
-            default:
-                ROS_INFO("Default...");
-                break;
-
-        }
+    currentGoal.pose.position.x = marker.x;    
+    currentGoal.pose.position.y = marker.y;    
         
     currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
     currentGoal.pose.orientation = currentLocation.pose.pose.orientation;
@@ -178,6 +169,9 @@ void HighLevelCommand::sendGoal()
     pubGoal.publish(currentGoal);
 }
 
-
+void HighLevelCommand::findGlobalGoal()
+{
+    
+}
 
 
