@@ -15,7 +15,7 @@
   <arg name="map_file" default="$(find turtlebot_proj_nav)/maps/aip_map.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
-  <!-- E2 -->
+  <!-- Amcl -->
   <arg name="initial_pose_x" default="0.0"/> 
   <arg name="initial_pose_y" default="0.0"/> 
   <arg name="initial_pose_a" default="0.0"/>
