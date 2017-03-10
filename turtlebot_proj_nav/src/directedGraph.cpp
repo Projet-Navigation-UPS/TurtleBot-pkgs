@@ -1,13 +1,20 @@
 #include <stdlib.h>
 #include "tinyxml.h"
 #include <iostream>
+#include <fstream>
 #include <ros/ros.h>
 #include <ros/package.h>
+#include <boost/config.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <boost/property_map/property_map.hpp>
 #include <vector>
 #include <string>
 #include <iterator>
+#include <boost/utility.hpp>
+
+#include <boost/graph/bellman_ford_shortest_paths.hpp>
 
 
 struct NodeProperty
@@ -29,8 +36,9 @@ struct LinkProperty
 
 // Define the type of the graph - this specifies a bundled property for vertices and edges
 typedef boost::property<boost::edge_weight_t, double> EdgeWeightProperty;
-//typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, boost::no_property, EdgeWeightProperty, NodeProperty> Graph;
 typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, NodeProperty, EdgeWeightProperty> Graph;
+
+
 
 int main(int argc, char* argv[])
 {
@@ -106,8 +114,25 @@ int main(int argc, char* argv[])
     }
     
     
-
-    	
+    //Dijkstra s
+    std::vector<Graph::vertex_descriptor> p(num_vertices(g));
+    std::vector<int> d(num_vertices(g));
+    Graph::vertex_descriptor s = vertex(0, g);
+    
+    dijkstra_shortest_paths(g, s,
+                          predecessor_map(boost::make_iterator_property_map(p.begin(), get(boost::vertex_index, g))).
+                          distance_map(boost::make_iterator_property_map(d.begin(), get(boost::vertex_index, g))));
+                          
+    std::cout << "distances and parents:" << std::endl;
+    typedef boost::graph_traits<Graph>::vertex_iterator vi;
+    std::pair<vi, vi> vP;
+    for (vP = vertices(g); vP.first != vP.second; ++vP.first) {
+    std::cout << "distance(" << g[*vP.first].id << ") = " << d[*vP.first] <<  ", ";
+    std::cout << "parent(" << g[*vP.first].id << ") = " << g[p[*vP.first]].id << std::endl;
+    }
+    std::cout << std::endl;    
+    
+    
 	
 	return 0;
 }

@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>  
 <DirectedGraph Title="ARMarkers" >  
    <Nodes>  
-      <Node Id="0" Label="ARMarker0"  PositionX="0.1" PositionY="0.1" Orientation="3.14"/>  
-      <Node Id="1" Label="ARMarker1"  PositionX="0.2" PositionY="0.2" Orientation="3.14"/>
-      <Node Id="2" Label="ARMarker2"  PositionX="0.3" PositionY="0.3" Orientation="3.14"/>
-      <Node Id="3" Label="ARMarker3"  PositionX="0.4" PositionY="0.4" Orientation="3.14"/> 
+      <Node Id="0" Label="ARMarker0"  PositionX="0.0" PositionY="2.0" Orientation="3.14"/>  
+      <Node Id="1" Label="ARMarker1"  PositionX="2.0" PositionY="2.0" Orientation="3.14"/>
+      <Node Id="2" Label="ARMarker2"  PositionX="2.0" PositionY="3.0" Orientation="3.14"/>
+      <Node Id="3" Label="ARMarker3"  PositionX="2.0" PositionY="4.0" Orientation="3.14"/> 
+      <Node Id="4" Label="ARMarker4"  PositionX="3.0" PositionY="4.0" Orientation="3.14"/>
+      <Node Id="5" Label="ARMarker5"  PositionX="4.0" PositionY="4.0" Orientation="3.14"/>
    </Nodes>  
    <Links>  
-      <Link Source="0" Target="1" Cost="1"  />  
-      <Link Source="1" Target="2" Cost="2"  /> 
-      <Link Source="2" Target="3" Cost="3"  /> 
+      <Link Source="0" Target="1" Cost="2"  />
+      <Link Source="5" Target="0" Cost="2"  /> 
+      <Link Source="1" Target="3" Cost="2"  />
+      <Link Source="3" Target="4" Cost="2"  />
+      <Link Source="4" Target="5" Cost="2"  />
+      <Link Source="0" Target="2" Cost="2"  /> 
+      <Link Source="2" Target="5" Cost="8"  />
    </Links>  
    <Properties>  
        <Property Id="PositionX" Label="Position X" DataType="float64" /> 
