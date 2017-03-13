@@ -13,15 +13,15 @@ int main(int argc, char **argv)
 
     HighLevelCommand HLC(node);
     
-    int currentState;
+    int hlcCurrentState;
     
-    currentState = 0;
+    hlcCurrentState = 0;
 
     while (ros::ok()) 
     {
         
 
-        switch (currentState)
+        switch (hlcCurrentState)
         {
             //Location
             case 0:
@@ -29,12 +29,12 @@ int main(int argc, char **argv)
                 if(HLC.location())
                 {
                     ROS_INFO("Location ready...");
-                    currentState = 1;
+                    hlcCurrentState = 1;
                 }
                 else 
                 {
                     ROS_INFO("Wait for location...");
-                    currentState = 0;
+                    hlcCurrentState = 0;
                 }    
                 break;
             
@@ -42,35 +42,35 @@ int main(int argc, char **argv)
             case 1:
                 if(HLC.finalGoal())
                 {
-                    currentState = 3;
+                    hlcCurrentState = 3;
                 }
                 else 
                 {   
                     ROS_INFO("Send goal...");
                     HLC.sendGoal();
-                    currentState = 2;
+                    hlcCurrentState = 2;
                 }
                 break;
             
             //Movement    
             case 2:
                 if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
-                else currentState = 0;
+                else hlcCurrentState = 0;
                 break;
             
             //Final goal reached    
             case 3:
                 ROS_INFO("Goal reached...");
-                currentState = 4;
+                hlcCurrentState = 4;
                 break;
             
             //Find new global goal
             case 4:
                 ROS_INFO("Choosing new global Goal...");
-                currentState = 0;
+                hlcCurrentState = 0;
                 break;    
             default:
-                currentState = 0;
+                hlcCurrentState = 0;
                 HLC.findGlobalGoal();
                 break;
 
