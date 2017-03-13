@@ -17,7 +17,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
 
     //Publishers
     pubCommandState(node.advertise<std_msgs::Bool>("/nav/command/state", 1)),
-    pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/ball_reference", 1)),
+    pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {

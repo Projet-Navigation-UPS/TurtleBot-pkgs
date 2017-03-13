@@ -1,49 +1,8 @@
 #include "ros/ros.h"
 #include "TurtleBotCommand.hpp"
-#include "turtlebot_proj_nav/command.h"
-#include "std_msgs/Bool.h"
-
 #include <cmath>
 
 #define FREQ 10 //10 Hz
-
-typedef struct ballNav
-
-{
-    float linearVelocity;
-    float angularVelocity;
-    float distance;
-    float angle;
-    bool drop;
-    bool turning;
-    bool moving;
-    bool stop;
-    bool start;
-    bool enabled;
-    std_msgs::Bool busy;
-
-} BallNav;
-
-void updateBallCB(const turtlebot_proj_nav::command::ConstPtr& msg, BallNav* ballNav)
-{
-        ROS_INFO("COMMAND RECEIVED !");
-        //std::cout<<*msg<<std::endl;
-	    ballNav->linearVelocity = msg->linearVelocity;
-	    ballNav->angularVelocity = msg->angularVelocity;
-	    ballNav->distance = msg->distance;
-	    ballNav->angle = msg->angle;
-	    ballNav->turning = true;
-	    ballNav->moving = false;
-	    ballNav->stop = false;
-	    ballNav->start = true;
-	    ballNav->busy.data = true;
-        
-} 
-
-void enableCB(const std_msgs::Bool::ConstPtr& msg, BallNav* ballNav)
-{
-	    ballNav->enabled = !(msg->data); 
-} 
 
 int main(int argc, char **argv)
 {
@@ -51,108 +10,118 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "command_node");
     ros::NodeHandle node;
      
-    TurtleBotCommand turtleBot(node);
-
-    BallNav ballNav;
-    ballNav.linearVelocity = 0;
-    ballNav.angularVelocity = 0;
-    ballNav.distance = 0;
-    ballNav.angle = 0;
-    ballNav.busy.data = false;
-    ballNav.drop = false;
-    ballNav.turning = false;
-    ballNav.moving = false;
-    ballNav.stop = true;
-    ballNav.start = false;
-    ballNav.enabled = true;
+    TurtleBotCommand turtlebotCommand(node);
     
-    ros::Subscriber subBallPos = node.subscribe<turtlebot_proj_nav::command>("/nav/ball_reference", 1, boost::bind(updateBallCB, _1, &ballNav));
-    ros::Subscriber subCommandState = node.subscribe<std_msgs::Bool>("/nav/command/state", 1, boost::bind(enableCB, _1, &ballNav));
-    ros::Publisher pubCommandState = node.advertise<std_msgs::Bool>("/nav/command_busy", 1);
-       	    
     ros::WallTime startTime;
     ros::WallDuration duration;
+       	    
+    int commandCurrentState = 0;
     
     ros::Rate r(FREQ); 
 
     while(ros::ok())
 	{
-	    pubCommandState.publish(ballNav.busy);
 	    
-	    if(ballNav.enabled == true)
-	    {
-	        if(ballNav.start) 
-		    {
-		           
-                    if(ballNav.turning) 
-                        {
-                            if(ballNav.angularVelocity ==0 || ballNav.angle == 0) 
-                            {
-                                duration = ros::WallDuration(0);
-                            }
-                            else 
-                            {
-                                if (ballNav.angularVelocity<0) duration = ros::WallDuration(-ballNav.angle/ballNav.angularVelocity);
-                                else duration = ros::WallDuration(ballNav.angle/ballNav.angularVelocity);
-                            }
-                        }
-                        
-                    else 
-                        {
-                            if(ballNav.linearVelocity == 0 || ballNav.distance == 0) 
-                            {
-                                duration = ros::WallDuration(0);
-                            }
-                            else 
-                            {
-                                if (ballNav.linearVelocity<0) duration = ros::WallDuration(-ballNav.distance/ballNav.linearVelocity);
-                                else duration = ros::WallDuration(ballNav.distance/ballNav.linearVelocity);
-                            }
-                        }
-                      
+	    switch (commandCurrentState)
+        {
+            ros::spinOnce();
+            		
+            //Command enable
+            case 0:
+                
+                if(turtlebotCommand.commandEnabled())
+                {
+                    ROS_INFO("Command enabled...");
+                    commandCurrentState = 1;
+                }
+                break;
+            
+            //Start
+            case 1:
+                
+                if(turtlebotCommand.start())
+                {
+                    ROS_INFO("Mouvement asked...");
+                    commandCurrentState = 2;
+                }
+                break;
+                
+            //Durations
+            case 2:
+                
+                if(turtlebotCommand.turtleBotTurning())
+                {
+                    ROS_INFO("Preparation for turning...");
+                    duration = turtlebotCommand.turningDuration();
+                    commandCurrentState = 3;
+                }
+                else
+                {
+                    ROS_INFO("Preparation for moving...");
+                    duration = turtlebotCommand.movingDuration();
+                    commandCurrentState = 3;
+                }
                 ROS_INFO("Duration  : %lf\n",duration.toSec() );       
 		        startTime = ros::WallTime::now();
 		        ROS_INFO("Begin...\n");
-		        ballNav.start = false;
-		    }	    
-	        else if(ballNav.stop)
-		    {
-		        //ROS_INFO("STOP\n");
-		        turtleBot.stop();
-		        ballNav.busy.data = false;
-		    }
-		        
-	        if(ballNav.turning)
-		    {
-		        ROS_INFO("Turning... \n"); 
-		        turtleBot.turn(ballNav.angularVelocity*1.42);
-		    }
-	        else if(ballNav.moving)
-		    {
-		        ROS_INFO("Moving...\n"); 
-		        turtleBot.move(ballNav.linearVelocity);
-		    }
-		        
-	        if((ros::WallTime::now() - startTime) > duration && (ballNav.turning || ballNav.moving)) 
-		    {
-		        if(ballNav.turning && !ballNav.moving)
+                break;
+                
+            //Mouvement
+            case 3:
+                if(turtlebotCommand.turtleBotTurning())
+                {
+                    ROS_INFO("Turning... \n"); 
+		            turtlebotCommand.turn();
+                    commandCurrentState = 3;
+                }
+                else if(turtlebotCommand.turtleBotMoving())
+                {
+                    ROS_INFO("Moving...\n"); 
+		            turtlebotCommand.move();
+                    commandCurrentState = 3;
+                }
+                else if((ros::WallTime::now() - startTime) > duration)
+                {
+                    ROS_INFO("Duration over...\n");
+                    commandCurrentState = 4;
+                }
+                break; 
+                
+            //Duration over
+            case 4:
+                
+                if(turtlebotCommand.turtleBotTurning() && !turtlebotCommand.turtleBotMoving())
 			    {
 			        ROS_INFO( "Turning finished...\n");
-			        ballNav.turning = false;
-			        ballNav.moving = true;
-			        ballNav.start = true;
-			        turtleBot.stop();
+			        turtlebotCommand.turningOver();
+			        commandCurrentState = 1;
 			    }
 		        else
 		        {
-		            ROS_INFO( "All finished...\n");
-		            ballNav.moving = false;
-			        ballNav.stop = true;
-			        turtleBot.stop();
+		            ROS_INFO( "All mouvements finished...\n");
+		            turtlebotCommand.movingOver();
+		            commandCurrentState = 5;
 			    }
-		    }
-		}
-		ros::spinOnce();
+                break;
+                
+            case 5:
+                
+                if(turtlebotCommand.stop2())
+			    {
+			        turtlebotCommand.stop();
+		            commandCurrentState = 5;
+			    }
+		        else
+		        {
+		             commandCurrentState = 0;
+			    }
+                break;
+                      
+            default:
+                commandCurrentState = 5;
+                break;
+
+        }
 	    r.sleep();
 	}
 

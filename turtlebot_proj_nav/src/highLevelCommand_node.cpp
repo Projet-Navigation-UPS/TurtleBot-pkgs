@@ -20,28 +20,23 @@ int main(int argc, char **argv)
     while (ros::ok()) 
     {
         
-
+        ros::spinOnce();
         switch (hlcCurrentState)
         {
             //Perception
             case 0:
                 
-                if(HLC.marker()==1)
+                if(HLC.marker())
                 {
                     ROS_INFO("Marker seen...");
                     hlcCurrentState = 2;
                 }
-                else if(HLC.marker()==0) 
+                else
                 {
                     ROS_INFO("Seeking marker...");
                     HLC.seekMarker();
                     hlcCurrentState = 0;
-                }
-                else 
-                {
-                    ROS_INFO("Waiting for perception...");
-                    hlcCurrentState = 0;
-                }    
+                } 
                 break;
             
             //Marker
@@ -115,7 +110,7 @@ int main(int argc, char **argv)
 
         }
 
-        ros::spinOnce();
+
         loop_rate.sleep();
     }
     
