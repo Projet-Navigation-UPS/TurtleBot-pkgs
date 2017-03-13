@@ -190,7 +190,7 @@ void HighLevelCommand::sendDistanceAndAngleCommand(const float linearVelocity, c
 
 void HighLevelCommand::seekMarker()
 {
-    if (!commandBusy.data && (disableCommand.data == false))
+    if ((!commandBusy.data) && (disableCommand.data == false))
          {
          switch (seekingMarkerState)
             {
