@@ -126,6 +126,7 @@ bool HighLevelCommand::location()
 bool HighLevelCommand::finalGoal()
 { 
     if(closestMarkerId.data == GlobalGoalMarkerId.data) return true; 
+    else return false;
 }
 
 bool HighLevelCommand::intermediateGoal()
