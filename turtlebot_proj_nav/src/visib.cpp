@@ -10,6 +10,11 @@
 
 #define pi 3.14159265358979323846
 
+#include <fstream>
+ 
+using namespace std;
+
+
 int main(int argc, char **argv)
 {
     ROS_INFO("Launching visibility ...");
@@ -106,34 +111,58 @@ int main(int argc, char **argv)
     }*/
 
 
-	int n=20;
+	int n1=720;
+	int n2=700;
 	int m=2;
-	int x[]={10,2};
-    int y[]={10,2};     
-	float t[]={70,70}; 
+	int x[]={100,200};
+    	int y[]={100,200};     
+	float t[]={45,45}; 
 	
-	int i,j,k,l,o;
+	int i,j,k,l,o,p=1,q=1,r=0;
 	float dist=1.0 ;
-	int pix[n][n];
+	int pix[n1][n2];
 	int v[m][m];
 	float yn[m];
-    float angle[]={0.0,0.0};
-	float alphamax[]={70,70};
-	float distancemax=4.0;
-	float distancemin=0.0;	
-	
+    	float angle[]={0.0,0.0};
+	float alphamax[]={10,20};
+	int distancemax=40;
+	int distancemin=10;
+
+	float distancecm=130;
+	//1px = 0.494134897 cm
+	// x px = 337cm
+	distancemax=distancecm/0.494134897;
+	printf("Dmax = %d\n",distancemax);
+	distancemin=35/0.494134897;	
+	printf("Dmin = %d\n",distancemin);
+
     ros::Rate loop_rate(5); // 2Hz 
 
 	
 
-    while (ros::ok()) 
+    while (ros::ok() && r<1) 
     {
 		ros::spinOnce();
-		for (i=0;i<=n;i++) // line
+		
+		ofstream fichier("test3.pgm", ios::out | ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
+		if(fichier && (r<1))
+        		{	
+				printf("Création de la carte \n");
+				fichier << "P2" << endl;
+				fichier << "#Thibaut" << endl;
+				fichier << "#Carte de visibilite" << endl;
+				fichier << "720" << " " << "700" << endl;
+				fichier << "15" << endl;
+			}
+			else
+                		cerr << "Impossible d'ouvrir le fichier !" << endl;
+
+
+		for (i=0;i<=n2;i++) // line
 		{
-			for (j=0;j<=n;j++) // colonne
+			for (j=0;j<=n1;j++) // colonne
 			{
-				pix[i][j]=0;
+				pix[i][j]=15;
 				for(k=0;k<m;k++) // amers
 				{
 					
@@ -147,41 +176,45 @@ int main(int argc, char **argv)
 				angle[k]=acos(((i-x[k])+((j-y[k])*yn[k]))/(sqrt(pow((i-x[k]),2)+pow((j-y[k]),2))*(sqrt(1+pow(yn[k],2)))))*180/pi;					
 					//printf("Angle : %f \n", angle[k]);
 				dist = sqrt(pow(i-x[k],2)+pow(j-y[k],2));
-/*
-					//4eme quadrant
-					if(i<x[k] && j<y[k])
-						angle[k]=180-(asin((y[k]-j)/dist)*180/pi);
-					//3eme quadrant
-					else if (i>x[k] && j<y[k])
-						angle[k]=-180+(asin((y[k]-j)/dist))*180/pi;
-						else if(i==(x[k]+1) && j==(y[k]+1)) angle[k]=0;
-							else if(i==(x[k]+1) && j<y[k]) angle[k]=90;
-					//2eme quadrant
-					if(i<x[k] && j>y[k])
-						angle[k]=(asin((j-y[k])/dist)*180/pi);
-					//1er quadrant
-					else if (i>x[k] && j>y[k])
-						angle[k]=-(asin((j-y[k])/dist))*180/pi;
-						else if(i==(x[k]+1) && j==(y[k]+1)) angle[k]=0;
-							else if(i==(x[k]+1) && j>y[k]) angle[k]=-90;
-*/
-					//printf("Angle : %f", angle[k]);
-					//printf("\t theta : %f\n", t[k]);
 
 					if((dist<distancemax && dist>distancemin) && (angle[k]<alphamax[k] && angle[k]>-alphamax[k]))
-						pix[i][j]+=30;
+						pix[i][j]-=3;
 					else 
 						if(dist == 0.0)
-							pix[i][j]= 255;
+							pix[i][j]=0;
 					
 				}
-				if(i<n&&j<n)
-				printf("%d\t", pix[i][j]);
+				//if(i<n&&j<n)
+				//printf("%d ", pix[i][j]);
+				//printf(".");
+				
+				p+=1;
+				if(r<1)	
+					fichier << pix[i][j] << " ";
+				if(p>720 && (r<1))
+				{
+					fichier << endl;
+					p=0;
+					q+=1;
+				}
+				if(q>700 && (r<1))        		        
+        			{	
+					fichier.close();
+					printf("Carte genere correctement, fermeture du fichier, veuillez patienter environ 10 sec... \n");
+					r=1;
+					//return 0;
+				}
 			}
-			printf("\n");
+			//printf("\n");
 		}
 
-		printf("\n");
+		//printf("Ligne\n");
+		cout << "Ending visibility " << endl;
+		
+		//fichier.close();
+		//printf("Fermeture du fichier");
+		
+        
 				
 		loop_rate.sleep();
     }
