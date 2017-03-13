@@ -22,6 +22,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
     seekingMarkerState = 0;
+    disableCommand.data == false;
     commandBusy.data = true;
     markerSeen.data = true;
     locationAvailable.data = false;
@@ -46,6 +47,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
     seekingMarkerState = 0;
+    disableCommand.data == false;
     commandBusy.data = true;
     markerSeen.data = false;
     locationAvailable.data = false;
@@ -190,6 +192,8 @@ void HighLevelCommand::sendDistanceAndAngleCommand(const float linearVelocity, c
 
 void HighLevelCommand::seekMarker()
 {
+    std::cout<<commandBusy<<std::endl;
+    std::cout<<(!commandBusy.data) && (disableCommand.data == false)<<std::endl;
     if ((!commandBusy.data) && (disableCommand.data == false))
          {
          switch (seekingMarkerState)
@@ -197,7 +201,7 @@ void HighLevelCommand::seekMarker()
                 case 0:
                     ROS_INFO("Turning left at Pi/3... ");
                     sendDistanceAndAngleCommand(0, 1, 0, PI/3);
-                    seekingMarkerState = 1;
+                    seekingMarkerState = 0;
                     break;
                 case 1:
                     ROS_INFO("Turning right at 2Pi/3... ");
