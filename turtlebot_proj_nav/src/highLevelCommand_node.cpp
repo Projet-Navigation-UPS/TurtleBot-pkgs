@@ -77,7 +77,7 @@ int main(int argc, char **argv)
             //Final goal reached    
             case 4:
                 ROS_INFO("Goal reached...");
-                HLC.playSound(SOUND_CLEANINGSTART);
+                HLC.playSound(SOUND_CLEANINGEND);
                 hlcCurrentState = 5;
                 break;
             

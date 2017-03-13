@@ -64,6 +64,7 @@ int main(int argc, char **argv)
     ballNav.moving = false;
     ballNav.stop = true;
     ballNav.start = false;
+    ballNav.enabled = true;
     
     ros::Subscriber subBallPos = node.subscribe<recherche_balle_tp1::command>("/nav/ball_reference", 1, boost::bind(updateBallCB, _1, &ballNav));
     ros::Subscriber subCommandState = node.subscribe<std_msgs::Bool>("/nav/command/state", 1, boost::bind(enableCB, _1, &ballNav));
@@ -76,7 +77,7 @@ int main(int argc, char **argv)
 
     while(ros::ok())
 	{
-	    
+	    ros::spinOnce();
 	    pubCommandState.publish(ballNav.busy);
 	    
 	    if(ballNav.enabled == true)
@@ -150,8 +151,6 @@ int main(int argc, char **argv)
 			    }
 		    }
 		}
-		
-	    ros::spinOnce();
 	    r.sleep();
 	}
 
