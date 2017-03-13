@@ -201,7 +201,7 @@ void HighLevelCommand::seekMarker()
                 case 0:
                     ROS_INFO("Turning left at Pi/3... ");
                     sendDistanceAndAngleCommand(0, 1, 0, PI/3);
-                    seekingMarkerState = 0;
+                    seekingMarkerState = 1;
                     break;
                 case 1:
                     ROS_INFO("Turning right at 2Pi/3... ");
