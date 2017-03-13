@@ -35,10 +35,10 @@ private:
     ros::Subscriber subLocation, subGoalStatus, subMoveBaseActionFeedback, subMoveBaseActionGoal, subMoveBaseActionResult, subscriberCommandBusy;
 
     //Publishers
-    ros::Publisher pubGoal, pubSound, pubCommand;
+    ros::Publisher pubGoal, pubSound, pubCommand, pubCommandState;
 
     //Messages
-    std_msgs::Bool markerSeen, locationAvailable, goalReached, commandBusy;
+    std_msgs::Bool markerSeen, locationAvailable, goalReached, commandBusy, disableCommand;
     std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId;
     
     //States
@@ -83,6 +83,9 @@ public:
     void findGlobalGoal();
     void playSound(int sound);
     void sendDistanceAndAngleCommand(const float linearVelocity, const float angularVelocity, const float distance, const float angle);
+    
+    void disableSimpleCommand();
+    void enableSimpleCommand();
     
 
 };

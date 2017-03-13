@@ -19,6 +19,7 @@ typedef struct ballNav
     bool moving;
     bool stop;
     bool start;
+    bool enabled;
     std_msgs::Bool busy;
 
 } BallNav;
@@ -37,6 +38,11 @@ void updateBallCB(const recherche_balle_tp1::command::ConstPtr& msg, BallNav* ba
 	    ballNav->start = true;
 	    ballNav->busy.data = true;
         
+} 
+
+void enableCB(const std_msgs::Bool::ConstPtr& msg, BallNav* ballNav)
+{
+	    ballNav->enabled = !(msg->data); 
 } 
 
 int main(int argc, char **argv)
@@ -60,6 +66,7 @@ int main(int argc, char **argv)
     ballNav.start = false;
     
     ros::Subscriber subBallPos = node.subscribe<recherche_balle_tp1::command>("/nav/ball_reference", 1, boost::bind(updateBallCB, _1, &ballNav));
+    ros::Subscriber subCommandState = node.subscribe<std_msgs::Bool>("/nav/command/state", 1, boost::bind(enableCB, _1, &ballNav));
     ros::Publisher pubCommandState = node.advertise<std_msgs::Bool>("/nav/command_busy", 1);
        	    
     ros::WallTime startTime;
@@ -71,76 +78,78 @@ int main(int argc, char **argv)
 	{
 	    
 	    pubCommandState.publish(ballNav.busy);
-	
-	    if(ballNav.start) 
-		{
-		       
-                if(ballNav.turning) 
-                    {
-                        if(ballNav.angularVelocity ==0 || ballNav.angle ==0) 
-                        {
-                            duration = ros::WallDuration(0);
-                        }
-                        else 
-                        {
-                            if (ballNav.angularVelocity<0) duration = ros::WallDuration(-ballNav.angle/ballNav.angularVelocity);
-                            else duration = ros::WallDuration(ballNav.angle/ballNav.angularVelocity);
-                        }
-                    }
-                    
-                else 
-                    {
-                        if(ballNav.linearVelocity == 0 || ballNav.distance == 0) 
-                        {
-                            duration = ros::WallDuration(0);
-                        }
-                        else 
-                        {
-                            if (ballNav.linearVelocity<0) duration = ros::WallDuration(-ballNav.distance/ballNav.linearVelocity);
-                            else duration = ros::WallDuration(ballNav.distance/ballNav.linearVelocity);
-                        }
-                    }
-                  
-            ROS_INFO("Duration  : %lf\n",duration.toSec() );       
-		    startTime = ros::WallTime::now();
-		    ROS_INFO("Begin\n");
-		    ballNav.start = false;
-		}	    
-	    else if(ballNav.stop)
-		{
-		    //ROS_INFO("STOP\n");
-		    turtleBot.stop();
-		    ballNav.busy.data = false;
-		}
-		    
-	    if(ballNav.turning)
-		{
-		    ROS_INFO("Turning... \n"); 
-		    turtleBot.turn(ballNav.angularVelocity*1.42);
-		}
-	    else if(ballNav.moving)
-		{
-		    ROS_INFO("Moving...\n"); 
-		    turtleBot.move(ballNav.linearVelocity);
-		}
-		    
-	    if((ros::WallTime::now() - startTime) > duration && (ballNav.turning || ballNav.moving)) 
-		{
-		    if(ballNav.turning && !ballNav.moving)
-			{
-			    ROS_INFO( "Turning finished\n");
-			    ballNav.turning = false;
-			    ballNav.moving = true;
-			    ballNav.start = true;
-			}
-		    else
+	    
+	    if(ballNav.enabled == true)
+	    {
+	        if(ballNav.start) 
 		    {
-		        ROS_INFO( "All finished\n");
-		        ballNav.moving = false;
-			    ballNav.stop = true;
-			}
+		           
+                    if(ballNav.turning) 
+                        {
+                            if(ballNav.angularVelocity ==0 || ballNav.angle == 0) 
+                            {
+                                duration = ros::WallDuration(0);
+                            }
+                            else 
+                            {
+                                if (ballNav.angularVelocity<0) duration = ros::WallDuration(-ballNav.angle/ballNav.angularVelocity);
+                                else duration = ros::WallDuration(ballNav.angle/ballNav.angularVelocity);
+                            }
+                        }
+                        
+                    else 
+                        {
+                            if(ballNav.linearVelocity == 0 || ballNav.distance == 0) 
+                            {
+                                duration = ros::WallDuration(0);
+                            }
+                            else 
+                            {
+                                if (ballNav.linearVelocity<0) duration = ros::WallDuration(-ballNav.distance/ballNav.linearVelocity);
+                                else duration = ros::WallDuration(ballNav.distance/ballNav.linearVelocity);
+                            }
+                        }
+                      
+                ROS_INFO("Duration  : %lf\n",duration.toSec() );       
+		        startTime = ros::WallTime::now();
+		        ROS_INFO("Begin\n");
+		        ballNav.start = false;
+		    }	    
+	        else if(ballNav.stop)
+		    {
+		        //ROS_INFO("STOP\n");
+		        turtleBot.stop();
+		        ballNav.busy.data = false;
+		    }
+		        
+	        if(ballNav.turning)
+		    {
+		        ROS_INFO("Turning... \n"); 
+		        turtleBot.turn(ballNav.angularVelocity*1.42);
+		    }
+	        else if(ballNav.moving)
+		    {
+		        ROS_INFO("Moving...\n"); 
+		        turtleBot.move(ballNav.linearVelocity);
+		    }
+		        
+	        if((ros::WallTime::now() - startTime) > duration && (ballNav.turning || ballNav.moving)) 
+		    {
+		        if(ballNav.turning && !ballNav.moving)
+			    {
+			        ROS_INFO( "Turning finished\n");
+			        ballNav.turning = false;
+			        ballNav.moving = true;
+			        ballNav.start = true;
+			    }
+		        else
+		        {
+		            ROS_INFO( "All finished\n");
+		            ballNav.moving = false;
+			        ballNav.stop = true;
+			    }
+		    }
 		}
-		
 		
 	    ros::spinOnce();
 	    r.sleep();

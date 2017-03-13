@@ -16,6 +16,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
 
     //Publishers
+    pubCommandState(node.advertise<std_msgs::Bool>("/nav/command/state", 1)),
     pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/ball_reference", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
@@ -39,13 +40,14 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
 
     //Publishers
+    pubCommandState(node.advertise<std_msgs::Bool>("/command/state", 1)),
     pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/ball_reference", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
     seekingMarkerState = 0;
     commandBusy.data = true;
-    markerSeen.data = true;
+    markerSeen.data = false;
     locationAvailable.data = false;
     goalReached.data = false;
     closestMarkerId.data = 0;
@@ -117,6 +119,8 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
             }
         }
     }
+    
+    enableSimpleCommand();
 }
 void HighLevelCommand::callbackMoveBaseActionFeedback(const move_base_msgs::MoveBaseActionFeedback& msg)
 {
@@ -236,6 +240,7 @@ void HighLevelCommand::seekMarker()
 
 void HighLevelCommand::sendGoal()
 {
+    disableSimpleCommand();
     goalReached.data = false;
     
     NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
@@ -255,6 +260,20 @@ void HighLevelCommand::sendGoal()
 
 void HighLevelCommand::findGlobalGoal()
 {
+    
+}
+
+void HighLevelCommand::disableSimpleCommand()
+{
+    disableCommand.data = true;
+    pubCommandState.publish(disableCommand);
+    
+}
+
+void HighLevelCommand::enableSimpleCommand()
+{
+    disableCommand.data = false;
+    pubCommandState.publish(disableCommand);
     
 }
 
