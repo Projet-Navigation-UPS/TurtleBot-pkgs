@@ -122,6 +122,7 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
         }
     }
     enableSimpleCommand();
+    seekingMarkerState = 0;
 }
 void HighLevelCommand::callbackMoveBaseActionFeedback(const move_base_msgs::MoveBaseActionFeedback& msg)
 {
@@ -139,9 +140,9 @@ void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBase
 
 
 //States
-bool HighLevelCommand::marker()
+int HighLevelCommand::marker()
 {
-    return markerSeen.data;
+    return markerSeen.data;  
 }
 
 bool HighLevelCommand::location()
@@ -193,14 +194,19 @@ void HighLevelCommand::sendDistanceAndAngleCommand(const float linearVelocity, c
 void HighLevelCommand::seekMarker()
 {
     std::cout<<!commandBusy.data<<std::endl;
-    std::cout<<(int)((!(commandBusy.data)) && (disableCommand.data == false))<<std::endl;
     if ((!commandBusy.data) && (disableCommand.data == false))
          {
+         commandBusy.data = true;
          switch (seekingMarkerState)
             {
                 case 0:
                     ROS_INFO("Turning left at Pi/3... ");
                     sendDistanceAndAngleCommand(0, 1, 0, PI/3);
+                    seekingMarkerState = 1;
+                    break;
+                case 1:
+                    ROS_INFO("Perception... ");
+                    
                     seekingMarkerState = 1;
                     break;
                 case 1:
@@ -226,7 +232,7 @@ void HighLevelCommand::seekMarker()
                 case 5:
                     ROS_INFO("Turning right at 2Pi... ");
                     sendDistanceAndAngleCommand(0, -1, 0, 2*PI);
-                    seekingMarkerState = 1;
+                    seekingMarkerState = 6;
                     break;
                 case 6:
                     ROS_INFO("Abort seeking... ");
@@ -245,19 +251,14 @@ void HighLevelCommand::sendGoal()
 {
     disableSimpleCommand();
     goalReached.data = false;
-    
     NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
-
     currentGoal.header.seq = 1;
     currentGoal.header.stamp = ros::Time::now();
     currentGoal.header.frame_id = "map";
-    
     currentGoal.pose.position.x = marker.x;    
     currentGoal.pose.position.y = marker.y;    
-        
     currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
     currentGoal.pose.orientation = currentLocation.pose.pose.orientation;
-    
     pubGoal.publish(currentGoal);
 }
 
