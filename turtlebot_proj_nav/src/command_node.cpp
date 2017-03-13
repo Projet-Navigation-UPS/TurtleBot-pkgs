@@ -1,6 +1,6 @@
 #include "ros/ros.h"
 #include "TurtleBotCommand.hpp"
-#include "command.h"
+#include "turtlebot_proj_nav/command.h"
 #include "std_msgs/Bool.h"
 
 #include <cmath>
@@ -24,7 +24,7 @@ typedef struct ballNav
 
 } BallNav;
 
-void updateBallCB(const recherche_balle_tp1::command::ConstPtr& msg, BallNav* ballNav)
+void updateBallCB(const turtlebot_proj_nav::command::ConstPtr& msg, BallNav* ballNav)
 {
         ROS_INFO("COMMAND RECEIVED !");
         //std::cout<<*msg<<std::endl;
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
     ballNav.start = false;
     ballNav.enabled = true;
     
-    ros::Subscriber subBallPos = node.subscribe<recherche_balle_tp1::command>("/nav/ball_reference", 1, boost::bind(updateBallCB, _1, &ballNav));
+    ros::Subscriber subBallPos = node.subscribe<turtlebot_proj_nav::command>("/nav/ball_reference", 1, boost::bind(updateBallCB, _1, &ballNav));
     ros::Subscriber subCommandState = node.subscribe<std_msgs::Bool>("/nav/command/state", 1, boost::bind(enableCB, _1, &ballNav));
     ros::Publisher pubCommandState = node.advertise<std_msgs::Bool>("/nav/command_busy", 1);
        	    
@@ -77,7 +77,6 @@ int main(int argc, char **argv)
 
     while(ros::ok())
 	{
-	    ros::spinOnce();
 	    pubCommandState.publish(ballNav.busy);
 	    
 	    if(ballNav.enabled == true)
@@ -113,7 +112,7 @@ int main(int argc, char **argv)
                       
                 ROS_INFO("Duration  : %lf\n",duration.toSec() );       
 		        startTime = ros::WallTime::now();
-		        ROS_INFO("Begin\n");
+		        ROS_INFO("Begin...\n");
 		        ballNav.start = false;
 		    }	    
 	        else if(ballNav.stop)
@@ -138,19 +137,22 @@ int main(int argc, char **argv)
 		    {
 		        if(ballNav.turning && !ballNav.moving)
 			    {
-			        ROS_INFO( "Turning finished\n");
+			        ROS_INFO( "Turning finished...\n");
 			        ballNav.turning = false;
 			        ballNav.moving = true;
 			        ballNav.start = true;
+			        turtleBot.stop();
 			    }
 		        else
 		        {
-		            ROS_INFO( "All finished\n");
+		            ROS_INFO( "All finished...\n");
 		            ballNav.moving = false;
 			        ballNav.stop = true;
+			        turtleBot.stop();
 			    }
 		    }
 		}
+		ros::spinOnce();
 	    r.sleep();
 	}
 
