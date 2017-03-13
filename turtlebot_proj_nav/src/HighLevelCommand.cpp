@@ -140,7 +140,7 @@ void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBase
 
 
 //States
-int HighLevelCommand::marker()
+bool HighLevelCommand::marker()
 {
     return markerSeen.data;  
 }
@@ -196,17 +196,12 @@ void HighLevelCommand::seekMarker()
     std::cout<<!commandBusy.data<<std::endl;
     if ((!commandBusy.data) && (disableCommand.data == false))
          {
-         commandBusy.data = true;
+         
          switch (seekingMarkerState)
             {
                 case 0:
                     ROS_INFO("Turning left at Pi/3... ");
                     sendDistanceAndAngleCommand(0, 1, 0, PI/3);
-                    seekingMarkerState = 1;
-                    break;
-                case 1:
-                    ROS_INFO("Perception... ");
-                    
                     seekingMarkerState = 1;
                     break;
                 case 1:
