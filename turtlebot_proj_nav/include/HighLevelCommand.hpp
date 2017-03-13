@@ -14,6 +14,7 @@
 #include <tf/transform_listener.h>
 #include <string>
 #include "graph.hpp"
+#include "turtlebot_proj_nav/command.h"
 
 #define SOUND_ON 0
 #define SOUND_OFF 1
@@ -23,12 +24,7 @@
 #define SOUND_CLEANINGSTART 5
 #define SOUND_CLEANINGEND 6
 
-#define X_GOAL1 2
-#define Y_GOAL1 2
-#define X_GOAL2 2
-#define Y_GOAL2 4
-#define X_GOAL3 4
-#define Y_GOAL3 4
+#define PI 3.1416
 
 class HighLevelCommand 
 {
@@ -36,14 +32,17 @@ class HighLevelCommand
 private:
     
     //Subscrbers
-    ros::Subscriber subLocation, subGoalStatus, subMoveBaseActionFeedback, subMoveBaseActionGoal, subMoveBaseActionResult;
-    
+    ros::Subscriber subLocation, subGoalStatus, subMoveBaseActionFeedback, subMoveBaseActionGoal, subMoveBaseActionResult, subscriberCommandBusy;
+
     //Publishers
-    ros::Publisher pubGoal, pubSound;
+    ros::Publisher pubGoal, pubSound, pubCommand;
 
     //Messages
-    std_msgs::Bool locationAvailable, goalReached;
+    std_msgs::Bool markerSeen, locationAvailable, goalReached, commandBusy;
     std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId;
+    
+    //States
+    int seekingMarkerState;
     
     //TF
     tf::TransformListener tfListener;
@@ -59,6 +58,7 @@ private:
     
     geometry_msgs::PoseStamped currentGoal;
     
+    void callbackCommandBusy(const std_msgs::Bool& msg);
     void callbackLocation(const nav_msgs::Odometry& msg);
     void callbackGoalStatus(const actionlib_msgs::GoalStatusArray& msg);
     void callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg);
@@ -71,6 +71,7 @@ public:
     HighLevelCommand(ros::NodeHandle& node, int finalGoal);
     ~HighLevelCommand();
     
+    bool marker();
     bool location();
     bool finalGoal();
     bool intermediateGoal();
@@ -78,8 +79,10 @@ public:
     float distance(float x1, float y1, float x2, float y2);
     
     void sendGoal();
+    void seekMarker();
     void findGlobalGoal();
     void playSound(int sound);
+    void sendDistanceAndAngleCommand(const float linearVelocity, const float angularVelocity, const float distance, const float angle);
     
 
 };

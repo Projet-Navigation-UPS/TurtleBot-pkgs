@@ -1,12 +1,14 @@
 #include "HighLevelCommand.hpp"
-
+#include "command.h"
 #include <iostream>
 #include <vector>
 #include <cmath> 
 
 
+
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     //Subsribers
+    subscriberCommandBusy(node.subscribe("/nav/command_busy", 1, &HighLevelCommand::callbackCommandBusy,this)),
     subLocation(node.subscribe("/odom", 1, &HighLevelCommand::callbackLocation,this)),
     subGoalStatus(node.subscribe("/move_base/status", 1, &HighLevelCommand::callbackGoalStatus,this)),
     subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &HighLevelCommand::callbackMoveBaseActionFeedback,this)),
@@ -14,9 +16,13 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
 
     //Publishers
+    pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/ball_reference", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
+    seekingMarkerState = 0;
+    commandBusy.data = true;
+    markerSeen.data = true;
     locationAvailable.data = false;
     goalReached.data = false;
     closestMarkerId.data = 0;
@@ -25,6 +31,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     //Subsribers
+    subscriberCommandBusy(node.subscribe("/nav/command_busy", 1, &HighLevelCommand::callbackCommandBusy,this)),
     subLocation(node.subscribe("/odom", 1, &HighLevelCommand::callbackLocation,this)),
     subGoalStatus(node.subscribe("/move_base/status", 1, &HighLevelCommand::callbackGoalStatus,this)),
     subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &HighLevelCommand::callbackMoveBaseActionFeedback,this)),
@@ -32,9 +39,13 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
 
     //Publishers
+    pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/ball_reference", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
+    seekingMarkerState = 0;
+    commandBusy.data = true;
+    markerSeen.data = true;
     locationAvailable.data = false;
     goalReached.data = false;
     closestMarkerId.data = 0;
@@ -45,6 +56,11 @@ HighLevelCommand::~HighLevelCommand(){}
 
 
 //Callbacks
+void HighLevelCommand::callbackCommandBusy(const std_msgs::Bool& msg)
+{
+    commandBusy = msg;
+}
+
 void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
 {
     //std::cout<<"MESSAGE"<<std::endl;
@@ -118,6 +134,11 @@ void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBase
 
 
 //States
+bool HighLevelCommand::marker()
+{
+    return markerSeen.data;
+}
+
 bool HighLevelCommand::location()
 {
     return locationAvailable.data;
@@ -142,15 +163,77 @@ float HighLevelCommand::distance(float x1, float y1, float x2, float y2)
 }
 
 
-//Sound Commands
+//Hight Level Commands
 void HighLevelCommand::playSound(int sound)
 {
     mobileBaseCommandsSound.value = sound;
     pubSound.publish(mobileBaseCommandsSound);
 }
 
+void HighLevelCommand::sendDistanceAndAngleCommand(const float linearVelocity, const float angularVelocity, const float distance, const float angle)
+{
+    if (!commandBusy.data)
+    {
+        turtlebot_proj_nav::command msg;
+        msg.linearVelocity = linearVelocity;
+        msg.angularVelocity = angularVelocity;
+        msg.distance = distance;
+        msg.angle = angle;
+        pubCommand.publish(msg);
+        ROS_INFO("Command sent...");
+    }
+    else ROS_INFO("Command busy...");
+}
 
-//Hight Level Commands
+void HighLevelCommand::seekMarker()
+{
+    if (!commandBusy.data)
+         {
+         switch (seekingMarkerState)
+            {
+                case 0:
+                    ROS_INFO("Turning left at Pi/3... \n");
+                    sendDistanceAndAngleCommand(0, 1, 0, PI/3);
+                    seekingMarkerState = 1;
+                    break;
+                case 1:
+                    ROS_INFO("Turning right at 2Pi/3... \n");
+                    sendDistanceAndAngleCommand(0, -1, 0, 2*PI/3);
+                    seekingMarkerState = 2;
+                    break;
+                case 2:
+                    ROS_INFO("Turning left at Pi... \n");
+                    sendDistanceAndAngleCommand(0, 1, 0, PI);
+                    seekingMarkerState = 3;
+                    break;
+                case 3:
+                    ROS_INFO("Turning right at 4Pi/3... \n");
+                    sendDistanceAndAngleCommand(0, -1, 0, 4*PI/3);
+                    seekingMarkerState = 4;
+                    break;
+                case 4:
+                    ROS_INFO("Turning left at de 5Pi/3... \n");
+                    sendDistanceAndAngleCommand(0, 1, 0, 5*PI/3);
+                    seekingMarkerState = 5;
+                    break;
+                case 5:
+                    ROS_INFO("Turning right at 2Pi... \n");
+                    sendDistanceAndAngleCommand(0, -1, 0, 2*PI);
+                    seekingMarkerState = 6;
+                    break;
+                case 6:
+                    ROS_INFO("Abort seeking... \n");
+                    break;
+                default:
+                    ROS_INFO("Abort seeking... \n");
+                    break;
+
+            }
+         }
+    else ROS_INFO("Command busy... \n");
+}
+
+
 void HighLevelCommand::sendGoal()
 {
     goalReached.data = false;

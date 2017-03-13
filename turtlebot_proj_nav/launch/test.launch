@@ -29,6 +29,9 @@
   <include file="$(find turtlebot_proj_nav)/launch/includes/move_base.launch.xml">
     <arg name="custom_param_file" value="$(arg custom_param_file)"/>
   </include>
+  
+  <!-- Simple command -->
+  <node pkg="turtlebot_proj_nav" name="command" type="command_node"/>
 
 </launch>
 

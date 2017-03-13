@@ -23,49 +23,66 @@ int main(int argc, char **argv)
 
         switch (hlcCurrentState)
         {
-            //Location
+            //Marker
             case 0:
                 
-                if(HLC.location())
+                if(HLC.marker())
                 {
-                    ROS_INFO("Location ready...");
+                    ROS_INFO("Marker seen...");
                     hlcCurrentState = 1;
                 }
                 else 
                 {
-                    ROS_INFO("Wait for location...");
+                    ROS_INFO("Seeking marker...");
+                    HLC.seekMarker();
                     hlcCurrentState = 0;
                 }    
                 break;
             
-            //Goals    
+            //Location
             case 1:
+                
+                if(HLC.location())
+                {
+                    ROS_INFO("Location ready...");
+                    hlcCurrentState = 2;
+                }
+                else 
+                {
+                    ROS_INFO("Wait for location...");
+                    hlcCurrentState = 1;
+                }    
+                break;
+            
+            //Goals    
+            case 2:
                 if(HLC.finalGoal())
                 {
-                    hlcCurrentState = 3;
+                    hlcCurrentState = 4;
                 }
                 else 
                 {   
                     ROS_INFO("Send goal...");
                     HLC.sendGoal();
-                    hlcCurrentState = 2;
+                    hlcCurrentState = 3;
                 }
                 break;
             
             //Movement    
-            case 2:
+            case 3:
                 if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
                 else hlcCurrentState = 0;
                 break;
             
             //Final goal reached    
-            case 3:
+            case 4:
                 ROS_INFO("Goal reached...");
-                hlcCurrentState = 4;
+                HLC.playSound(SOUND_CLEANINGSTART);
+                hlcCurrentState = 5;
                 break;
             
             //Find new global goal
-            case 4:
+            case 5:
                 ROS_INFO("Choosing new global Goal...");
                 hlcCurrentState = 0;
                 break;    
