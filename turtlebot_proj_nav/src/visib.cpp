@@ -144,7 +144,8 @@ int main(int argc, char **argv)
     {
 		ros::spinOnce();
 		
-		ofstream fichier("test3.pgm", ios::out | ios::trunc);  // ouverture en écriture avec effacement du fichier ouvert
+		ofstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/maps/visib.pgm", ios::out | ios::trunc);  
+		// ouverture en écriture avec effacement du fichier ouvert
 		if(fichier && (r<1))
         		{	
 				printf("Création de la carte \n");
