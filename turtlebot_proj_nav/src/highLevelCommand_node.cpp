@@ -43,7 +43,7 @@ int main(int argc, char **argv)
             case 1:
                 ROS_INFO("AskForMarker...");
                 HLC.askForMarker();
-                hlcCurrentState = 0;    
+                //hlcCurrentState = 0;    
                 break;
             
             //Location
