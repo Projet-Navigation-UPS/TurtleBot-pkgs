@@ -21,10 +21,10 @@ int main(int argc, char **argv)
 
     while(ros::ok())
 	{
-	    
+	    ros::spinOnce();
 	    switch (commandCurrentState)
         {
-            ros::spinOnce();
+            
             		
             //Command enable
             case 0:
@@ -61,30 +61,31 @@ int main(int argc, char **argv)
                     duration = turtlebotCommand.movingDuration();
                     commandCurrentState = 3;
                 }
-                ROS_INFO("Duration  : %lf\n",duration.toSec() );       
+                ROS_INFO("Duration  : %lf",duration.toSec() );       
 		        startTime = ros::WallTime::now();
-		        ROS_INFO("Begin...\n");
+		        ROS_INFO("Begin...");
                 break;
                 
             //Mouvement
             case 3:
-                if(turtlebotCommand.turtleBotTurning())
+                if((ros::WallTime::now() - startTime) > duration)
                 {
-                    ROS_INFO("Turning... \n"); 
+                    ROS_INFO("Duration over...");
+                    commandCurrentState = 4;
+                }
+                else if(turtlebotCommand.turtleBotTurning())
+                {
+                    ROS_INFO("Turning... "); 
 		            turtlebotCommand.turn();
                     commandCurrentState = 3;
                 }
                 else if(turtlebotCommand.turtleBotMoving())
                 {
-                    ROS_INFO("Moving...\n"); 
+                    ROS_INFO("Moving..."); 
 		            turtlebotCommand.move();
                     commandCurrentState = 3;
                 }
-                else if((ros::WallTime::now() - startTime) > duration)
-                {
-                    ROS_INFO("Duration over...\n");
-                    commandCurrentState = 4;
-                }
+                
                 break; 
                 
             //Duration over
@@ -92,28 +93,15 @@ int main(int argc, char **argv)
                 
                 if(turtlebotCommand.turtleBotTurning() && !turtlebotCommand.turtleBotMoving())
 			    {
-			        ROS_INFO( "Turning finished...\n");
+			        ROS_INFO( "Turning finished...");
 			        turtlebotCommand.turningOver();
 			        commandCurrentState = 1;
 			    }
 		        else
 		        {
-		            ROS_INFO( "All mouvements finished...\n");
+		            ROS_INFO( "All mouvements finished...");
 		            turtlebotCommand.movingOver();
-		            commandCurrentState = 5;
-			    }
-                break;
-                
-            case 5:
-                
-                if(turtlebotCommand.stop2())
-			    {
-			        turtlebotCommand.stop();
-		            commandCurrentState = 5;
-			    }
-		        else
-		        {
-		             commandCurrentState = 0;
+		            commandCurrentState = 0;
 			    }
                 break;
                       
