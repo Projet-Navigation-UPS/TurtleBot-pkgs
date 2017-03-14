@@ -15,8 +15,9 @@
 int main(int argc, char* argv[])
 {
     
-    //Graph Graph_test = xmlToGraph("graph.xml");
-    NodeProperty n = nextNode(0, 3, "graph.xml");
+    Graph Graph_test = xmlToGraph("graph.xml");
+    //NodeProperty n = nextNode(0, 3, "graph.xml");
+	displayGraph(Graph_test);	
 	
 	return 0;
 }
