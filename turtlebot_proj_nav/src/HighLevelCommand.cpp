@@ -200,31 +200,41 @@ int HighLevelCommand::seekMarker()
      switch (seekingMarkerState)
         {
             case 0:
-                ROS_INFO("Turning left at Pi/3... ");
-                sendDistanceAndAngleCommand(0, 1, 0, PI/3);
+                ROS_INFO("Turning left at Pi/4... ");
+                sendDistanceAndAngleCommand(0, 1.5, 0, PI/4);
                 seekingMarkerState = 1;
                 break;
             case 1:
-                ROS_INFO("Turning right at 2Pi/3... ");
-                sendDistanceAndAngleCommand(0, -1, 0, 2*PI/3);
+                ROS_INFO("Turning right at Pi/2... ");
+                sendDistanceAndAngleCommand(0, -1.5, 0, PI/2);
                 seekingMarkerState = 2;
                 break;
             case 2:
-                ROS_INFO("Turning left at Pi... ");
-                sendDistanceAndAngleCommand(0, 1, 0, PI);
+                ROS_INFO("Turning left at 3Pi/4... ");
+                sendDistanceAndAngleCommand(0, 1.5, 0, 3*PI/4);
                 seekingMarkerState = 3;
                 break;
             case 3:
-                ROS_INFO("Turning right at 4Pi/3... ");
-                sendDistanceAndAngleCommand(0, -1, 0, 4*PI/3);
+                ROS_INFO("Turning right at Pi... ");
+                sendDistanceAndAngleCommand(0, -1.5, 0, PI);
                 seekingMarkerState = 4;
                 break;
             case 4:
-                ROS_INFO("Turning left at de 5Pi/3... ");
-                sendDistanceAndAngleCommand(0, 1, 0, 5*PI/3);
+                ROS_INFO("Turning left at de 5Pi/4... ");
+                sendDistanceAndAngleCommand(0, 1.5, 0, 5*PI/4);
                 seekingMarkerState = 5;
                 break;
             case 5:
+                ROS_INFO("Turning right at de 3Pi/2... ");
+                sendDistanceAndAngleCommand(0, -1.5, 0, 3*PI/2);
+                seekingMarkerState = 6;
+                break;
+            case 6:
+                ROS_INFO("Turning left at de 7Pi/4... ");
+                sendDistanceAndAngleCommand(0, 1.5, 0, 7*PI/4);
+                seekingMarkerState = 7;
+                break;
+            case 7:
                 ROS_INFO("Abort seeking... ");
                 break;
             default:
