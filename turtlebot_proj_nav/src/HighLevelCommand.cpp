@@ -66,12 +66,12 @@ HighLevelCommand::~HighLevelCommand(){}
 //Callbacks
 void HighLevelCommand::callbackCommandBusy(const std_msgs::Bool& msg)
 {
-    markerSeen = msg;
+    commandBusy = msg;
 }
 
 void HighLevelCommand::callbackMarkerSeen(const std_msgs::Bool& msg)
 {
-    commandBusy = msg;
+    markerSeen = msg;
 }
 
 void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
