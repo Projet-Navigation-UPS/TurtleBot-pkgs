@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     
     int hlcCurrentState;
     
-    hlcCurrentState = 1;
+    hlcCurrentState = -1;
 
     while (ros::ok()) 
     {
@@ -23,6 +23,12 @@ int main(int argc, char **argv)
         ros::spinOnce();
         switch (hlcCurrentState)
         {
+            //Init
+            case -1:
+                ROS_INFO("Init...");
+                hlcCurrentState = 1;    
+                break;
+        
             //Perception
             case 0:
                 
@@ -43,7 +49,7 @@ int main(int argc, char **argv)
             case 1:
                 ROS_INFO("AskForMarker...");
                 HLC.askForMarker();
-                //hlcCurrentState = 0;    
+                hlcCurrentState = 0;    
                 break;
             
             //Location
