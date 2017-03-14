@@ -79,7 +79,7 @@ public:
     float distance(float x1, float y1, float x2, float y2);
     
     void sendGoal();
-    void seekMarker();
+    int seekMarker();
     void findGlobalGoal();
     void playSound(int sound);
     void sendDistanceAndAngleCommand(const float linearVelocity, const float angularVelocity, const float distance, const float angle);

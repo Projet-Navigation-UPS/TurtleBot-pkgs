@@ -51,7 +51,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     GlobalGoalMarkerId.data = finalGoal;
     //disableCommand.data == false;
     commandBusy.data = true;
-    markerSeen.data = false;
+    markerSeen.data = true;
     locationAvailable.data = false;
     goalReached.data = false;
 }
@@ -191,54 +191,55 @@ void HighLevelCommand::sendDistanceAndAngleCommand(const float linearVelocity, c
     else ROS_INFO("Command busy...");
 }
 
-void HighLevelCommand::seekMarker()
+int HighLevelCommand::seekMarker()
 {
     //std::cout<<!commandBusy.data<<std::endl;
     if ((!commandBusy.data) /*&& (disableCommand.data == false)*/)
-         {
-         
-         switch (seekingMarkerState)
-            {
-                case 0:
-                    ROS_INFO("Turning left at Pi/3... ");
-                    sendDistanceAndAngleCommand(0, 1, 0, PI/3);
-                    seekingMarkerState = 1;
-                    break;
-                case 1:
-                    ROS_INFO("Turning right at 2Pi/3... ");
-                    sendDistanceAndAngleCommand(0, -1, 0, 2*PI/3);
-                    seekingMarkerState = 2;
-                    break;
-                case 2:
-                    ROS_INFO("Turning left at Pi... ");
-                    sendDistanceAndAngleCommand(0, 1, 0, PI);
-                    seekingMarkerState = 3;
-                    break;
-                case 3:
-                    ROS_INFO("Turning right at 4Pi/3... ");
-                    sendDistanceAndAngleCommand(0, -1, 0, 4*PI/3);
-                    seekingMarkerState = 4;
-                    break;
-                case 4:
-                    ROS_INFO("Turning left at de 5Pi/3... ");
-                    sendDistanceAndAngleCommand(0, 1, 0, 5*PI/3);
-                    seekingMarkerState = 5;
-                    break;
-                case 5:
-                    ROS_INFO("Turning right at 2Pi... ");
-                    sendDistanceAndAngleCommand(0, -1, 0, 2*PI);
-                    seekingMarkerState = 6;
-                    break;
-                case 6:
-                    ROS_INFO("Abort seeking... ");
-                    break;
-                default:
-                    ROS_INFO("Abort seeking... ");
-                    break;
+     {
+     
+     switch (seekingMarkerState)
+        {
+            case 0:
+                ROS_INFO("Turning left at Pi/3... ");
+                sendDistanceAndAngleCommand(0, 1, 0, PI/3);
+                seekingMarkerState = 1;
+                break;
+            case 1:
+                ROS_INFO("Turning right at 2Pi/3... ");
+                sendDistanceAndAngleCommand(0, -1, 0, 2*PI/3);
+                seekingMarkerState = 2;
+                break;
+            case 2:
+                ROS_INFO("Turning left at Pi... ");
+                sendDistanceAndAngleCommand(0, 1, 0, PI);
+                seekingMarkerState = 3;
+                break;
+            case 3:
+                ROS_INFO("Turning right at 4Pi/3... ");
+                sendDistanceAndAngleCommand(0, -1, 0, 4*PI/3);
+                seekingMarkerState = 4;
+                break;
+            case 4:
+                ROS_INFO("Turning left at de 5Pi/3... ");
+                sendDistanceAndAngleCommand(0, 1, 0, 5*PI/3);
+                seekingMarkerState = 5;
+                break;
+            case 5:
+                ROS_INFO("Abort seeking... ");
+                break;
+            default:
+                ROS_INFO("Abort seeking... ");
+                break;
 
-            }
-         }
-    else ROS_INFO("Command busy...");
+        }
+        return seekingMarkerState;
+     }
+    else 
+    {
+        ROS_INFO("Command busy...");
+        return -1;
+    }
+    
 }
 
 
