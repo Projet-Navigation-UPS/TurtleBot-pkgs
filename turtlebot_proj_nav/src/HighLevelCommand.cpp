@@ -151,7 +151,11 @@ void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBase
 //States
 bool HighLevelCommand::marker()
 {
-    if(markerSeen.data) seekingMarkerState=0;
+    if(markerSeen.data) 
+    {
+        playSound(SOUND_OFF);
+        seekingMarkerState=0;
+    }
     return markerSeen.data;  
 }
 
@@ -162,7 +166,11 @@ bool HighLevelCommand::location()
 
 bool HighLevelCommand::finalGoal()
 { 
-    if(closestMarkerId.data == GlobalGoalMarkerId.data) return true; 
+    if(closestMarkerId.data == GlobalGoalMarkerId.data) 
+    {
+        playSound(SOUND_CLEANINGEND);
+        return true;
+    } 
     else return false;
 }
 
