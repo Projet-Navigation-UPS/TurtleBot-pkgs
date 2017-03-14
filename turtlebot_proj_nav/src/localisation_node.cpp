@@ -3,10 +3,13 @@
 #include <tf/transform_listener.h>
 #include <std_msgs/Int8.h>
 #include <std_msgs/Empty.h>
+<<<<<<< HEAD
 #include <iostream>
 
 
 
+=======
+>>>>>>> path_planning
 
 int main(int argc, char** argv){
     ros::init(argc, argv, "localisation_node");
@@ -22,6 +25,7 @@ int main(int argc, char** argv){
     transform_empty.setRotation(q);
 
 
+<<<<<<< HEAD
     tf::Quaternion quad;    
 
     tf::Quaternion rot_y;
@@ -90,11 +94,34 @@ int main(int argc, char** argv){
             transform_markerRobot = transform_robotMarker.inverse();
             br.sendTransform(tf::StampedTransform(transform_markerRobot, ros::Time::now(), "/marker_0", "/res")); 
 
+=======
+    tf::Quaternion rot_y(1.0, 0.0, 0.0); 
+
+    bool reset_odom = false;
+
+    tf::Transform transform_markermap;    
+	tf::StampedTransform transform_markercamera ;	;
+    tf::Transform transform_mapodom = transform_empty;
+    
+    ros::Publisher pub_resetodom = node.advertise<std_msgs::Empty>("/mobile_base/commands/reset_odometry", 1000);   
+
+    ros::Rate loop_rate(5);
+    while(ros::ok())
+	{
+	    br.sendTransform(tf::StampedTransform(transform_empty, ros::Time::now(), "base_footprint", "base_link"));     
+
+	    try
+		{
+			li.lookupTransform("/camera_rgb_optical_frame", "/ar_marker_0", ros::Time(0), transform_markercamera);
+            transform_markercamera.setRotation(rot_y);
+			transform_markercamera.setData(transform_markercamera.inverse());
+>>>>>>> path_planning
 		    if(reset_odom)
 			{ 
 			    pub_resetodom.publish(std_msgs::Empty());
 			    reset_odom = false;
 			}
+<<<<<<< HEAD
 
             tf::Transform transform_mapRobot;
             transform_mapRobot = transform_mapMarker;
@@ -109,6 +136,19 @@ int main(int argc, char** argv){
 		    reset_odom = true;
 		}
 
+=======
+		    transform_markermap.setOrigin(transform_markercamera.getOrigin() + tf::Vector3(2.0,1.0,0.0));
+			transform_markermap.setRotation(transform_markercamera.getRotation());
+		    br.sendTransform(tf::StampedTransform(transform_markermap, ros::Time::now(), "map", "odom"));
+		    transform_mapodom = transform_markermap;
+		}
+        catch (tf::TransformException ex)
+		{
+		    br.sendTransform(tf::StampedTransform(transform_mapodom, ros::Time::now(), "map", "odom"));
+		    reset_odom = true;
+		}
+	    
+>>>>>>> path_planning
 	    ros::spinOnce();
 	    loop_rate.sleep();
 	}
