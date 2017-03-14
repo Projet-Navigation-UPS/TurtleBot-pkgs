@@ -18,9 +18,11 @@
 #include "move_base_msgs/MoveBaseAction.h"
 #include <tf/transform_listener.h>
 #include "turtlebot_proj_nav/command.h"
+#include "std_msgs/Bool.h"
+#include "std_msgs/Empty.h"
 
 
-
+bool go = false;
 
 /*void callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg)
 {
@@ -63,7 +65,10 @@ void callbackLocation(const nav_msgs::Odometry& msg)
     std::cout<<currentLocation<<std::endl;
 }*/
 
-
+void callbackAskForMarker(const std_msgs::Empty& msg)
+{
+    go = true;
+}
 
 int main(int argc, char **argv)
 {
@@ -84,8 +89,8 @@ int main(int argc, char **argv)
     ros::Subscriber subGoalStatusArray(node.subscribe("/move_base/status", 1, &callbackGoalStatusArray));
     ros::Subscriber subLocation(node.subscribe("/odom", 1, &callbackLocation));*/
     
-    ros::Publisher pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1));
-    
+    ros::Publisher pubMarkerSeen(node.advertise<std_msgs::Bool>("/nav/loca/markerSeen", 1));
+    ros::Subscriber subAskForMarker(node.subscribe("/nav/HLC/askForMarker", 1, &callbackAskForMarker));
 
     /*nav_msgs::Path path;
     geometry_msgs::PoseStamped pose1, pose2, pose3, goal;
@@ -163,16 +168,13 @@ int main(int argc, char **argv)
         //pubCmdFinished.publish(commandFinished);
         std::cout<<time<<std::endl;
         
-        if(time>1 && time <2)
+        if(go)
         {
             
-            turtlebot_proj_nav::command msg;
-            msg.linearVelocity = 0.2;
-            msg.angularVelocity = 1.5;
-            msg.distance = 0.2;
-            msg.angle = 3.14;
-            pubCommand.publish(msg);
-            ROS_INFO("Command sent...");
+            std_msgs::Bool msg;
+            msg.data = true;
+            pubMarkerSeen.publish(msg);
+            ROS_INFO("True sent...");
             
         
         }

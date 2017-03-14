@@ -14,10 +14,12 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &HighLevelCommand::callbackMoveBaseActionFeedback,this)),
     subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &HighLevelCommand::callbackMoveBaseActionGoal,this)),
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
+    subMarkerSeen(node.subscribe("/nav/loca/markerSeen", 1, &HighLevelCommand::callbackMarkerSeen,this)),
 
     //Publishers
     /*pubCommandState(node.advertise<std_msgs::Bool>("/nav/command/state", 1)),*/
     pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1)),
+    pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
@@ -26,7 +28,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     GlobalGoalMarkerId.data = 5;
     //disableCommand.data == false;
     commandBusy.data = true;
-    markerSeen.data = true;
+    markerSeen.data = false;
     locationAvailable.data = false;
     goalReached.data = false;
 }
@@ -39,10 +41,12 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &HighLevelCommand::callbackMoveBaseActionFeedback,this)),
     subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &HighLevelCommand::callbackMoveBaseActionGoal,this)),
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
+    subMarkerSeen(node.subscribe("/nav/loca/markerSeen", 1, &HighLevelCommand::callbackMarkerSeen,this)),
 
     //Publishers
-    pubCommandState(node.advertise<std_msgs::Bool>("/command/state", 1)),
+    /*pubCommandState(node.advertise<std_msgs::Bool>("/command/state", 1)),*/
     pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1)),
+    pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
@@ -61,6 +65,11 @@ HighLevelCommand::~HighLevelCommand(){}
 
 //Callbacks
 void HighLevelCommand::callbackCommandBusy(const std_msgs::Bool& msg)
+{
+    markerSeen = msg;
+}
+
+void HighLevelCommand::callbackMarkerSeen(const std_msgs::Bool& msg)
 {
     commandBusy = msg;
 }
@@ -142,6 +151,7 @@ void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBase
 //States
 bool HighLevelCommand::marker()
 {
+    if(markerSeen.data) seekingMarkerState=0;
     return markerSeen.data;  
 }
 
@@ -193,8 +203,7 @@ void HighLevelCommand::sendDistanceAndAngleCommand(const float linearVelocity, c
 
 int HighLevelCommand::seekMarker()
 {
-    //std::cout<<!commandBusy.data<<std::endl;
-    if ((!commandBusy.data) /*&& (disableCommand.data == false)*/)
+    if (!commandBusy.data)
      {
      
      switch (seekingMarkerState)
@@ -271,6 +280,12 @@ void HighLevelCommand::sendGoal()
 void HighLevelCommand::findGlobalGoal()
 {
     
+}
+
+void HighLevelCommand::askForMarker()
+{
+    std_msgs::Empty msg;
+    pubAskForMarker.publish(msg);
 }
 
 /*void HighLevelCommand::disableSimpleCommand()

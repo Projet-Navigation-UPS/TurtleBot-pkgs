@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     
     int hlcCurrentState;
     
-    hlcCurrentState = 0;
+    hlcCurrentState = 1;
 
     while (ros::ok()) 
     {
@@ -39,21 +39,12 @@ int main(int argc, char **argv)
                 } 
                 break;
             
-            //Marker
-            /*case 1:
-                
-                if(HLC.marker())
-                {
-                    ROS_INFO("Marker seen...");
-                    hlcCurrentState = 1;
-                }
-                else 
-                {
-                    ROS_INFO("Seeking marker...");
-                    HLC.seekMarker();
-                    hlcCurrentState = 6;
-                }    
-                break;*/
+            //AskForMarker
+            case 1:
+                ROS_INFO("AskForMarker...");
+                HLC.askForMarker();
+                hlcCurrentState = 0;    
+                break;
             
             //Location
             case 2:
