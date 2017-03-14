@@ -20,7 +20,7 @@ int main(int argc, char **argv)
     while (ros::ok()) 
     {
         
-        ros::spinOnce();
+        
         switch (hlcCurrentState)
         {
             //Perception
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
 
         }
 
-
+        ros::spinOnce();
         loop_rate.sleep();
     }
     

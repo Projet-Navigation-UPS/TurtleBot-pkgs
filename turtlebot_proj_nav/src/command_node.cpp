@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 
     while(ros::ok())
 	{
-	    ros::spinOnce();
+	    
 	    switch (commandCurrentState)
         {
             
@@ -111,6 +111,7 @@ int main(int argc, char **argv)
 
         }
         turtlebotCommand.publishCommandState();
+        ros::spinOnce();
 	    r.sleep();
 	}
 
