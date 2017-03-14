@@ -65,7 +65,7 @@ void callbackLocation(const nav_msgs::Odometry& msg)
     std::cout<<currentLocation<<std::endl;
 }*/
 
-void callbackAskForMarker(const std_msgs::Bool& msg)
+void callbackAskForMarker(const std_msgs::Empty& msg)
 {
     go = true;
     ROS_INFO("RECEIVED");
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
     
     ros::Publisher pubMarkerSeen(node.advertise<std_msgs::Bool>("/nav/loca/markerSeen", 1));
     ros::Subscriber subAskForMarker(node.subscribe("/nav/HLC/askForMarker", 1, &callbackAskForMarker));
-
+    //ros::Publisher pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1));
     /*nav_msgs::Path path;
     geometry_msgs::PoseStamped pose1, pose2, pose3, goal;
     nav_msgs::Odometry location;
@@ -181,7 +181,12 @@ int main(int argc, char **argv)
         
         }
         
-        
+        /*if(time>2)
+        {
+            std_msgs::Empty msg;
+            pubAskForMarker.publish(msg);
+            ROS_INFO("EMPTY SENT");
+        }*/
         
         time = time + 0.5;
         loop_rate.sleep();
