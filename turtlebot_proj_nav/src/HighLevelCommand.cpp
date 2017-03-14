@@ -63,8 +63,6 @@ HighLevelCommand::~HighLevelCommand(){}
 void HighLevelCommand::callbackCommandBusy(const std_msgs::Bool& msg)
 {
     commandBusy = msg;
-    currentLocation = msg;
-           
 }
 
 void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
@@ -288,5 +286,6 @@ void HighLevelCommand::enableSimpleCommand()
     pubCommandState.publish(disableCommand);
     
 }*/
+
 
 
