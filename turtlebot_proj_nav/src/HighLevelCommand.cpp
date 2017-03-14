@@ -193,7 +193,7 @@ void HighLevelCommand::sendDistanceAndAngleCommand(const float linearVelocity, c
 
 void HighLevelCommand::seekMarker()
 {
-    std::cout<<!commandBusy.data<<std::endl;
+    //std::cout<<!commandBusy.data<<std::endl;
     if ((!commandBusy.data) && (disableCommand.data == false))
          {
          

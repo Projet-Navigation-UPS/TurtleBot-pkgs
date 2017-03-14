@@ -20,6 +20,7 @@ TurtleBotCommand::TurtleBotCommand(ros::NodeHandle& node):
     stopMouvement = true;
     startMouvement = false;
     stop();
+    pubCommandState.publish(busy);
 }
 
 TurtleBotCommand::~TurtleBotCommand()
@@ -162,9 +163,14 @@ void TurtleBotCommand::movingOver()
     moving = false;
     stopMouvement = true;
     stop();
+    busy.data = false;
+    pubCommandState.publish(busy);
 }
 
-
+void TurtleBotCommand::publishCommandState()
+{
+    pubCommandState.publish(busy);
+}
 
 
 

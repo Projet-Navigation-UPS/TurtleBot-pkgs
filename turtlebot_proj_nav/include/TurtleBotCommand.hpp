@@ -69,6 +69,8 @@ public:
     
     void turningOver();
     void movingOver();
+    
+    void publishCommandState();
 
 private:
     geometry_msgs::Twist getMobileBaseCommandsVelocity();
