@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 	int n2=700;
 	int m=3;
 	int x[]={100,200,150};//colonne
-    int y[]={100,600,300};//ligne     
+    	int y[]={100,600,300};//ligne     
 	float t[]={45,-20,-20}; 
 	
 	int i,j,k,l,o,p=0,q=0,r=0,s=0,u=0,w=0;
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 	int pix[n1][n2];
 	int v[m][m];
 	float yn[m];
-    float angle[]={0.0,0.0,0.0};
+    	float angle[]={0.0,0.0,0.0};
 	float alphamax[]={30,30,30};
 	int distancemax=3000;
 	int distancemin=10;
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 	distancemin=35/0.494134897;	
 	printf("Dmin = %d\n",distancemin);
 
-    ros::Rate loop_rate(5); // 2Hz 
+    	ros::Rate loop_rate(5); // 2Hz 
 
 	ofstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/maps/visib.pgm", ios::out | ios::trunc);  
 		// ouverture en écriture avec effacement du fichier ouvert
