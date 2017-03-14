@@ -22,95 +22,6 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "visib");
     ros::NodeHandle node;
 
-	/*
-
-    ros::Publisher pubPath(node.advertise<nav_msgs::Path>("/nav/PathToFollow", 1));
-    ros::Publisher pubLocation(node.advertise<nav_msgs::Odometry>("/nav/Location", 1));
-    ros::Publisher pubCmdFinished(node.advertise<std_msgs::Bool>("/nav/CommandFinished", 1));
-    ros::Publisher pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1));
-
-    nav_msgs::Path path;
-    geometry_msgs::PoseStamped pose1, pose2, pose3, goal;
-    nav_msgs::Odometry location;
-    std_msgs::Bool commandFinished;
-    
-    pose1.pose.position.x = 0;
-    pose1.pose.position.y = 0;
-    pose1.pose.position.z = 0;
-    pose1.pose.orientation.x = 0;
-    pose1.pose.orientation.y = 0;
-    pose1.pose.orientation.z = 0;
-    pose1.pose.orientation.w = 0;
-    
-    pose2.pose.position.x = 1;
-    pose2.pose.position.y = 1;
-    pose2.pose.position.z = 1;
-    pose2.pose.orientation.x = 1;
-    pose2.pose.orientation.y = 1;
-    pose2.pose.orientation.z = 1;
-    pose2.pose.orientation.w = 1;
-    
-    pose3.pose.position.x = 2;
-    pose3.pose.position.y = 2;
-    pose3.pose.position.z = 2;
-    pose3.pose.orientation.x = 2;
-    pose3.pose.orientation.y = 2;
-    pose3.pose.orientation.z = 2;
-    pose3.pose.orientation.w = 2;
-    
-    path.poses.push_back(pose1);
-    path.poses.push_back(pose2);
-    path.poses.push_back(pose3);
-    
-    location.pose.pose.position.x = 2.05;
-    location.pose.pose.position.y = 2.05;
-    location.pose.pose.position.z = 2.05;
-    location.pose.pose.orientation.x = 2.05;
-    location.pose.pose.orientation.y = 2.05;
-    location.pose.pose.orientation.z = 2.05;
-    location.pose.pose.orientation.w = 2.05;
-    
-    
-    
-    goal.header.seq = 1;
-    goal.header.stamp = ros::Time::now();
-    goal.header.frame_id = "map";
-    goal.pose.position.x = 3;
-    goal.pose.position.y = 2;
-    goal.pose.position.z = 0;
-    goal.pose.orientation.x = 0;
-    goal.pose.orientation.y = 0;
-    goal.pose.orientation.z = 0;
-    goal.pose.orientation.w = 1;
-
-    commandFinished.data = true;
-    float time = 0;
-    while (ros::ok()) 
-    {
-        ros::spinOnce();
-        
-        //pubLocation.publish(location);
-        //std::cout<<location<<std::endl;
-        
-        if(time>=5 && time<5.5)
-        {
-            //pubPath.publish(path);
-            //std::cout<<path<<std::endl;
-            pubGoal.publish(goal);
-            std::cout<<goal<<std::endl;
-        }
-        
-        if(time>10)
-        {
-            //pubCmdFinished.publish(commandFinished);
-        }
-        
-        
-        //std::cout<<time<<std::endl;
-        time = time + 0.5;
-        loop_rate.sleep();
-    }*/
-
 
 	int n1=720;
 	int n2=700;
@@ -119,7 +30,7 @@ int main(int argc, char **argv)
     int y[]={100,600,300};//ligne     
 	float t[]={45,-20,-20}; 
 	
-	int i,j,k,l,o,p=0,q=0,r=0,s=0,u=0;
+	int i,j,k,l,o,p=0,q=0,r=0,s=0,u=0,w=0;
 	float dist=1.0 ;
 	int pix[n1][n2];
 	int v[m][m];
@@ -192,12 +103,10 @@ int main(int argc, char **argv)
 							//printf("Amers :\ni=%d\tj=%d\n",i,j);
 							
 						}
-					
 				}
 
 				//if(i<n&&j<n)
 				//printf("%d ", pix[i][j]);
-				//printf(".");
 				
 				q+=1;
 				if(r<1)	//flag pour savoir si l'ecriture s'est deja faite 1 fois
@@ -207,22 +116,18 @@ int main(int argc, char **argv)
 				if(p>=70 && (r<1))// condition de retour a la ligne
 				{
 					fichier << endl;
-					p=0;
-					
+					p=0;		
 				}
-				
 			}
-
-			
-			//printf("\n");
 		}
 
 		//printf("i=%d\tj=%d\n",i,j); //Verification iterations ligne et colonne
 		//printf("q=%d\n",q); //Verification nb totale d'iterations
+
 		if(r<1)      		        
         	{	
 			fichier.close();
-			printf("Carte genere correctement, fermeture du fichier, veuillez patienter environ 10 sec... \n");
+			printf("Carte generee correctement, fermeture du fichier, veuillez patienter environ 10 sec... \n");
 			r=1;
 		}
 		
@@ -232,15 +137,19 @@ int main(int argc, char **argv)
 		{
 			for (j=0;j<n1;j++) // colonne
 			{
-				for(k=0;k<m;k++) // amers
+				for(k=1;k<m;k++) // amers
 				{
-					pix[i][j]=15-3*k;
-					if(pix[i][j]<15)
+					if(pix[i][j]<15 && pix[i][j]>0)
 					{
-						//printf("Nombre d'amers visibles : %d\n",k);
 						visib.data=k;
 						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
 						pubVisib.publish(visib);						
+					}
+					else
+					{
+						visib.data=0;
+						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
+						pubVisib.publish(visib);
 					}
 				}
 			}
