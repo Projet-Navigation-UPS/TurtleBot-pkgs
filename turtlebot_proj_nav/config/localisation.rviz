@@ -6,10 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
 <<<<<<< HEAD
-        - /RobotModel1/Links1
-=======
-<<<<<<< HEAD
->>>>>>> facd987d281947ef8265a5d2042d88dc2a5f655e
         - /TF1/Frames1
         - /TF1/Tree1
       Splitter Ratio: 0.75
@@ -38,7 +34,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: Image
 Visualization Manager:
   Class: ""
   Displays:
@@ -243,15 +239,10 @@ Visualization Manager:
       Frames:
         All Enabled: false
 <<<<<<< HEAD
-        ar_marker_0:
-          Value: true
-=======
-<<<<<<< HEAD
 =======
         ar_marker_0:
           Value: true
 >>>>>>> path_planning
->>>>>>> facd987d281947ef8265a5d2042d88dc2a5f655e
         base_footprint:
           Value: false
         base_link:
@@ -261,7 +252,7 @@ Visualization Manager:
         camera_depth_optical_frame:
           Value: false
         camera_link:
-          Value: false
+          Value: true
         camera_rgb_frame:
           Value: false
         camera_rgb_optical_frame:
@@ -354,16 +345,11 @@ Visualization Manager:
                     {}
                   camera_rgb_optical_frame:
 <<<<<<< HEAD
-                    ar_marker_0:
-                      {}
-=======
-<<<<<<< HEAD
                     {}
 =======
                     ar_marker_0:
                       {}
 >>>>>>> path_planning
->>>>>>> facd987d281947ef8265a5d2042d88dc2a5f655e
                 caster_back_link:
                   {}
                 caster_front_link:
@@ -634,7 +620,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.44552
+      Distance: 4.03813
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -646,10 +632,10 @@ Visualization Manager:
         Z: 0.21862
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.660402
+      Pitch: 0.370401
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.589056
+      Yaw: 4.03406
     Saved: ~
 Window Geometry:
   Displays:
@@ -678,12 +664,8 @@ Window Geometry:
     collapsed: false
   Width: 1280
 <<<<<<< HEAD
-  X: 130
-=======
-<<<<<<< HEAD
   X: 140
 =======
   X: 630
 >>>>>>> path_planning
->>>>>>> facd987d281947ef8265a5d2042d88dc2a5f655e
   Y: 14
