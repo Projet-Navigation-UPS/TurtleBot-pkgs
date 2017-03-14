@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /RobotModel1/Links1
         - /TF1/Frames1
         - /TF1/Tree1
       Splitter Ratio: 0.75
@@ -26,7 +27,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Image
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -230,6 +231,8 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
+        ar_marker_0:
+          Value: true
         base_footprint:
           Value: false
         base_link:
@@ -239,7 +242,7 @@ Visualization Manager:
         camera_depth_optical_frame:
           Value: false
         camera_link:
-          Value: true
+          Value: false
         camera_rgb_frame:
           Value: false
         camera_rgb_optical_frame:
@@ -323,7 +326,8 @@ Visualization Manager:
                   camera_link:
                     {}
                   camera_rgb_optical_frame:
-                    {}
+                    ar_marker_0:
+                      {}
                 caster_back_link:
                   {}
                 caster_front_link:
@@ -586,7 +590,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 4.03813
+      Distance: 4.44552
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
@@ -598,10 +602,10 @@ Visualization Manager:
         Z: 0.21862
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 0.370401
+      Pitch: 0.660402
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.03406
+      Yaw: 0.589056
     Saved: ~
 Window Geometry:
   Displays:
@@ -621,5 +625,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1280
-  X: 140
+  X: 130
   Y: 14
