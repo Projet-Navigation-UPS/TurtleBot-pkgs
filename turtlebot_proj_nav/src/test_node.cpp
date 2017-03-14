@@ -68,7 +68,7 @@ void callbackLocation(const nav_msgs::Odometry& msg)
 void callbackAskForMarker(const std_msgs::Empty& msg)
 {
     go = true;
-    ROS_INFO("RECEIVED")
+    ROS_INFO("RECEIVED");
 }
 
 int main(int argc, char **argv)
