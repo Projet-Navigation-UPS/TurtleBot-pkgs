@@ -157,7 +157,7 @@ int main(int argc, char **argv)
     
     while (ros::ok()) 
     {
-        
+        ros::spinOnce();
         
         
         //pubLocation.publish(location);
@@ -189,7 +189,6 @@ int main(int argc, char **argv)
         }*/
         
         time = time + 0.5;
-        ros::spinOnce();
         loop_rate.sleep();
     }
     

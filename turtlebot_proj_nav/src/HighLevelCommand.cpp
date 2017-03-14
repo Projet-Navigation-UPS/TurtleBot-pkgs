@@ -19,7 +19,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     //Publishers
     /*pubCommandState(node.advertise<std_msgs::Bool>("/nav/command/state", 1)),*/
     pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1)),
-    pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1)),
+    pubAskForMarker(node.advertise<std_msgs::Bool>("/nav/HLC/askForMarker", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
@@ -31,6 +31,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     markerSeen.data = false;
     locationAvailable.data = false;
     goalReached.data = false;
+    empty.data = true;
 }
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
@@ -46,7 +47,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     //Publishers
     /*pubCommandState(node.advertise<std_msgs::Bool>("/command/state", 1)),*/
     pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1)),
-    pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1)),
+    pubAskForMarker(node.advertise<std_msgs::Bool>("/nav/HLC/askForMarker", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
@@ -58,6 +59,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     markerSeen.data = false;
     locationAvailable.data = false;
     goalReached.data = false;
+    empty.data = true;
 }
 
 HighLevelCommand::~HighLevelCommand(){}
@@ -294,8 +296,7 @@ void HighLevelCommand::findGlobalGoal()
 
 void HighLevelCommand::askForMarker()
 {
-    std_msgs::Empty msg;
-    pubAskForMarker.publish(msg);
+    pubAskForMarker.publish(empty);
     ROS_INFO("EMPTY SENT");
 }
 
