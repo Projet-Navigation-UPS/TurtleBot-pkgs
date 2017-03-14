@@ -294,7 +294,8 @@ void HighLevelCommand::findGlobalGoal()
 
 void HighLevelCommand::askForMarker()
 {
-    pubAskForMarker.publish(this->empty);
+    std_msgs::Empty msg;
+    pubAskForMarker.publish(msg);
     ROS_INFO("EMPTY SENT");
 }
 
