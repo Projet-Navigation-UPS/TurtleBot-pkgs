@@ -51,7 +51,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     GlobalGoalMarkerId.data = finalGoal;
     //disableCommand.data == false;
     commandBusy.data = true;
-    markerSeen.data = true;
+    markerSeen.data = false;
     locationAvailable.data = false;
     goalReached.data = false;
 }
