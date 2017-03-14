@@ -5,6 +5,13 @@
 #include <std_msgs/Empty.h>
 #include <iostream>
 
+<<<<<<< HEAD
+=======
+
+
+
+
+>>>>>>> facd987d281947ef8265a5d2042d88dc2a5f655e
 int main(int argc, char** argv){
     ros::init(argc, argv, "localisation_node");
     ros::NodeHandle node; 
@@ -18,6 +25,19 @@ int main(int argc, char** argv){
     q.setRPY(0, 0, 0);
     transform_empty.setRotation(q);
 
+<<<<<<< HEAD
+=======
+
+
+    tf::Quaternion quad;    
+
+    tf::Quaternion rot_y;
+    rot_y.setEuler(0, 3.14, 0); 
+    tf::Quaternion rot_x;
+    rot_x.setRPY(1, 0, 0); 
+    tf::Quaternion rot_z;
+    rot_z.setRPY(0, 0, 1);
+>>>>>>> facd987d281947ef8265a5d2042d88dc2a5f655e
     bool reset_odom = false;
 
     tf::Transform transform_mapMarker;
@@ -48,6 +68,7 @@ int main(int argc, char** argv){
 	    try
 		{
 
+<<<<<<< HEAD
 		    if(li.waitForTransform("/camera_rgb_optical_frame", "/ar_marker_0", ros::Time(0), ros::Duration(15)))
             {
                 li.lookupTransform("/camera_rgb_optical_frame", "/ar_marker_0", ros::Time(0), transform_imageMarker);
@@ -78,12 +99,47 @@ int main(int argc, char** argv){
             {
                 br.sendTransform(tf::StampedTransform(transform_mapRobot, ros::Time::now(), "map", "odom"));
             }
+=======
+			li.lookupTransform("/camera_rgb_optical_frame", "/ar_marker_0", ros::Time(0), transform_imageMarker);
+            
+            br.sendTransform(tf::StampedTransform(transform_imageMarker, ros::Time::now(), "/camera_rgb_optical_frame", "/ar_marker_0"));
+
+            tf::Transform transform_cameraMarker;    
+            transform_cameraMarker = transform_cameraImage ;    
+            transform_cameraMarker *= transform_imageMarker ;   
+	        br.sendTransform(tf::StampedTransform(transform_cameraMarker, ros::Time::now(), "/camera_rgb_frame", "/ar_tr"));
+
+            tf::Transform transform_robotMarker;    
+            transform_robotMarker = transform_robotCamera;
+            transform_robotMarker *= transform_cameraMarker ;
+            transform_robotMarker.setOrigin(tf::Vector3(transform_robotMarker.getOrigin().getX(), transform_robotMarker.getOrigin().getY(), 0)); 
+            br.sendTransform(tf::StampedTransform(transform_robotMarker, ros::Time::now(), "/base_link", "/ar_tr_tr"));
+
+            tf::Transform transform_markerRobot;
+            transform_markerRobot = transform_robotMarker.inverse();
+            br.sendTransform(tf::StampedTransform(transform_markerRobot, ros::Time::now(), "/marker_0", "/res")); 
+
+
+		    if(reset_odom)
+			{ 
+			    pub_resetodom.publish(std_msgs::Empty());
+			    reset_odom = false;
+			}
+
+            tf::Transform transform_mapRobot;
+            transform_mapRobot = transform_mapMarker;
+            transform_mapRobot *= transform_markerRobot ;
+
+		  br.sendTransform(tf::StampedTransform(transform_empty, ros::Time::now(), "map", "odom"));
+
+>>>>>>> facd987d281947ef8265a5d2042d88dc2a5f655e
 		}
 	    catch (tf::TransformException ex)
 		{
 		    br.sendTransform(tf::StampedTransform(transform_empty, ros::Time::now(), "map", "odom"));
 		    reset_odom = true;
 		}
+
 
 	    ros::spinOnce();
 	    loop_rate.sleep();
