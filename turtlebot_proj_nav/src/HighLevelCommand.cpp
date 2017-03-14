@@ -296,6 +296,7 @@ void HighLevelCommand::askForMarker()
 {
     std_msgs::Empty msg;
     pubAskForMarker.publish(msg);
+    ROS_INFO("EMPTY SENT");
 }
 
 /*void HighLevelCommand::disableSimpleCommand()
