@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cmath>
 #include <math.h> 
+#include <std_msgs/Int8.h>
 
 #include "nav_msgs/Path.h"
 #include "geometry_msgs/PoseStamped.h"
@@ -115,7 +116,7 @@ int main(int argc, char **argv)
 	int n2=700;
 	int m=3;
 	int x[]={100,200,150};//colonne
-    	int y[]={100,600,300};//ligne     
+    int y[]={100,600,300};//ligne     
 	float t[]={45,-20,-20}; 
 	
 	int i,j,k,l,o,p=0,q=0,r=0,s=0,u=0;
@@ -123,7 +124,7 @@ int main(int argc, char **argv)
 	int pix[n1][n2];
 	int v[m][m];
 	float yn[m];
-    	float angle[]={0.0,0.0,0.0};
+    float angle[]={0.0,0.0,0.0};
 	float alphamax[]={30,30,30};
 	int distancemax=3000;
 	int distancemin=10;
@@ -131,21 +132,26 @@ int main(int argc, char **argv)
 	float distancecm=130;
 	//1px = 0.494134897 cm
 	// x px = 337cm
-	//distancemax=distancecm/0.494134897;
+
+	ros::Publisher pubVisib(node.advertise<std_msgs::Int8>("/nav/Visib", 1));
+
+	std_msgs::Int8 visib;
+	visib.data=0;
+
+	distancemax=distancecm/0.494134897;
 	printf("Dmax = %d\n",distancemax);
 	distancemin=35/0.494134897;	
 	printf("Dmin = %d\n",distancemin);
 
     ros::Rate loop_rate(5); // 2Hz 
 
-	
+	ofstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/maps/visib.pgm", ios::out | ios::trunc);  
+		// ouverture en écriture avec effacement du fichier ouvert
 
-    while (ros::ok() && r<1) 
+    while (ros::ok()) //&& r<1) 
     {
 		ros::spinOnce();
-		
-		ofstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/maps/visib.pgm", ios::out | ios::trunc);  
-		// ouverture en écriture avec effacement du fichier ouvert
+    	
 		if(fichier && (r<1))
         		{	
 				printf("Création de la carte \n");
@@ -155,10 +161,10 @@ int main(int argc, char **argv)
 				fichier << "720" << " " << "700" << endl;
 				fichier << "15" << endl;
 			}
-			else
-                		cerr << "Impossible d'ouvrir le fichier !" << endl;
+			//else
+                		//cerr << "Impossible d'ouvrir le fichier !" << endl;
 
-
+    
 		for (i=0;i<n2;i++) // line
 		{
 			for (j=0;j<n1;j++) // colonne
@@ -183,7 +189,7 @@ int main(int argc, char **argv)
 					else 
 						if(dist == 0.0)
 						{	pix[i][j]=0;
-							printf("Amers :\ni=%d\tj=%d\n",i,j);
+							//printf("Amers :\ni=%d\tj=%d\n",i,j);
 							
 						}
 					
@@ -220,6 +226,26 @@ int main(int argc, char **argv)
 			r=1;
 		}
 		
+		// --------------- Publish the number of markers ---------
+
+		for (i=0;i<n2;i++) // line
+		{
+			for (j=0;j<n1;j++) // colonne
+			{
+				for(k=0;k<m;k++) // amers
+				{
+					pix[i][j]=15-3*k;
+					if(pix[i][j]<15)
+					{
+						//printf("Nombre d'amers visibles : %d\n",k);
+						visib.data=k;
+						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
+						pubVisib.publish(visib);						
+					}
+				}
+			}
+		}
+
 		cout << "Ending visibility " << endl;
 		
 		loop_rate.sleep();
