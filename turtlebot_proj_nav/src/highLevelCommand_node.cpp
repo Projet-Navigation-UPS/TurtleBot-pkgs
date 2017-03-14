@@ -78,7 +78,7 @@ int main(int argc, char **argv)
             //Movement    
             case 4:
                 if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
-                else hlcCurrentState = 0;
+                else hlcCurrentState = 1;
                 break;
             
             //Final goal reached    

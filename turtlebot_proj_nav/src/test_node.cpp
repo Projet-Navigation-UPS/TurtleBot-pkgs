@@ -68,6 +68,7 @@ void callbackLocation(const nav_msgs::Odometry& msg)
 void callbackAskForMarker(const std_msgs::Empty& msg)
 {
     go = true;
+    ROS_INFO("RECEIVED")
 }
 
 int main(int argc, char **argv)
@@ -175,6 +176,7 @@ int main(int argc, char **argv)
             msg.data = true;
             pubMarkerSeen.publish(msg);
             ROS_INFO("True sent...");
+            go=false;
             
         
         }

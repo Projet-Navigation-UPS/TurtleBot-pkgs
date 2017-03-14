@@ -72,6 +72,7 @@ void HighLevelCommand::callbackCommandBusy(const std_msgs::Bool& msg)
 void HighLevelCommand::callbackMarkerSeen(const std_msgs::Bool& msg)
 {
     markerSeen = msg;
+    std::cout<<msg<<std::endl;
 }
 
 void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
@@ -156,7 +157,7 @@ bool HighLevelCommand::marker()
         playSound(SOUND_OFF);
         seekingMarkerState=0;
     }
-    return markerSeen.data;  
+    return markerSeen.data;   
 }
 
 bool HighLevelCommand::location()
@@ -273,6 +274,7 @@ int HighLevelCommand::seekMarker()
 void HighLevelCommand::sendGoal()
 {
     //disableSimpleCommand();
+    markerSeen.data =false;
     goalReached.data = false;
     NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
     currentGoal.header.seq = 1;
