@@ -16,19 +16,19 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
 
     //Publishers
-    pubCommandState(node.advertise<std_msgs::Bool>("/nav/command/state", 1)),
+    /*pubCommandState(node.advertise<std_msgs::Bool>("/nav/command/state", 1)),*/
     pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
     seekingMarkerState = 0;
-    disableCommand.data == false;
+    closestMarkerId.data = 0;
+    GlobalGoalMarkerId.data = 5;
+    //disableCommand.data == false;
     commandBusy.data = true;
     markerSeen.data = true;
     locationAvailable.data = false;
     goalReached.data = false;
-    closestMarkerId.data = 0;
-    GlobalGoalMarkerId.data = 5;
 }
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
@@ -47,13 +47,13 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
     seekingMarkerState = 0;
-    disableCommand.data == false;
+    closestMarkerId.data = 0;
+    GlobalGoalMarkerId.data = finalGoal;
+    //disableCommand.data == false;
     commandBusy.data = true;
     markerSeen.data = false;
     locationAvailable.data = false;
     goalReached.data = false;
-    closestMarkerId.data = 0;
-    GlobalGoalMarkerId.data = finalGoal;
 }
 
 HighLevelCommand::~HighLevelCommand(){}
@@ -121,7 +121,7 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
             }
         }
     }
-    enableSimpleCommand();
+    //enableSimpleCommand();
     seekingMarkerState = 0;
 }
 void HighLevelCommand::callbackMoveBaseActionFeedback(const move_base_msgs::MoveBaseActionFeedback& msg)
@@ -194,7 +194,7 @@ void HighLevelCommand::sendDistanceAndAngleCommand(const float linearVelocity, c
 void HighLevelCommand::seekMarker()
 {
     //std::cout<<!commandBusy.data<<std::endl;
-    if ((!commandBusy.data) && (disableCommand.data == false))
+    if ((!commandBusy.data) /*&& (disableCommand.data == false)*/)
          {
          
          switch (seekingMarkerState)
@@ -244,7 +244,7 @@ void HighLevelCommand::seekMarker()
 
 void HighLevelCommand::sendGoal()
 {
-    disableSimpleCommand();
+    //disableSimpleCommand();
     goalReached.data = false;
     NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
     currentGoal.header.seq = 1;
@@ -262,7 +262,7 @@ void HighLevelCommand::findGlobalGoal()
     
 }
 
-void HighLevelCommand::disableSimpleCommand()
+/*void HighLevelCommand::disableSimpleCommand()
 {
     disableCommand.data = true;
     pubCommandState.publish(disableCommand);
@@ -274,6 +274,6 @@ void HighLevelCommand::enableSimpleCommand()
     disableCommand.data = false;
     pubCommandState.publish(disableCommand);
     
-}
+}*/
 
 

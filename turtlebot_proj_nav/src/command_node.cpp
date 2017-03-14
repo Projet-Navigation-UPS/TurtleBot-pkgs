@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     ros::WallTime startTime;
     ros::WallDuration duration;
        	    
-    int commandCurrentState = 0;
+    int commandCurrentState = 1;
     
     ros::Rate r(FREQ); 
 
@@ -101,12 +101,12 @@ int main(int argc, char **argv)
 		        {
 		            ROS_INFO( "All mouvements finished...");
 		            turtlebotCommand.movingOver();
-		            commandCurrentState = 0;
+		            commandCurrentState = 1;
 			    }
                 break;
                       
             default:
-                commandCurrentState = 5;
+                commandCurrentState = 1;
                 break;
 
         }
