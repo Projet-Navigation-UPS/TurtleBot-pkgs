@@ -36,8 +36,6 @@ void displayGraphVisib(Graph g, float x1[], float y1[]);
 
 void Ecriture_carte_visib();
 
-//void Lecture_carte_visib();
-
 table pgm_imread(char *argv);
 
 #endif

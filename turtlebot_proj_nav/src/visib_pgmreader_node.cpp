@@ -29,7 +29,10 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	int r=0;
+	int x=875,y=408;
+	
+	//int x1=920;
+	//int y1=900;
 
     ROS_INFO("Launching reader visibility ...");
     ros::init(argc, argv, "visib");
@@ -44,14 +47,53 @@ int main(int argc, char **argv)
 
 	struct table image = pgm_imread("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm");
 
-	//printf("%d\n",image.data[0][0]);
+	printf("%d\n",image.data[x][y]);
 
-    while (ros::ok() && r<1) 
+	              
+         
+    while (ros::ok()) 
     {
 		ros::spinOnce();
     	
+        // !!! recup les positions x et y du robot et les mettre ici
+
+        if(image.data[x][y]==12)
+					{
+						visib.data=1;
+						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
+						pubVisib.publish(visib);
+						//printf("Numéro de l amer détectable : 0 \n");						
+					}
+					else if(image.data[x][y]==9)
+					{
+						visib.data=2;
+						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
+						pubVisib.publish(visib);
+						//printf("Numéros des amers détectables : %d et %d \n",k-1,k);
+					}
+					else if(image.data[x][y]==6)
+					{
+						visib.data=3;
+						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
+						pubVisib.publish(visib);
+						//printf("Numéros des amers détectables : %d, %d et %d \n",k-1,k,k+1);
+					}
+					else if(image.data[x][y]==3)
+					{
+						visib.data=4;
+						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
+						pubVisib.publish(visib);
+						//printf("Numéros des amers détectables : %d, %d, %d et %d \n",k-1,k,k+1,k+2);
+					}
+					else if(image.data[x][y]==15)
+					{
+						visib.data=0;
+						ROS_INFO("Pas d amer visible : %d", visib.data);
+						pubVisib.publish(visib);
+					}
+
 		cout << "Ending reader visibility " << endl;
-		r=1;
+		
 		loop_rate.sleep();
     }
 	return 0;
