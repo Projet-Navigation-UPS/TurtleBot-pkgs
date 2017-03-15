@@ -77,7 +77,7 @@ int main(int argc, char **argv)
     ROS_INFO("Launching test_node ...");
     ros::init(argc, argv, "test_node");
     ros::NodeHandle node;
-    //ros::Rate loop_rate(0.5); // 2Hz 
+    ros::Rate loop_rate(0.5); // 2Hz 
 
 
     //ros::Publisher pubPath(node.advertise<nav_msgs::Path>("/nav/PathToFollow", 1));
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
         //pubCmdFinished.publish(commandFinished);
         std::cout<<time<<std::endl;
         
-        if(true)
+        if(go)
         {
             
             std_msgs::Bool msg;
@@ -192,8 +192,8 @@ int main(int argc, char **argv)
         }*/
         
         time = time + 0.5;
-        usleep(microseconds);
-        //loop_rate.sleep();
+        //usleep(microseconds);
+        loop_rate.sleep();
     }
     
     return 0;
