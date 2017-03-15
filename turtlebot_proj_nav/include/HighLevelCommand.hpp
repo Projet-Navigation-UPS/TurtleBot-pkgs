@@ -42,7 +42,7 @@ private:
     //Messages
     std_msgs::Bool markerSeen, locationAvailable, goalReached, commandBusy/*, disableCommand*/;
     std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId;
-    std_msgs::Bool empty;
+    std_msgs::Empty empty;
     
     //States
     int seekingMarkerState;
