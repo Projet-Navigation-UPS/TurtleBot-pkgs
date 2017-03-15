@@ -41,7 +41,7 @@ int main(int argc, char **argv)
                 {
                     ROS_INFO("Seeking marker...");
                     HLC.seekMarker();
-                    hlcCurrentState = 0;
+                    hlcCurrentState = 1;
                 } 
                 break;
             
@@ -84,7 +84,11 @@ int main(int argc, char **argv)
             //Movement    
             case 4:
                 if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
-                else hlcCurrentState = 1;
+                else 
+                {
+                    ROS_INFO("Intermediate goal reached...";
+                    hlcCurrentState = 1;
+                }
                 break;
             
             //Final goal reached    

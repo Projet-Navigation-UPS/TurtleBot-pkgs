@@ -74,7 +74,7 @@ void HighLevelCommand::callbackCommandBusy(const std_msgs::Bool& msg)
 void HighLevelCommand::callbackMarkerSeen(const std_msgs::Bool& msg)
 {
     markerSeen = msg;
-    std::cout<<msg<<std::endl;
+    //std::cout<<msg<<std::endl;
 }
 
 void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
@@ -116,8 +116,8 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
     if(moveBaseActionResult.status.status == 3) 
     {
         playSound(SOUND_ON);
-        std::cout<<"MoveBaseActionResult"<<std::endl;
-        std::cout<<msg<<std::endl;
+        //std::cout<<"MoveBaseActionResult"<<std::endl;
+        //std::cout<<msg<<std::endl;
         goalReached.data = true;
       
         float dist = 100.0;
@@ -297,7 +297,6 @@ void HighLevelCommand::findGlobalGoal()
 void HighLevelCommand::askForMarker()
 {
     pubAskForMarker.publish(empty);
-    ROS_INFO("EMPTY SENT");
 }
 
 /*void HighLevelCommand::disableSimpleCommand()
