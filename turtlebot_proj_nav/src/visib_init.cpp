@@ -1,29 +1,5 @@
-#include "ros/ros.h"
-#include "HighLevelCommand.hpp"
-#include <stdlib.h>
-#include <iostream>
-#include <cmath>
-#include <math.h> 
-#include <std_msgs/Int8.h>
-
-#include "nav_msgs/Path.h"
-#include "geometry_msgs/PoseStamped.h"
-
-#define pi 3.14159265358979323846
-
-#include <fstream>
-
-#include "tinyxml.h"
-#include <ros/package.h>
-#include <boost/graph/graph_traits.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
-#include <boost/property_map/property_map.hpp>
-#include <vector>
-#include <string>
-#include "graph.hpp"
+#include "visib_init.hpp"
 #include "graph.cpp"
-
 
 void displayGraphVisib(Graph g, float x1[], float y1[])
 {
@@ -56,26 +32,22 @@ void displayGraphVisib(Graph g, float x1[], float y1[])
 using namespace std;
 
 
-int main(int argc, char **argv)
+void Ecriture_carte_visib()
 {
-    ROS_INFO("Launching visibility ...");
-    ros::init(argc, argv, "visib");
-    ros::NodeHandle node;
-
-	int n1=920;
+   	int n1=920;
 	int n2=900;
 	int m=6;
 	int x[]={0,0,0,0,0,0};//colonne
-    int y[]={0,0,0,0,0,0};//ligne     
+    	int y[]={0,0,0,0,0,0};//ligne     
 	float t[]={45,-20,-20,-20,-20,-20}; 
 	
 	int i,j,k,l,o,p=0,q=0,r=0,s=0,u=0,w=0,a;
 	float dist=1.0 ;
-	int pix[n1][n2];
+	int pix[n1][n2],pix2[n1][n2];
 	int v[m][m];
 	float yn[m];
 	float x1[5],y1[5];
-    float angle[]={0.0,0.0,0.0,0.0,0.0,0.0};
+    	float angle[]={0.0,0.0,0.0,0.0,0.0,0.0};
 	float alphamax[]={45,45,45,45,45,45};
 	int distancemax=3000;
 	int distancemin=10;
@@ -85,7 +57,7 @@ int main(int argc, char **argv)
 	// x px = 337cm
 
 	Graph Graph_test = xmlToGraph("graph.xml");
-    displayGraphVisib(Graph_test,x1,y1);
+    	displayGraphVisib(Graph_test,x1,y1);
 
 	
 	for(a=0;a<m;a++)
@@ -97,24 +69,24 @@ int main(int argc, char **argv)
 	}
 
 
-	ros::Publisher pubVisib(node.advertise<std_msgs::Int8>("/nav/Visib", 1));
+	//ros::Publisher pubVisib(node.advertise<std_msgs::Int8>("/nav/Visib", 1));
 
-	std_msgs::Int8 visib;
-	visib.data=0;
+	//std_msgs::Int8 visib;
+	//visib.data=0;
 
 	distancemax=distancecm/0.494134897;
 	printf("Dmax = %d\n",distancemax);
 	distancemin=20/0.494134897;	
 	printf("Dmin = %d\n",distancemin);
 
-    	ros::Rate loop_rate(5); // 2Hz 
+    	//ros::Rate loop_rate(5); // 2Hz 
 
-	ofstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/maps/visib.pgm", ios::out | ios::trunc);  
+	ofstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm", ios::out | ios::trunc);  
 		// ouverture en écriture avec effacement du fichier ouvert
 
-    while (ros::ok()) //&& r<1) 
-    {
-		ros::spinOnce();
+   // while (ros::ok()) //&& r<1) 
+    //{
+		//ros::spinOnce();
     	
 		if(fichier && (r<1))
         		{	
@@ -134,6 +106,7 @@ int main(int argc, char **argv)
 			for (j=0;j<n1;j++) // colonne
 			{
 				pix[i][j]=15;
+				pix2[i][j]=1000000;
 				for(k=0;k<m;k++) // amers
 				{
 					
@@ -149,10 +122,18 @@ int main(int argc, char **argv)
 					dist = sqrt(pow(i-x[k],2)+pow(j-y[k],2));
 
 					if((dist<distancemax && dist>distancemin) && (angle[k]<alphamax[k] && angle[k]>-alphamax[k]))
-						pix[i][j]-=3;
+					{	pix[i][j]-=3;
+						/*if(k=0) pix2[i][j]+=000001;
+						if(k=1) pix2[i][j]+=000010;
+						if(k=2) pix2[i][j]+=000100;
+						if(k=3) pix2[i][j]+=001000;
+						if(k=4) pix2[i][j]+=010000;
+						if(k=5) pix2[i][j]+=100000;*/
+					}
 					else 
 						if(dist == 0.0)
 						{	pix[i][j]=0;
+							pix2[i][j]=0;
 							//printf("Amers :\ni=%d\tj=%d\n",i,j);
 							
 						}
@@ -186,42 +167,43 @@ int main(int argc, char **argv)
 		
 		// --------------- Publish the number of markers ---------
 
-		/*for (i=0;i<10;i++) // line
+		/*for (i=150;i<n2;i++) // colonne n2
 		{
-			for (j=0;j<10;j++) // colonne
+			for (j=600;j<n1;j++) // ligne n1
 			{
 				for(k=1;k<m;k++) // amers
 				{
-					if(pix[i][j]==0)
+					printf("pix2[%d][%d]= %d\n",i,j,pix2[i][j]);
+					if(pix2[i][j]==1104680)
 					{
-						visib.data=k;
-						//ROS_INFO("Nombre d'amers visibles : %d", visib.data);
-						printf("Nombre d'amers visibles : %d \n",k);
+						visib.data=1;
+						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
+						//printf("Nombre d'amers visibles : %d \n",k);
 						pubVisib.publish(visib);
-						printf("Numéro de l amer détectable : %d \n",k-1);						
+						printf("Numéro de l amer détectable : 0 \n");						
 					}
-					else if(pix[i][j]==9)
+					else if(pix2[i][j]==17)
 					{
-						visib.data=k;
+						visib.data=2;
 						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
 						pubVisib.publish(visib);
 						printf("Numéros des amers détectables : %d et %d \n",k-1,k);
 					}
-					else if(pix[i][j]==6)
+					else if(pix2[i][j]==18)
 					{
-						visib.data=k;
+						visib.data=3;
 						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
 						pubVisib.publish(visib);
 						printf("Numéros des amers détectables : %d, %d et %d \n",k-1,k,k+1);
 					}
-					else if(pix[i][j]==3)
+					else if(pix2[i][j]==19)
 					{
-						visib.data=k;
+						visib.data=4;
 						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
 						pubVisib.publish(visib);
 						printf("Numéros des amers détectables : %d, %d, %d et %d \n",k-1,k,k+1,k+2);
 					}
-					else
+					/*else
 					{
 						visib.data=0;
 						ROS_INFO("Pas d amer visible : %d", visib.data);
@@ -230,10 +212,8 @@ int main(int argc, char **argv)
 				}
 			}
 		}*/
-
-		cout << "Ending visibility " << endl;
 		
-		loop_rate.sleep();
-    }
-	return 0;
+		//loop_rate.sleep();
+    //}
+	//return 0;
 }
