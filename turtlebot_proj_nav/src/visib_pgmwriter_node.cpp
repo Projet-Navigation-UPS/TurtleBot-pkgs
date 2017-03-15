@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 {
 	int r=0;
 
-    ROS_INFO("Launching visibility ...");
+    ROS_INFO("Launching writer visibility ...");
     ros::init(argc, argv, "visib");
     ros::NodeHandle node;
 
@@ -44,12 +44,11 @@ int main(int argc, char **argv)
 
 	Ecriture_carte_visib();
 	
-
-    while (ros::ok() && r<1) 
+	while (ros::ok() && r<1) 
     {
 		ros::spinOnce();
     	
-		cout << "Ending visibility " << endl;
+		cout << "Ending writer visibility " << endl;
 		r=1;
 		loop_rate.sleep();
     }

@@ -150,7 +150,8 @@ add_executable(highLevelCommand_node src/highLevelCommand_node.cpp src/HighLevel
 add_executable(test_node src/test_node.cpp)
 add_executable(odom_tests_node src/odom_node.cpp src/TurtleBotCommand.cpp )
 add_executable(directedGraph_node src/directedGraph.cpp  src/graph.cpp)
-add_executable(visib_node src/visib_node.cpp src/visib_init.cpp)
+add_executable(visib_pgmwriter_node src/visib_pgmwriter_node.cpp src/visib_init.cpp)
+add_executable(visib_pgmreader_node src/visib_pgmreader_node.cpp src/visib_init.cpp)
 
 
 ## Add cmake target dependencies of the executable
@@ -193,9 +194,13 @@ target_link_libraries(directedGraph_node
   ${catkin_LIBRARIES}
   ${TinyXML_LIBRARIES}
 )
-target_link_libraries(visib_node
+target_link_libraries(visib_pgmwriter_node
   ${catkin_LIBRARIES}
 )
+target_link_libraries(visib_pgmreader_node
+  ${catkin_LIBRARIES}
+)
+
 
 #############
 ## Install ##
