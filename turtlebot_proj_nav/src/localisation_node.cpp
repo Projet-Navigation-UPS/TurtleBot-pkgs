@@ -8,7 +8,6 @@
 
 
 
-
 int main(int argc, char** argv){
     ros::init(argc, argv, "localisation_node");
     ros::NodeHandle node; 
@@ -21,7 +20,6 @@ int main(int argc, char** argv){
     tf::Quaternion q;
     q.setRPY(0, 0, 0);
     transform_empty.setRotation(q);
-
 
 
     tf::Quaternion quad;    
@@ -92,7 +90,6 @@ int main(int argc, char** argv){
             transform_markerRobot = transform_robotMarker.inverse();
             br.sendTransform(tf::StampedTransform(transform_markerRobot, ros::Time::now(), "/marker_0", "/res")); 
 
-
 		    if(reset_odom)
 			{ 
 			    pub_resetodom.publish(std_msgs::Empty());
@@ -111,7 +108,6 @@ int main(int argc, char** argv){
 		    br.sendTransform(tf::StampedTransform(transform_empty, ros::Time::now(), "map", "odom"));
 		    reset_odom = true;
 		}
-
 
 	    ros::spinOnce();
 	    loop_rate.sleep();

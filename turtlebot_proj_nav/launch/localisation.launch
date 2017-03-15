@@ -9,17 +9,10 @@
 
         <!-- Set tf broadcaster-->
         <node pkg="turtlebot_proj_nav" type="localisation_node" name="localisation_node" output="screen"/>
-<<<<<<< HEAD
         <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher" args="2.0 1.0 0.0 0.0 -0.707 0.0 0.707 map marker_0 100" />
 
 
 	<arg name="marker_size" default="16" />
-=======
-        <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher" args="2.0 1.0 0.0 0.0 0.0 0.0 1.0 map marker_0 100" />
-
-
-	<arg name="marker_size" default="4.4" />
->>>>>>> path_planning
 	<arg name="max_new_marker_error" default="0.08" />
 	<arg name="max_track_error" default="0.2" />
 
