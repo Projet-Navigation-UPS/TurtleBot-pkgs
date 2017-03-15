@@ -1,7 +1,4 @@
 <launch>
-
-  <!-- 3D sensor -->
-
   <arg name="custom_param_file" default="$(find turtlebot_proj_nav)/param/dummy.yaml"/>
   <include file="$(find turtlebot_bringup)/launch/3dsensor.launch">
     <arg name="rgb_processing" value="false" />
@@ -17,7 +14,7 @@
   <arg name="map_file" default="$(find turtlebot_proj_nav)/maps/aip_map.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
-  <!-- E2 -->
+  <!-- Amcl -->
   <arg name="initial_pose_x" default="0.0"/> 
   <arg name="initial_pose_y" default="0.0"/> 
   <arg name="initial_pose_a" default="0.0"/>
@@ -27,12 +24,12 @@
     <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
   </include>
 
-
-  <!-- Move base -->
-
   <include file="$(find turtlebot_proj_nav)/launch/includes/move_base.launch.xml">
     <arg name="custom_param_file" value="$(arg custom_param_file)"/>
   </include>
+  
+  <!-- Simple command -->
+  <node pkg="turtlebot_proj_nav" name="command" type="command_node"/>
 
 </launch>
 

@@ -11,57 +11,106 @@ int main(int argc, char **argv)
     ros::NodeHandle node;
     ros::Rate loop_rate(0.5); // 1Hz 
 
-    HighLevelCommand HLC(node);
+    HighLevelCommand HLC(node,4);
     
-    int currentState;
+    int hlcCurrentState;
     
-    currentState = 0;
+    hlcCurrentState = 0;
 
     while (ros::ok()) 
     {
         
-
-        switch (currentState)
+        ros::spinOnce();
+        switch (hlcCurrentState)
         {
+            //Perception
             case 0:
+                
+                if(HLC.marker())
+                {
+                    ROS_INFO("Marker seen...");
+                    hlcCurrentState = 2;
+                }
+                else
+                {
+                    ROS_INFO("Seeking marker...");
+                    HLC.seekMarker();
+                    hlcCurrentState = 0;
+                } 
+                break;
+            
+            //Marker
+            /*case 1:
+                
+                if(HLC.marker())
+                {
+                    ROS_INFO("Marker seen...");
+                    hlcCurrentState = 1;
+                }
+                else 
+                {
+                    ROS_INFO("Seeking marker...");
+                    HLC.seekMarker();
+                    hlcCurrentState = 6;
+                }    
+                break;*/
+            
+            //Location
+            case 2:
                 
                 if(HLC.location())
                 {
                     ROS_INFO("Location ready...");
-                    currentState = 1;
+                    hlcCurrentState = 3;
                 }
                 else 
                 {
                     ROS_INFO("Wait for location...");
-                    currentState = 0;
+                    hlcCurrentState = 2;
                 }    
                 break;
-            case 1:
+            
+            //Goals    
+            case 3:
                 if(HLC.finalGoal())
                 {
-                    currentState = 3;
+                    hlcCurrentState = 5;
                 }
                 else 
                 {   
                     ROS_INFO("Send goal...");
                     HLC.sendGoal();
-                    currentState = 2;
+                    hlcCurrentState = 4;
                 }
                 break;
-            case 2:
+            
+            //Movement    
+            case 4:
                 if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
-                else currentState = 0;
+                else hlcCurrentState = 0;
                 break;
-            case 3:
+            
+            //Final goal reached    
+            case 5:
                 ROS_INFO("Goal reached...");
+                HLC.playSound(SOUND_CLEANINGEND);
+                hlcCurrentState = 6;
                 break;
+            
+            //Find new global goal
+            case 6:
+                ROS_INFO("Choosing new global Goal...");
+                hlcCurrentState = 0;
+                break; 
+                   
             default:
-                currentState = 0;
+                hlcCurrentState = 0;
+                HLC.findGlobalGoal();
                 break;
 
         }
 
-        ros::spinOnce();
+
         loop_rate.sleep();
     }
     

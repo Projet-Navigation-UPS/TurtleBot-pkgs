@@ -145,11 +145,12 @@ add_executable(localisation_node src/localisation_node.cpp)
 add_executable(bgr_to_rgb_converter_node src/bgrConverter_node.cpp )
 add_executable(ballSearch_node src/ballSearch_node.cpp src/BallSearch.cpp src/GraphicServer.cpp src/TurtleBotCamera.cpp src/analyse.cpp src/traitement.cpp)
 add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer.cpp)
-add_executable(highLevelCommand_node src/highLevelCommand_node.cpp src/HighLevelCommand.cpp)
+add_executable(highLevelCommand_node src/highLevelCommand_node.cpp src/HighLevelCommand.cpp src/graph.cpp)
 add_executable(test_node src/test_node.cpp)
 add_executable(odom_tests_node src/odom_node.cpp src/TurtleBotCommand.cpp )
-add_executable(directedGraph_node src/directedGraph.cpp  )
-add_executable(visib src/visib.cpp)
+add_executable(directedGraph_node src/directedGraph.cpp  src/graph.cpp)
+add_executable(visib_pgmwriter_node src/visib_pgmwriter_node.cpp src/visib_init.cpp)
+add_executable(visib_pgmreader_node src/visib_pgmreader_node.cpp src/visib_init.cpp)
 
 
 ## Add cmake target dependencies of the executable
@@ -192,9 +193,13 @@ target_link_libraries(directedGraph_node
   ${catkin_LIBRARIES}
   ${TinyXML_LIBRARIES}
 )
-target_link_libraries(visib
+target_link_libraries(visib_pgmwriter_node
   ${catkin_LIBRARIES}
 )
+target_link_libraries(visib_pgmreader_node
+  ${catkin_LIBRARIES}
+)
+
 
 #############
 ## Install ##

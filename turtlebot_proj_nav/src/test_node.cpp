@@ -17,11 +17,12 @@
 #include "move_base_msgs/MoveBaseGoal.h"
 #include "move_base_msgs/MoveBaseAction.h"
 #include <tf/transform_listener.h>
+#include "turtlebot_proj_nav/command.h"
 
 
 
 
-void callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg)
+/*void callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg)
 {
     std::cout<<"MoveBaseActionResult"<<std::endl;
     std::cout<<msg<<std::endl;
@@ -60,7 +61,7 @@ void callbackLocation(const nav_msgs::Odometry& msg)
     currentLocation.pose.pose = transformed_location.pose;
     
     std::cout<<currentLocation<<std::endl;
-}
+}*/
 
 
 
@@ -77,14 +78,16 @@ int main(int argc, char **argv)
     //ros::Publisher pubCmdFinished(node.advertise<std_msgs::Bool>("/nav/CommandFinished", 1));
     //ros::Publisher pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1));
     
-    ros::Subscriber subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &callbackMoveBaseActionResult));
+    /*ros::Subscriber subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &callbackMoveBaseActionResult));
     ros::Subscriber subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &callbackMoveBaseActionFeedback));
     ros::Subscriber subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &callbackMoveBaseActionGoal));
     ros::Subscriber subGoalStatusArray(node.subscribe("/move_base/status", 1, &callbackGoalStatusArray));
-    ros::Subscriber subLocation(node.subscribe("/odom", 1, &callbackLocation));
+    ros::Subscriber subLocation(node.subscribe("/odom", 1, &callbackLocation));*/
+    
+    ros::Publisher pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1));
     
 
-    nav_msgs::Path path;
+    /*nav_msgs::Path path;
     geometry_msgs::PoseStamped pose1, pose2, pose3, goal;
     nav_msgs::Odometry location;
     std_msgs::Bool commandFinished;
@@ -140,7 +143,7 @@ int main(int argc, char **argv)
     goal.pose.orientation.z = 0;
     goal.pose.orientation.w = 1;
 
-    commandFinished.data = true;
+    commandFinished.data = true;*/
     float time = 0;
     
     
@@ -158,7 +161,24 @@ int main(int argc, char **argv)
         //pubGoal.publish(goal);
         //std::cout<<goal<<std::endl;
         //pubCmdFinished.publish(commandFinished);
-        //std::cout<<time<<std::endl;
+        std::cout<<time<<std::endl;
+        
+        if(time>1 && time <2)
+        {
+            
+            turtlebot_proj_nav::command msg;
+            msg.linearVelocity = 0.2;
+            msg.angularVelocity = 1.5;
+            msg.distance = 0.2;
+            msg.angle = 3.14;
+            pubCommand.publish(msg);
+            ROS_INFO("Command sent...");
+            
+        
+        }
+        
+        
+        
         time = time + 0.5;
         loop_rate.sleep();
     }
