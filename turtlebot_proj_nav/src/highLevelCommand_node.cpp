@@ -86,7 +86,7 @@ int main(int argc, char **argv)
                 if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
                 else 
                 {
-                    ROS_INFO("Intermediate goal reached...";
+                    ROS_INFO("Intermediate goal reached...");
                     hlcCurrentState = 1;
                 }
                 break;
