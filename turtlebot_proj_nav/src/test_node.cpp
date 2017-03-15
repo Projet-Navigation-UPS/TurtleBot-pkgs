@@ -20,6 +20,7 @@
 #include "turtlebot_proj_nav/command.h"
 #include "std_msgs/Bool.h"
 #include "std_msgs/Empty.h"
+#include <unistd.h>
 
 
 bool go = false;
@@ -76,7 +77,7 @@ int main(int argc, char **argv)
     ROS_INFO("Launching test_node ...");
     ros::init(argc, argv, "test_node");
     ros::NodeHandle node;
-    ros::Rate loop_rate(0.5); // 2Hz 
+    //ros::Rate loop_rate(0.5); // 2Hz 
 
 
     //ros::Publisher pubPath(node.advertise<nav_msgs::Path>("/nav/PathToFollow", 1));
@@ -151,7 +152,9 @@ int main(int argc, char **argv)
 
     commandFinished.data = true;*/
     float time = 0;
-    
+    unsigned int microseconds = 1000000;
+
+
     
     
     
@@ -169,7 +172,7 @@ int main(int argc, char **argv)
         //pubCmdFinished.publish(commandFinished);
         std::cout<<time<<std::endl;
         
-        if(go)
+        if(true)
         {
             
             std_msgs::Bool msg;
@@ -189,7 +192,8 @@ int main(int argc, char **argv)
         }*/
         
         time = time + 0.5;
-        loop_rate.sleep();
+        usleep(microseconds);
+        //loop_rate.sleep();
     }
     
     return 0;

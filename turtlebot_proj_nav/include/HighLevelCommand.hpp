@@ -16,6 +16,7 @@
 #include "graph.hpp"
 #include "turtlebot_proj_nav/command.h"
 #include "std_msgs/Empty.h"
+#include <unistd.h>
 
 #define SOUND_ON 0
 #define SOUND_OFF 1
