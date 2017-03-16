@@ -47,7 +47,7 @@ private:
     //ros::ServiceClient srvMarkersVisibility;
 
     //Messages
-    std_msgs::Bool locationAvailable, goalReached, commandBusy, responseMarker/*, disableCommand*/;
+    std_msgs::Bool locationAvailable, goalReached, commandBusy, responseMarker, askMarker;
     std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId, markerSeen, makersVisibility;
     std_msgs::Empty empty;
     
@@ -88,6 +88,7 @@ public:
     bool finalGoal();
     bool intermediateGoal();
     bool markerResponse();
+    bool getAskMarker();
     
     float distance(float x1, float y1, float x2, float y2);
     

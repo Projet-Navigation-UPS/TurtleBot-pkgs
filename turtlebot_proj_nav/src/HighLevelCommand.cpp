@@ -38,6 +38,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     locationAvailable.data = false;
     goalReached.data = false;
     responseMarker.data=false;
+    askMarker.data=false;
 }
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
@@ -68,6 +69,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     locationAvailable.data = false;
     goalReached.data = false;
     responseMarker.data=false;
+    askMarker.data=false;
 }
 
 HighLevelCommand::~HighLevelCommand(){}
@@ -86,6 +88,7 @@ void HighLevelCommand::callbackCommandBusy(const std_msgs::Bool& msg)
 void HighLevelCommand::callbackMarkerSeen(const std_msgs::Int16& msg)
 {
     responseMarker.data=true;
+    askMarker.data=false;
     markerSeen = msg;
     //std::cout<<msg<<std::endl;
 }
@@ -185,6 +188,11 @@ bool HighLevelCommand::location()
 bool HighLevelCommand::markerResponse()
 {
     return responseMarker.data;
+}
+
+bool HighLevelCommand::getAskMarker()
+{
+    return askMarker.data;
 }
 
 bool HighLevelCommand::finalGoal()
@@ -329,6 +337,7 @@ void HighLevelCommand::findGlobalGoal()
 
 void HighLevelCommand::askForMarker()
 {
+    askMarker.data=true;
     responseMarker.data=false;
     pubAskForMarker.publish(empty);
 }

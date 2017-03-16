@@ -46,9 +46,15 @@ int main(int argc, char **argv)
             
             //AskForMarker
             case 1:
-                ROS_INFO("AskForMarker...");
-                HLC.askForMarker();
+                std::cout<<HLC.getAskMarker()<<std::endl;
+                std::cout<<HLC.markerResponse()<<std::endl;
+                
                 if(HLC.markerResponse()) hlcCurrentState = 0;
+                else if(!HLC.getAskMarker())
+                { 
+                    ROS_INFO("AskForMarker...");
+                    HLC.askForMarker();
+                }
                 break;
             
             //Location
