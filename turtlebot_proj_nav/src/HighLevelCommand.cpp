@@ -7,6 +7,9 @@
 
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
+    //Services
+    //srvMarkersVisibility(node.serviceClient<turtlebot_proj_nav::MarkersVisibility>("/nav/markers_visibility")),
+
     //Subsribers
     subscriberCommandBusy(node.subscribe("/nav/command_busy", 1, &HighLevelCommand::callbackCommandBusy,this)),
     subLocation(node.subscribe("/odom", 1, &HighLevelCommand::callbackLocation,this)),
@@ -28,7 +31,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     GlobalGoalMarkerId.data = 5;
     //disableCommand.data == false;
     commandBusy.data = true;
-    markerSeen.data = false;
+    markerSeen.data = -1;
     locationAvailable.data = false;
     goalReached.data = false;
 }
@@ -55,7 +58,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     GlobalGoalMarkerId.data = finalGoal;
     //disableCommand.data == false;
     commandBusy.data = true;
-    markerSeen.data = false;
+    markerSeen.data = -1;
     locationAvailable.data = false;
     goalReached.data = false;
 }
@@ -69,7 +72,7 @@ void HighLevelCommand::callbackCommandBusy(const std_msgs::Bool& msg)
     commandBusy = msg;
 }
 
-void HighLevelCommand::callbackMarkerSeen(const std_msgs::Bool& msg)
+void HighLevelCommand::callbackMarkerSeen(const std_msgs::Int16& msg)
 {
     markerSeen = msg;
     //std::cout<<msg<<std::endl;
@@ -118,7 +121,7 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
         //std::cout<<msg<<std::endl;
         goalReached.data = true;
       
-        float dist = 100.0;
+        /*float dist = 100.0;
         Graph g = xmlToGraph("graph.xml");
         typedef boost::graph_traits<Graph>::vertex_iterator vertex_iter;
         std::pair<vertex_iter, vertex_iter> vertexPair;
@@ -129,7 +132,7 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
                 closestMarkerId.data = g[*vertexPair.first].id;
                 dist = distance(g[*vertexPair.first].x, g[*vertexPair.first].y, currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y);
             }
-        }
+        }*/
     }
     //enableSimpleCommand();
     seekingMarkerState = 0;
@@ -152,10 +155,11 @@ void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBase
 //States
 bool HighLevelCommand::marker()
 {
-    if(markerSeen.data) 
+    if(markerSeen.data != -1) 
     {
         playSound(SOUND_OFF);
         seekingMarkerState=0;
+        closestMarkerId = markerSeen; 
     }
     return markerSeen.data;   
 }
@@ -274,7 +278,7 @@ int HighLevelCommand::seekMarker()
 void HighLevelCommand::sendGoal()
 {
     //disableSimpleCommand();
-    markerSeen.data =false;
+    markerSeen.data =-1;
     goalReached.data = false;
     NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
     currentGoal.header.seq = 1;

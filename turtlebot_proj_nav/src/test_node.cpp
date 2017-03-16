@@ -20,7 +20,9 @@
 #include "turtlebot_proj_nav/command.h"
 #include "std_msgs/Bool.h"
 #include "std_msgs/Empty.h"
+#include "std_msgs/Int16.h"
 #include <unistd.h>
+//#include "turtlebot_proj_nav/MarkersVisibility.h"
 
 
 bool go = false;
@@ -72,6 +74,14 @@ void callbackAskForMarker(const std_msgs::Empty& msg)
     ROS_INFO("RECEIVED");
 }
 
+/*bool srvMarkersVisibility(turtlebot_proj_nav::MarkersVisibility::Request  &req,
+         turtlebot_proj_nav::MarkersVisibility::Response &res)
+{
+  res.markers = 0;
+  ROS_INFO("sending back response: [%ld]", (long int)res.markers);
+  return true;
+}*/
+
 int main(int argc, char **argv)
 {
     ROS_INFO("Launching test_node ...");
@@ -91,8 +101,9 @@ int main(int argc, char **argv)
     ros::Subscriber subGoalStatusArray(node.subscribe("/move_base/status", 1, &callbackGoalStatusArray));
     ros::Subscriber subLocation(node.subscribe("/odom", 1, &callbackLocation));*/
     
-    ros::Publisher pubMarkerSeen(node.advertise<std_msgs::Bool>("/nav/loca/markerSeen", 1));
+    ros::Publisher pubMarkerSeen(node.advertise<std_msgs::Int16>("/nav/loca/markerSeen", 1));
     ros::Subscriber subAskForMarker(node.subscribe("/nav/HLC/askForMarker", 1, &callbackAskForMarker));
+    //ros::ServiceServer srvMarkersVisibility(node.advertiseService("markers_visibility", srvMarkersVisibility));
     //ros::Publisher pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1));
     /*nav_msgs::Path path;
     geometry_msgs::PoseStamped pose1, pose2, pose3, goal;
@@ -175,8 +186,8 @@ int main(int argc, char **argv)
         if(go)
         {
             
-            std_msgs::Bool msg;
-            msg.data = true;
+            std_msgs::Int16 msg;
+            msg.data = 1;
             pubMarkerSeen.publish(msg);
             ROS_INFO("True sent...");
             go=false;

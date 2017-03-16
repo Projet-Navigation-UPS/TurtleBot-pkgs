@@ -15,6 +15,7 @@
 #include <string>
 #include "graph.hpp"
 #include "turtlebot_proj_nav/command.h"
+//#include "turtlebot_proj_nav/MarkersVisibility.h"
 #include "std_msgs/Empty.h"
 #include <unistd.h>
 
@@ -38,10 +39,13 @@ private:
 
     //Publishers
     ros::Publisher pubGoal, pubSound, pubCommand, pubCommandState, pubAskForMarker;
+    
+    //Services
+    //ros::ServiceClient srvMarkersVisibility;
 
     //Messages
-    std_msgs::Bool markerSeen, locationAvailable, goalReached, commandBusy/*, disableCommand*/;
-    std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId;
+    std_msgs::Bool locationAvailable, goalReached, commandBusy/*, disableCommand*/;
+    std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId, markerSeen;
     std_msgs::Empty empty;
     
     //States
@@ -61,7 +65,7 @@ private:
     
     geometry_msgs::PoseStamped currentGoal;
     
-    void callbackMarkerSeen(const std_msgs::Bool& msg);
+    void callbackMarkerSeen(const std_msgs::Int16& msg);
     void callbackCommandBusy(const std_msgs::Bool& msg);
     void callbackLocation(const nav_msgs::Odometry& msg);
     void callbackGoalStatus(const actionlib_msgs::GoalStatusArray& msg);

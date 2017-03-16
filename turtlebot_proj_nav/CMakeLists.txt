@@ -63,7 +63,7 @@ add_message_files(
 ## Generate services in the 'srv' folder
 # add_service_files(
 #   FILES
-#   Service1.srv
+#   MarkersVisibility.srv
 #   Service2.srv
 # )
 

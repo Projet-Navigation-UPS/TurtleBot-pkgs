@@ -32,7 +32,7 @@ int main(int argc, char **argv)
             //Perception
             case 0:
                 
-                if(HLC.marker())
+                if(HLC.marker() != -1)
                 {
                     ROS_INFO("Marker seen...");
                     hlcCurrentState = 2;
