@@ -41,7 +41,7 @@ class HighLevelCommand
 private:
     
     //Subscrbers
-    ros::Subscriber subLocation, subGoalStatus, subMoveBaseActionFeedback, subMoveBaseActionGoal, subMoveBaseActionResult, subscriberCommandBusy, subMarkerSeen;
+    ros::Subscriber subLocation, subGoalStatus, subMoveBaseActionFeedback, subMoveBaseActionGoal, subMoveBaseActionResult, subscriberCommandBusy, subMarkerSeen, subMarkersVisibility;
 
     //Publishers
     ros::Publisher pubGoal, pubSound, pubCommand, pubCommandState, pubAskForMarker;
@@ -51,7 +51,7 @@ private:
 
     //Messages
     std_msgs::Bool locationAvailable, goalReached, commandBusy/*, disableCommand*/;
-    std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId, markerSeen;
+    std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId, markerSeen, makersVisibility;
     std_msgs::Empty empty;
     
     //States
@@ -71,6 +71,7 @@ private:
     
     geometry_msgs::PoseStamped currentGoal;
     
+    void callbackMarkersVisibility(const std_msgs::Int16& msg);
     void callbackMarkerSeen(const std_msgs::Int16& msg);
     void callbackCommandBusy(const std_msgs::Bool& msg);
     void callbackLocation(const nav_msgs::Odometry& msg);
