@@ -64,25 +64,25 @@ void Ecriture_carte_visib()
 	
 	for(a=0;a<m;a++)
 	{	
-		printf("*************************** x1 = %lf \t y1 = %lf *********************\n",x1[a],y1[a]);
+		//printf("*************************** x1 = %lf \t y1 = %lf *********************\n",x1[a],y1[a]);
 		x[a]=x1[a]*100/0.494134897;
 		y[a]=y1[a]*100/0.494134897;
 		alphamax[a]=pi/2;
-		printf("*************************** x1 = %d \t y1 = %d *********************\n",x[a],y[a]);
+		//printf("*************************** x1 = %d \t y1 = %d *********************\n",x[a],y[a]);
 	}
 
 
 	distancemax=distancem*100/0.494134897;
-	printf("Dmax = %d\n",distancemax);
+	ROS_INFO("Dmax = %d",distancemax);
 	distancemin=20/0.494134897;	
-	printf("Dmin = %d\n",distancemin);
+	ROS_INFO("Dmin = %d",distancemin);
 
     	ofstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm", ios::out | ios::trunc);  
 		// ouverture en écriture avec effacement du fichier ouvert
 
    		if(fichier && (r<1))
         		{	
-				printf("Création de la carte \n");
+				ROS_INFO("Creation de la carte");
 				fichier << "P2" << endl;
 				fichier << "#Thibaut" << endl;
 				fichier << "#Carte de visibilite" << endl;
@@ -152,7 +152,7 @@ void Ecriture_carte_visib()
 				}
 				else if((p<70 && (r==1)))
 				{
-					printf("Integer false, image non generee correctement !\n");
+					ROS_INFO("Integer false, image non generee correctement !");
 				}
 			}
 		}
@@ -163,7 +163,7 @@ void Ecriture_carte_visib()
 		if(r<1)      		        
         	{	
 			fichier.close();
-			printf("Carte generee correctement, fermeture du fichier, veuillez patienter environ 10 sec... \n");
+			ROS_INFO("Creation de la carte terminee \n________________________________________________________");
 			r=1;
 		}
 		
@@ -187,7 +187,7 @@ table pgm_imread(char *argv)			//reads pgm image
 		switch(line[1])
 			{
 			case '5' :	imagetype = 1; cout<<"P5 PGM image detected\n"; 		break; //raw image
-			case '2' :	imagetype = 2; cout<<"P2 PGM image detected\n"; 		break; //ASCII image
+			case '2' :	imagetype = 2; ROS_INFO("P2 PGM image detected"); 		break; //ASCII image
 			default	 :	imagetype = 0; cerr<<"unsupported PGM image format\n"; exit(0); break;
 			}
 	else
@@ -237,7 +237,7 @@ table pgm_imread(char *argv)			//reads pgm image
        			 }
 		}
 	table image = {data, cols, rows};
-	cout<<"Image read complete\n";
+	ROS_INFO("Image read complete");
 	infile.close();
     	return image; 		 		//returns the image as a 2-D array in a structure
 }

@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 	//int x1=920;
 	//int y1=900;
 
-    ROS_INFO("Launching reader visibility ...");
+    ROS_INFO("Launching reader visibility ...\n_______________________________________________________________");
     ros::init(argc, argv, "visibility_pgmreader_node");
     ros::NodeHandle node;
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 
 	struct table image = pgm_imread("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm");
 
-	printf("%d\n",image.data[x][y]);
+	//printf("%d\n",image.data[x][y]);
 
 	              
          
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 						pubVisib.publish(visib);
 					}
 
-		cout << "Ending reader visibility " << endl;
+		//cout << "Ending reader visibility " << endl;
 		
 		loop_rate.sleep();
     }
