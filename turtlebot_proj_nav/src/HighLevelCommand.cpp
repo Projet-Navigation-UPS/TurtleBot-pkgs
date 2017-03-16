@@ -177,6 +177,7 @@ int HighLevelCommand::marker()
         seekingMarkerState=0;
         closestMarkerId = markerSeen; 
     }
+    responseMarker.data=false;
     return markerSeen.data;   
 }
 
@@ -325,7 +326,10 @@ void HighLevelCommand::sendGoal()
     currentGoal.pose.position.x = marker.x + 0.1*cos(marker.orientation);    
     currentGoal.pose.position.y = marker.y + 0.1*sin(marker.orientation);    
     currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
-    currentGoal.pose.orientation = currentLocation.pose.pose.orientation;
+    currentGoal.pose.orientation.x = 0;
+    currentGoal.pose.orientation.y = 0;
+    currentGoal.pose.orientation.z = 0;
+    currentGoal.pose.orientation.w = 1;
     ROS_INFO("Next goal (%lf,%lf)",currentGoal.pose.position.x,currentGoal.pose.position.y);
     pubGoal.publish(currentGoal);
 }
@@ -338,7 +342,6 @@ void HighLevelCommand::findGlobalGoal()
 void HighLevelCommand::askForMarker()
 {
     askMarker.data=true;
-    responseMarker.data=false;
     pubAskForMarker.publish(empty);
 }
 
