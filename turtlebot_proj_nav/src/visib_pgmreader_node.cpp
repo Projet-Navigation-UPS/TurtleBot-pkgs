@@ -38,9 +38,9 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "visibility_pgmreader_node");
     ros::NodeHandle node;
 
-	ros::Publisher pubVisib(node.advertise<std_msgs::Int8>("/nav/visibility_marker", 1));
+	ros::Publisher pubVisib(node.advertise<std_msgs::Int16>("/nav/visibility_marker", 1));
 
-	std_msgs::Int8 visib;
+	std_msgs::Int16 visib;
 	visib.data=0;
 
    	ros::Rate loop_rate(5); // 2Hz 
