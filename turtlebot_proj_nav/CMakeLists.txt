@@ -142,6 +142,7 @@ include_directories(
 
 ## Declare a C++ executable
 add_executable(localisation_node src/localisation_node.cpp)
+add_executable(localisation_broadcaster_node src/localisation_broadcaster_node.cpp)
 add_executable(bgr_to_rgb_converter_node src/bgrConverter_node.cpp )
 add_executable(ballSearch_node src/ballSearch_node.cpp src/BallSearch.cpp src/GraphicServer.cpp src/TurtleBotCamera.cpp src/analyse.cpp src/traitement.cpp)
 add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer.cpp)
@@ -177,6 +178,9 @@ target_link_libraries(bgr_to_rgb_converter_node
   ${catkin_LIBRARIES}
 )
 target_link_libraries(localisation_node 
+  ${catkin_LIBRARIES}
+)
+target_link_libraries(localisation_broadcaster_node 
   ${catkin_LIBRARIES}
 )
 target_link_libraries(highLevelCommand_node
