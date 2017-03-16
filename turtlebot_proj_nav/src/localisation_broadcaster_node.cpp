@@ -42,25 +42,6 @@ int main(int argc, char** argv){
     ros::Rate loop_rate(5); 
     while(ros::ok())
     {
-        
-        /* tf::StampedTransform transform_mapNewOdom;
-        try
-	    {
-            if(li.canTransform("/map", "/new_odom", ros::Time::now()))
-            {  
-                std::cout << " maj " << std::endl ;
-                pub_resetodom.publish(std_msgs::Empty());
-                li.lookupTransform("/map", "/new_odom", ros::Time::now(), transform_mapNewOdom);
-                transform_mapOdom = transform_mapNewOdom;
-            }
-            
-            br.sendTransform(tf::StampedTransform(transform_mapOdom, ros::Time::now(), "map", "odom"));
-	    }
-        catch (tf::TransformException ex)
-	    {
-            std::cout << " TransformException " << std::endl;
-	    }*/
-
         br.sendTransform(tf::StampedTransform(transform_mapOdom, ros::Time::now(), "map", "odom"));
     
         ros::spinOnce();
