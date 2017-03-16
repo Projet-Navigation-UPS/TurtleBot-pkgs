@@ -89,12 +89,12 @@ void HighLevelCommand::callbackMarkerSeen(const std_msgs::Int16& msg)
 
 void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
 {
-    std::cout<<"MESSAGE"<<std::endl;
+    //std::cout<<"MESSAGE"<<std::endl;
     //std::cout<<msg.pose.pose.position<<std::endl;
     //std::cout<<msg.pose.pose.orientation<<std::endl;
     currentLocation = msg;
-           
-    geometry_msgs::PoseStamped location;
+    currentLocation.header.frame_id = "map";       
+    /*geometry_msgs::PoseStamped location;
     location.header = msg.header;
     location.pose = msg.pose.pose;
             
@@ -103,7 +103,7 @@ void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
     currentLocation.pose.pose = transformed_location.pose;
     std::cout<<"TRANSFORMED"<<std::endl;
     //std::cout<<currentLocation.pose.pose.position<<std::endl;
-    //std::cout<<currentLocation.pose.pose.orientation<<std::endl;
+    //std::cout<<currentLocation.pose.pose.orientation<<std::endl;*/
 
     locationAvailable.data = true;
 }
@@ -286,6 +286,18 @@ int HighLevelCommand::seekMarker()
 
 void HighLevelCommand::sendGoal()
 {
+    tf::StampedTransform transformMapOdom, transformMapRobot, transformOdomRobot;
+    tfListener.lookupTransform("/map", "/odom", ros::Time(0), transformMapOdom);
+	transformMapRobot = transformMapOdom;
+	
+    transformOdomRobot.setOrigin(tf::Vector3(currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y, currentLocation.pose.pose.position.y));
+    transformOdomRobot.setRotation(tf::Quaternion( currentLocation.pose.pose.orientation.x, currentLocation.pose.pose.orientation.y, currentLocation.pose.pose.orientation.z, currentLocation.pose.pose.orientation.w));
+    
+    transformMapRobot *= transformOdomRobot; 
+    
+    
+    tf::poseTFToMsg(transformMapRobot, currentLocation.pose.pose);
+
     //disableSimpleCommand();
     markerSeen.data =-1;
     goalReached.data = false;

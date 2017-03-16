@@ -12,6 +12,7 @@
 #include "move_base_msgs/MoveBaseActionFeedback.h"
 #include "move_base_msgs/MoveBaseActionGoal.h"
 #include <tf/transform_listener.h>
+#include <tf2/transform_datatypes.h>
 #include <string>
 #include "graph.hpp"
 #include "turtlebot_proj_nav/command.h"
@@ -55,7 +56,7 @@ private:
     
     //TF
     tf::TransformListener tfListener;
-    //tf::StampedTransform transform;
+    //
     
 
     actionlib_msgs::GoalStatusArray goalStatus;
