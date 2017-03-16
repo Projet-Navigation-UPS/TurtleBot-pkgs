@@ -1,7 +1,7 @@
 #include "visib_init.hpp"
 #include "graph.cpp"
 
-void displayGraphVisib(Graph g, float x1[], float y1[])
+void displayGraphVisib(Graph g, float x1[], float y1[], float t[])
 {
 	int a=0;
     // Display vertices
@@ -14,6 +14,7 @@ void displayGraphVisib(Graph g, float x1[], float y1[])
 
 	x1[a]=g[*vertexPair.first].x;
 	y1[a]=g[*vertexPair.first].y;
+	t[a]=-(g[*vertexPair.first].orientation);
 	a+=1;
     }
     
@@ -34,12 +35,12 @@ using namespace std;
 
 void Ecriture_carte_visib()
 {
-   	int n1=920;
-	int n2=900;
+   	int n1=1000;
+	int n2=1000;
 	int m=6;
 	int x[]={0,0,0,0,0,0};//colonne
     	int y[]={0,0,0,0,0,0};//ligne     
-	float t[]={pi/2,pi/2,0,0,0,0}; 
+	float t[m-1];//={pi/2,pi/2,0,0,0,0}; 
 	
 	int i,j,k,l,o,p=0,q=0,r=0,s=0,u=0,w=0,a;
 	float dist=1.0 ;
@@ -47,48 +48,39 @@ void Ecriture_carte_visib()
 	int v[m][m];
 	float yn[m];
 	float x1[5],y1[5];
-    	float angle[]={0.0,0.0,0.0,0.0,0.0,0.0};
-	float alphamax[]={pi/4,pi/4,pi/2,pi/2,pi/2,pi/2};
-	int distancemax=30;
-	int distancemin=1;
+    	float angle[m-1];//={0.0,0.0,0.0,0.0,0.0,0.0};
+	float alphamax[m-1];//={pi/2,pi/2,pi/2,pi/2,pi/2,pi/2};
+	int distancemax;
+	int distancemin;
 
-	float distancecm=200,xn;
+	float distancem=2;
+	float xn;
 	//1px = 0.494134897 cm
 	// x px = 337cm
 
 	Graph Graph_test = xmlToGraph("graph.xml");
-    	displayGraphVisib(Graph_test,x1,y1);
+    	displayGraphVisib(Graph_test,x1,y1,t);
 
 	
 	for(a=0;a<m;a++)
 	{	
 		printf("*************************** x1 = %lf \t y1 = %lf *********************\n",x1[a],y1[a]);
-		x[a]=y1[a]*100/0.494134897;
-		y[a]=x1[a]*100/0.494134897;
+		x[a]=x1[a]*100/0.494134897;
+		y[a]=y1[a]*100/0.494134897;
+		alphamax[a]=pi/2;
 		printf("*************************** x1 = %d \t y1 = %d *********************\n",x[a],y[a]);
 	}
 
 
-	//ros::Publisher pubVisib(node.advertise<std_msgs::Int8>("/nav/Visib", 1));
-
-	//std_msgs::Int8 visib;
-	//visib.data=0;
-
-	//distancemax=distancecm/0.494134897;
+	distancemax=distancem*100/0.494134897;
 	printf("Dmax = %d\n",distancemax);
-	//distancemin=20/0.494134897;	
+	distancemin=20/0.494134897;	
 	printf("Dmin = %d\n",distancemin);
 
-    	//ros::Rate loop_rate(5); // 2Hz 
-
-	ofstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm", ios::out | ios::trunc);  
+    	ofstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm", ios::out | ios::trunc);  
 		// ouverture en écriture avec effacement du fichier ouvert
 
-   // while (ros::ok()) //&& r<1) 
-    //{
-		//ros::spinOnce();
-    	
-		if(fichier && (r<1))
+   		if(fichier && (r<1))
         		{	
 				printf("Création de la carte \n");
 				fichier << "P2" << endl;
@@ -105,7 +97,7 @@ void Ecriture_carte_visib()
 		{
 			for (j=0;j<n1;j++) // ligne
 			{
-				pix[i][j]=15;
+				pix[j][i]=15;
 				//pix2[i][j]=1000000;
 				for(k=0;k<m;k++) // amers
 				{
@@ -129,45 +121,28 @@ void Ecriture_carte_visib()
 						yn[k] = -(tan(t[k])*xn);
 					else yn[k] = (tan(t[k])*xn);
 					
-					//xvp = 
-					//yvp = 
-
-					/*if(i<y[k] && j<x[k])
-						angle[k]=180-((asin((i-y[k])/dist))*180/pi);
-					else if (i>y[k] && j<x[k])
-						angle[k]=(asin((i-y[k])/dist))*180/pi;
-					else if (i<y[k] && j>x[k])
-						angle[k]=-180+((asin((i-y[k])/dist))*180/pi);
-					else if (i>y[k] && j>x[k])
-						angle[k]=-((asin((i-y[k])/dist))*180/pi);
-					else angle[k]=0;*/
-					angle[k]=acos(((j-x[k])*xn+((i-y[k])*yn[k]))/(sqrt(pow((j-x[k]),2)+pow((i-y[k]),2))*(sqrt(pow(xn,2)+pow(yn[k],2)))));//*180/pi;					
+					
+					angle[k]=acos(((j-x[k])*xn+((i-y[k])*yn[k]))/(sqrt(pow((j-x[k]),2)+pow((i-y[k]),2))*(sqrt(pow(xn,2)+pow(yn[k],2)))));					
 					//printf("Angle : %f \n", angle[k]);
 
-					if((dist<=distancemax && dist>=distancemin) && (angle[k]<=alphamax[k] && angle[k]>=-alphamax[k]))
-					{	pix[i][j]-=3;
-						/*if(k=0) pix2[i][j]+=000001;
-						if(k=1) pix2[i][j]+=000010;
-						if(k=2) pix2[i][j]+=000100;
-						if(k=3) pix2[i][j]+=001000;
-						if(k=4) pix2[i][j]+=010000;
-						if(k=5) pix2[i][j]+=100000;*/
+					if((dist<=distancemax && dist>=distancemin) && (angle[k]<=alphamax[k] && angle[k]>=-alphamax[k]) && (pix[j][i]!=0) )
+					{	
+						pix[j][i]-=3;
 					}
 					else 
 						if(dist == 0.0)
-						{	pix[i][j]=0;
-							pix2[i][j]=0;
+						{	pix[j][i]=0;
 							//printf("Amers :\ni=%d\tj=%d\n",i,j);
 							
 						}
 				}
 
 				//if(i<n&&j<n)
-				//printf("%d ", pix[i][j]);
+				//printf("%d ", pix[j][i]);
 				
 				q+=1;
 				if(r<1)	//flag pour savoir si l'ecriture s'est deja faite 1 fois
-				{	fichier << pix[i][j] << " " ;
+				{	fichier << pix[j][i] << " " ;
 					p+=1;
 				}
 				if(p>=70 && (r<1))// condition de retour a la ligne
@@ -192,88 +167,7 @@ void Ecriture_carte_visib()
 			r=1;
 		}
 		
-		// --------------- Publish the number of markers ---------
-
-		/*for (i=150;i<n2;i++) // colonne n2
-		{
-			for (j=600;j<n1;j++) // ligne n1
-			{
-				for(k=1;k<m;k++) // amers
-				{
-					printf("pix2[%d][%d]= %d\n",i,j,pix2[i][j]);
-					if(pix2[i][j]==1104680)
-					{
-						visib.data=1;
-						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
-						//printf("Nombre d'amers visibles : %d \n",k);
-						pubVisib.publish(visib);
-						printf("Numéro de l amer détectable : 0 \n");						
-					}
-					else if(pix2[i][j]==17)
-					{
-						visib.data=2;
-						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
-						pubVisib.publish(visib);
-						printf("Numéros des amers détectables : %d et %d \n",k-1,k);
-					}
-					else if(pix2[i][j]==18)
-					{
-						visib.data=3;
-						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
-						pubVisib.publish(visib);
-						printf("Numéros des amers détectables : %d, %d et %d \n",k-1,k,k+1);
-					}
-					else if(pix2[i][j]==19)
-					{
-						visib.data=4;
-						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
-						pubVisib.publish(visib);
-						printf("Numéros des amers détectables : %d, %d, %d et %d \n",k-1,k,k+1,k+2);
-					}
-					/*else
-					{
-						visib.data=0;
-						ROS_INFO("Pas d amer visible : %d", visib.data);
-						pubVisib.publish(visib);
-					}
-				}
-			}
-		}*/
-		
-		//loop_rate.sleep();
-    //}
-	//return 0;
 }
-
-/*void Lecture_carte_visib()
-{ 
-	vector <string> monTableau;
-	ifstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm", ios::in);
-
-        if(fichier)
-        {
-                int entier1, entier2;
-                string chaine1, chaine2;
-
-		while( !fichier.eof() )
-        	{
-            		monTableau.push_back("");//creation d'une ligne vide
-
-           	 	getline(fichier, monTableau.back());//lecture d'une ligne du fichier
-
-            		int ligne = monTableau.size() - 1;//je recupere la taille du tableau (-1 pour la ligne 0)
-
-            		if(monTableau[ligne].empty())//si la ligne est vide
-                		monTableau.pop_back();//on la retire du tableau
-        	}
-
-        cout << "nombre de lignes : " << monTableau.size() << endl;//j'affiche le nombre de lignes pour test
-    	        
-	fichier.close();
-        }
-        else
-                cerr << "Impossible d'ouvrir le fichier !" << endl;
-}*/
 
 table pgm_imread(char *argv)			//reads pgm image
 	{
