@@ -46,8 +46,8 @@ int main(int argc, char **argv)
             
             //AskForMarker
             case 1:
-                std::cout<<HLC.getAskMarker()<<std::endl;
-                std::cout<<HLC.markerResponse()<<std::endl;
+                //std::cout<<HLC.getAskMarker()<<std::endl;
+                //std::cout<<HLC.markerResponse()<<std::endl;
                 
                 if(HLC.markerResponse()) hlcCurrentState = 0;
                 else if(!HLC.getAskMarker())
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
                 if(HLC.location())
                 {
                     ROS_INFO("Location ready...");
-                    hlcCurrentState = 3;
+                    hlcCurrentState = 2;
                 }
                 else 
                 {

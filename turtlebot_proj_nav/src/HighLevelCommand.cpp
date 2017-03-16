@@ -170,7 +170,7 @@ void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBase
 //States
 int HighLevelCommand::marker()
 {
-    std::cout<<markerSeen<<std::endl;
+    //std::cout<<markerSeen<<std::endl;
     if(markerSeen.data != -1) 
     {
         playSound(SOUND_OFF);
