@@ -187,7 +187,7 @@ int main(int argc, char **argv)
         {
             
             std_msgs::Int16 msg;
-            msg.data = 1;
+            msg.data = 2;
             pubMarkerSeen.publish(msg);
             ROS_INFO("True sent...");
             go=false;
