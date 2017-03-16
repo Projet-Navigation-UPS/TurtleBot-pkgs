@@ -34,25 +34,26 @@ using namespace std;
 
 
 void Ecriture_carte_visib()
-{
-   	int n1=900;
-	int n2=1000;
-	int m=6;
-	int x[]={0,0,0,0,0,0};//position x de l'amer
-    	int y[]={0,0,0,0,0,0};//position y de l'amer     
-	float t[m-1];
-	
+{	
+	//taille de la fenetre
+   	int largeur=900;
+	int hauteur=1000;
+	//nombre d'amers	
+	int nbr_amers=6;
+	//stockage des positions des amers en pixels	
+	int x[nbr_amers-1];
+    	int y[nbr_amers-1];   
+	float t[nbr_amers]; //orientation des amers
 	int i,j,k,l,o,p=0,r=0,s=0,u=0,w=0,a;
-	float dist=1.0 ;
-	int pix[n1][n2];
-	int v[m][m];
-	float yn[m];
-	float x1[5],y1[5];
-    	float angle[m-1];
-	float alphamax[m-1];
+	float dist=0.0 ; //variable pour le calcul de la distance
+	int pix[largeur][hauteur];
+	int v[nbr_amers][nbr_amers];
+	float yn[nbr_amers];
+	float x1[nbr_amers],y1[nbr_amers]; // position des amers en m
+    	float angle[nbr_amers-1];
+	float alphamax[nbr_amers-1];
 	int distancemax;
 	int distancemin;
-
 	float distancem=2;
 	float xn;
 
@@ -61,11 +62,11 @@ void Ecriture_carte_visib()
 	//1px = 0.494134897 cm
 	// x px = 337cm
 
+	//Lecture du graphe pour recuperer les positions des amers
 	Graph Graph_test = xmlToGraph("graph.xml");
     	displayGraphVisib(Graph_test,x1,y1,t);
-
-	
-	for(a=0;a<m;a++)
+		
+	for(a=0;a<nbr_amers;a++)
 	{	
 		x[a]=x1[a]*100/0.494134897;
 		y[a]=y1[a]*100/0.494134897;
@@ -87,18 +88,18 @@ void Ecriture_carte_visib()
 		fichier << "P2" << endl;
 		fichier << "#Thibaut" << endl;
 		fichier << "#Carte de visibilite" << endl;
-		fichier << n1 << " " << n2 << endl;
+		fichier << largeur << " " << hauteur << endl;
 		fichier << "15" << endl;
 	}
 			
     
-	for (i=0;i<n2;i++) // colonne
+	for (i=0;i<hauteur;i++) // colonne
 	{
-		for (j=0;j<n1;j++) // ligne
+		for (j=0;j<largeur;j++) // ligne
 		{
 			pix[j][i]=15;
 			
-			for(k=0;k<m;k++) // boucle pour les amers
+			for(k=0;k<nbr_amers;k++) // boucle pour les amers
 			{
 				dist = sqrt(pow(i-y[k],2)+pow(j-x[k],2)); // calcul de la distance du pixel par rapport aux amers
 
@@ -151,7 +152,7 @@ void Ecriture_carte_visib()
 		}
 }
 
-
+/******** FONCTION DE LECTURE DE PGM ******************/
 table pgm_imread(char *argv)			//reads pgm image
 	{
 	char line[80];
