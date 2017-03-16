@@ -37,6 +37,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     markerSeen.data = -1;
     locationAvailable.data = false;
     goalReached.data = false;
+    responseMarker.data=false;
 }
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
@@ -66,6 +67,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     markerSeen.data = -1;
     locationAvailable.data = false;
     goalReached.data = false;
+    responseMarker.data=false;
 }
 
 HighLevelCommand::~HighLevelCommand(){}
@@ -83,6 +85,7 @@ void HighLevelCommand::callbackCommandBusy(const std_msgs::Bool& msg)
 
 void HighLevelCommand::callbackMarkerSeen(const std_msgs::Int16& msg)
 {
+    responseMarker.data=true;
     markerSeen = msg;
     //std::cout<<msg<<std::endl;
 }
@@ -162,8 +165,9 @@ void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBase
 
 
 //States
-bool HighLevelCommand::marker()
+int HighLevelCommand::marker()
 {
+    std::cout<<markerSeen<<std::endl;
     if(markerSeen.data != -1) 
     {
         playSound(SOUND_OFF);
@@ -176,6 +180,11 @@ bool HighLevelCommand::marker()
 bool HighLevelCommand::location()
 {
     return locationAvailable.data;
+}
+
+bool HighLevelCommand::markerResponse()
+{
+    return responseMarker.data;
 }
 
 bool HighLevelCommand::finalGoal()
@@ -320,6 +329,7 @@ void HighLevelCommand::findGlobalGoal()
 
 void HighLevelCommand::askForMarker()
 {
+    responseMarker.data=false;
     pubAskForMarker.publish(empty);
 }
 

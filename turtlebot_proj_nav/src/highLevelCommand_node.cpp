@@ -31,7 +31,6 @@ int main(int argc, char **argv)
         
             //Perception
             case 0:
-                
                 if(HLC.marker() != -1)
                 {
                     ROS_INFO("Marker seen...");
@@ -49,7 +48,7 @@ int main(int argc, char **argv)
             case 1:
                 ROS_INFO("AskForMarker...");
                 HLC.askForMarker();
-                hlcCurrentState = 0;    
+                if(HLC.markerResponse()) hlcCurrentState = 0;
                 break;
             
             //Location
