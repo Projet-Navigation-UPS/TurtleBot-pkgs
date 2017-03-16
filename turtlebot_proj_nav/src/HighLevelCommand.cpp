@@ -86,7 +86,7 @@ void HighLevelCommand::callbackMarkerSeen(const std_msgs::Int16& msg)
 
 void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
 {
-    //std::cout<<"MESSAGE"<<std::endl;
+    std::cout<<"MESSAGE"<<std::endl;
     //std::cout<<msg.pose.pose.position<<std::endl;
     //std::cout<<msg.pose.pose.orientation<<std::endl;
     currentLocation = msg;
@@ -98,7 +98,7 @@ void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
     geometry_msgs::PoseStamped transformed_location;
     tfListener.transformPose("map", location, transformed_location);      
     currentLocation.pose.pose = transformed_location.pose;
-    //std::cout<<"TRANSFORMED"<<std::endl;
+    std::cout<<"TRANSFORMED"<<std::endl;
     //std::cout<<currentLocation.pose.pose.position<<std::endl;
     //std::cout<<currentLocation.pose.pose.orientation<<std::endl;
 
