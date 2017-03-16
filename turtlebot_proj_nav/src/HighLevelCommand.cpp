@@ -7,6 +7,9 @@
 
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
+    //Services
+    //srvMarkersVisibility(node.serviceClient<turtlebot_proj_nav::MarkersVisibility>("/nav/markers_visibility")),
+
     //Subsribers
     subscriberCommandBusy(node.subscribe("/nav/command_busy", 1, &HighLevelCommand::callbackCommandBusy,this)),
     subLocation(node.subscribe("/odom", 1, &HighLevelCommand::callbackLocation,this)),
@@ -14,10 +17,12 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &HighLevelCommand::callbackMoveBaseActionFeedback,this)),
     subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &HighLevelCommand::callbackMoveBaseActionGoal,this)),
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
+    subMarkerSeen(node.subscribe("/nav/loca/markerSeen", 1, &HighLevelCommand::callbackMarkerSeen,this)),
 
     //Publishers
     /*pubCommandState(node.advertise<std_msgs::Bool>("/nav/command/state", 1)),*/
     pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1)),
+    pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
@@ -26,7 +31,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     GlobalGoalMarkerId.data = 5;
     //disableCommand.data == false;
     commandBusy.data = true;
-    markerSeen.data = true;
+    markerSeen.data = -1;
     locationAvailable.data = false;
     goalReached.data = false;
 }
@@ -39,10 +44,12 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &HighLevelCommand::callbackMoveBaseActionFeedback,this)),
     subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &HighLevelCommand::callbackMoveBaseActionGoal,this)),
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
+    subMarkerSeen(node.subscribe("/nav/loca/markerSeen", 1, &HighLevelCommand::callbackMarkerSeen,this)),
 
     //Publishers
-    pubCommandState(node.advertise<std_msgs::Bool>("/command/state", 1)),
+    /*pubCommandState(node.advertise<std_msgs::Bool>("/command/state", 1)),*/
     pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1)),
+    pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
 {
@@ -51,7 +58,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     GlobalGoalMarkerId.data = finalGoal;
     //disableCommand.data == false;
     commandBusy.data = true;
-    markerSeen.data = false;
+    markerSeen.data = -1;
     locationAvailable.data = false;
     goalReached.data = false;
 }
@@ -63,6 +70,12 @@ HighLevelCommand::~HighLevelCommand(){}
 void HighLevelCommand::callbackCommandBusy(const std_msgs::Bool& msg)
 {
     commandBusy = msg;
+}
+
+void HighLevelCommand::callbackMarkerSeen(const std_msgs::Int16& msg)
+{
+    markerSeen = msg;
+    //std::cout<<msg<<std::endl;
 }
 
 void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
@@ -104,11 +117,11 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
     if(moveBaseActionResult.status.status == 3) 
     {
         playSound(SOUND_ON);
-        std::cout<<"MoveBaseActionResult"<<std::endl;
-        std::cout<<msg<<std::endl;
+        //std::cout<<"MoveBaseActionResult"<<std::endl;
+        //std::cout<<msg<<std::endl;
         goalReached.data = true;
       
-        float dist = 100.0;
+        /*float dist = 100.0;
         Graph g = xmlToGraph("graph.xml");
         typedef boost::graph_traits<Graph>::vertex_iterator vertex_iter;
         std::pair<vertex_iter, vertex_iter> vertexPair;
@@ -119,7 +132,7 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
                 closestMarkerId.data = g[*vertexPair.first].id;
                 dist = distance(g[*vertexPair.first].x, g[*vertexPair.first].y, currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y);
             }
-        }
+        }*/
     }
     //enableSimpleCommand();
     seekingMarkerState = 0;
@@ -142,7 +155,13 @@ void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBase
 //States
 bool HighLevelCommand::marker()
 {
-    return markerSeen.data;  
+    if(markerSeen.data != -1) 
+    {
+        playSound(SOUND_OFF);
+        seekingMarkerState=0;
+        closestMarkerId = markerSeen; 
+    }
+    return markerSeen.data;   
 }
 
 bool HighLevelCommand::location()
@@ -152,7 +171,11 @@ bool HighLevelCommand::location()
 
 bool HighLevelCommand::finalGoal()
 { 
-    if(closestMarkerId.data == GlobalGoalMarkerId.data) return true; 
+    if(closestMarkerId.data == GlobalGoalMarkerId.data) 
+    {
+        playSound(SOUND_CLEANINGEND);
+        return true;
+    } 
     else return false;
 }
 
@@ -193,8 +216,7 @@ void HighLevelCommand::sendDistanceAndAngleCommand(const float linearVelocity, c
 
 int HighLevelCommand::seekMarker()
 {
-    //std::cout<<!commandBusy.data<<std::endl;
-    if ((!commandBusy.data) /*&& (disableCommand.data == false)*/)
+    if (!commandBusy.data)
      {
      
      switch (seekingMarkerState)
@@ -256,21 +278,28 @@ int HighLevelCommand::seekMarker()
 void HighLevelCommand::sendGoal()
 {
     //disableSimpleCommand();
+    markerSeen.data =-1;
     goalReached.data = false;
     NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
     currentGoal.header.seq = 1;
     currentGoal.header.stamp = ros::Time::now();
     currentGoal.header.frame_id = "map";
-    currentGoal.pose.position.x = marker.x;    
-    currentGoal.pose.position.y = marker.y;    
+    currentGoal.pose.position.x = marker.x + 0.1*cos(marker.orientation);    
+    currentGoal.pose.position.y = marker.y + 0.1*sin(marker.orientation);    
     currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
     currentGoal.pose.orientation = currentLocation.pose.pose.orientation;
+    ROS_INFO("Next goal (%lf,%lf)",currentGoal.pose.position.x,currentGoal.pose.position.y);
     pubGoal.publish(currentGoal);
 }
 
 void HighLevelCommand::findGlobalGoal()
 {
     
+}
+
+void HighLevelCommand::askForMarker()
+{
+    pubAskForMarker.publish(empty);
 }
 
 /*void HighLevelCommand::disableSimpleCommand()

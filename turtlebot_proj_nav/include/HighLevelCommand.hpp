@@ -15,6 +15,9 @@
 #include <string>
 #include "graph.hpp"
 #include "turtlebot_proj_nav/command.h"
+//#include "turtlebot_proj_nav/MarkersVisibility.h"
+#include "std_msgs/Empty.h"
+#include <unistd.h>
 
 #define SOUND_ON 0
 #define SOUND_OFF 1
@@ -38,14 +41,18 @@ class HighLevelCommand
 private:
     
     //Subscrbers
-    ros::Subscriber subLocation, subGoalStatus, subMoveBaseActionFeedback, subMoveBaseActionGoal, subMoveBaseActionResult, subscriberCommandBusy;
+    ros::Subscriber subLocation, subGoalStatus, subMoveBaseActionFeedback, subMoveBaseActionGoal, subMoveBaseActionResult, subscriberCommandBusy, subMarkerSeen;
 
     //Publishers
-    ros::Publisher pubGoal, pubSound, pubCommand, pubCommandState;
+    ros::Publisher pubGoal, pubSound, pubCommand, pubCommandState, pubAskForMarker;
+    
+    //Services
+    //ros::ServiceClient srvMarkersVisibility;
 
     //Messages
-    std_msgs::Bool markerSeen, locationAvailable, goalReached, commandBusy/*, disableCommand*/;
-    std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId;
+    std_msgs::Bool locationAvailable, goalReached, commandBusy/*, disableCommand*/;
+    std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId, markerSeen;
+    std_msgs::Empty empty;
     
     //States
     int seekingMarkerState;
@@ -64,6 +71,7 @@ private:
     
     geometry_msgs::PoseStamped currentGoal;
     
+    void callbackMarkerSeen(const std_msgs::Int16& msg);
     void callbackCommandBusy(const std_msgs::Bool& msg);
     void callbackLocation(const nav_msgs::Odometry& msg);
     void callbackGoalStatus(const actionlib_msgs::GoalStatusArray& msg);
@@ -89,6 +97,7 @@ public:
     void findGlobalGoal();
     void playSound(int sound);
     void sendDistanceAndAngleCommand(const float linearVelocity, const float angularVelocity, const float distance, const float angle);
+    void askForMarker();
     
     //void disableSimpleCommand();
     //void enableSimpleCommand();
