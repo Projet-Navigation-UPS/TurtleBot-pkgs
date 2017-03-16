@@ -35,17 +35,17 @@ int main(int argc, char **argv)
 	//int y1=900;
 
     ROS_INFO("Launching reader visibility ...");
-    ros::init(argc, argv, "visib");
+    ros::init(argc, argv, "visibility_pgmreader_node");
     ros::NodeHandle node;
 
-	ros::Publisher pubVisib(node.advertise<std_msgs::Int8>("/nav/Visib", 1));
+	ros::Publisher pubVisib(node.advertise<std_msgs::Int8>("/nav/visibility_marker", 1));
 
 	std_msgs::Int8 visib;
 	visib.data=0;
 
    	ros::Rate loop_rate(5); // 2Hz 
 
-	struct table image = pgm_imread("src/TurtleBot-pkgs/turtlebot_proj_nav/map/aip_hall.pgm");
+	struct table image = pgm_imread("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm");
 
 	printf("%d\n",image.data[x][y]);
 
