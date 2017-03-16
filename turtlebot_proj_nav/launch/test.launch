@@ -23,15 +23,15 @@
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
   <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher" args="2.0 1.0 0.0 0.0 -0.707 0.0 0.707 map marker_0 100" />
 
-  <!-- Amcl -->
-  <arg name="initial_pose_x" default="0.0"/> 
+   <!-- Amcl -->
+  <!--<arg name="initial_pose_x" default="0.0"/> 
   <arg name="initial_pose_y" default="0.0"/> 
   <arg name="initial_pose_a" default="0.0"/>
   <include file="$(find turtlebot_proj_nav)/launch/includes/amcl.launch.xml">
     <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
     <arg name="initial_pose_y" value="2.0"/>
     <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
-  </include>
+  </include> -->
 
   <!-- Move Base -->
   <include file="$(find turtlebot_proj_nav)/launch/includes/move_base.launch.xml">

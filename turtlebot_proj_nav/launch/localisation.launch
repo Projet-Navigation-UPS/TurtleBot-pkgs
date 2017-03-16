@@ -1,6 +1,6 @@
 <launch>
       
-    <!-- Set tf broadcaster-->
+    
     <node pkg="turtlebot_proj_nav" type="localisation_node" name="localisation_node" output="screen"/> 
 
 	<arg name="marker_size" default="16" />
