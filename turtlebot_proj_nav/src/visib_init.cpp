@@ -39,7 +39,7 @@ void Ecriture_carte_visib()
 	int m=6;
 	int x[]={0,0,0,0,0,0};//colonne
     	int y[]={0,0,0,0,0,0};//ligne     
-	float t[]={45,-20,-20,-20,-20,-20}; 
+	float t[]={pi/2,pi/2,0,0,0,0}; 
 	
 	int i,j,k,l,o,p=0,q=0,r=0,s=0,u=0,w=0,a;
 	float dist=1.0 ;
@@ -48,11 +48,11 @@ void Ecriture_carte_visib()
 	float yn[m];
 	float x1[5],y1[5];
     	float angle[]={0.0,0.0,0.0,0.0,0.0,0.0};
-	float alphamax[]={45,45,45,45,45,45};
-	int distancemax=3000;
-	int distancemin=10;
+	float alphamax[]={pi/4,pi/4,pi/2,pi/2,pi/2,pi/2};
+	int distancemax=30;
+	int distancemin=1;
 
-	float distancecm=200;
+	float distancecm=200,xn;
 	//1px = 0.494134897 cm
 	// x px = 337cm
 
@@ -62,10 +62,10 @@ void Ecriture_carte_visib()
 	
 	for(a=0;a<m;a++)
 	{	
-		//printf("*************************** x1 = %lf \t y1 = %lf *********************\n",x1[a],y1[a]);
-		x[a]=x1[a]*100/0.494134897;
-		y[a]=y1[a]*100/0.494134897;
-		//printf("*************************** x1 = %d \t y1 = %d *********************\n",x[a],y[a]);
+		printf("*************************** x1 = %lf \t y1 = %lf *********************\n",x1[a],y1[a]);
+		x[a]=y1[a]*100/0.494134897;
+		y[a]=x1[a]*100/0.494134897;
+		printf("*************************** x1 = %d \t y1 = %d *********************\n",x[a],y[a]);
 	}
 
 
@@ -74,9 +74,9 @@ void Ecriture_carte_visib()
 	//std_msgs::Int8 visib;
 	//visib.data=0;
 
-	distancemax=distancecm/0.494134897;
+	//distancemax=distancecm/0.494134897;
 	printf("Dmax = %d\n",distancemax);
-	distancemin=20/0.494134897;	
+	//distancemin=20/0.494134897;	
 	printf("Dmin = %d\n",distancemin);
 
     	//ros::Rate loop_rate(5); // 2Hz 
@@ -101,27 +101,50 @@ void Ecriture_carte_visib()
                 		//cerr << "Impossible d'ouvrir le fichier !" << endl;
 
     
-		for (i=0;i<n2;i++) // line
+		for (i=0;i<n2;i++) // colonne
 		{
-			for (j=0;j<n1;j++) // colonne
+			for (j=0;j<n1;j++) // ligne
 			{
 				pix[i][j]=15;
-				pix2[i][j]=1000000;
+				//pix2[i][j]=1000000;
 				for(k=0;k<m;k++) // amers
 				{
 					
-					if(t[k]>-90 && t[k]<90) //si theta compris entre -90 degre et 90 degre
-						v[k][1]=x[k];
+					/*if(t[k]>-90 && t[k]<90) //si theta compris entre -90 degre et 90 degre
+						v[k][1]=-y[k];
 					else if (t[k]<-90 && t[k]>90)
-						v[k][1]=-x[k];
-						else v[k][1]=0;
+						v[k][1]=x[k];
+						else v[k][1]=90;*/
 				
-					yn[k]=sin(t[k]);
-					angle[k]=acos(((i-x[k])+((j-y[k])*yn[k]))/(sqrt(pow((i-x[k]),2)+pow((j-y[k]),2))*(sqrt(1+pow(yn[k],2)))))*180/pi;					
-					//printf("Angle : %f \n", angle[k]);
-					dist = sqrt(pow(i-x[k],2)+pow(j-y[k],2));
+					//yn[k]=2;//cos(t[k]);
+					
+					dist = sqrt(pow(i-y[k],2)+pow(j-x[k],2));
 
-					if((dist<distancemax && dist>distancemin) && (angle[k]<alphamax[k] && angle[k]>-alphamax[k]))
+					// xn = -1; yn[k] = tan(t[k])*xn;
+					if(t[k]<3*pi/2 && t[k]>pi/2)
+						xn = 1;
+					else 	xn = -1;				
+					
+					if(t[k]<pi)
+						yn[k] = -(tan(t[k])*xn);
+					else yn[k] = (tan(t[k])*xn);
+					
+					//xvp = 
+					//yvp = 
+
+					/*if(i<y[k] && j<x[k])
+						angle[k]=180-((asin((i-y[k])/dist))*180/pi);
+					else if (i>y[k] && j<x[k])
+						angle[k]=(asin((i-y[k])/dist))*180/pi;
+					else if (i<y[k] && j>x[k])
+						angle[k]=-180+((asin((i-y[k])/dist))*180/pi);
+					else if (i>y[k] && j>x[k])
+						angle[k]=-((asin((i-y[k])/dist))*180/pi);
+					else angle[k]=0;*/
+					angle[k]=acos(((j-x[k])*xn+((i-y[k])*yn[k]))/(sqrt(pow((j-x[k]),2)+pow((i-y[k]),2))*(sqrt(pow(xn,2)+pow(yn[k],2)))));//*180/pi;					
+					//printf("Angle : %f \n", angle[k]);
+
+					if((dist<=distancemax && dist>=distancemin) && (angle[k]<=alphamax[k] && angle[k]>=-alphamax[k]))
 					{	pix[i][j]-=3;
 						/*if(k=0) pix2[i][j]+=000001;
 						if(k=1) pix2[i][j]+=000010;
@@ -151,6 +174,10 @@ void Ecriture_carte_visib()
 				{
 					fichier << endl;
 					p=0;		
+				}
+				else if((p<70 && (r==1)))
+				{
+					printf("Integer false, image non generee correctement !\n");
 				}
 			}
 		}

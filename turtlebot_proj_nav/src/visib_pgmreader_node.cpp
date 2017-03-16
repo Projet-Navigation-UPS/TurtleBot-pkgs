@@ -29,7 +29,7 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	int x=875,y=408;
+	int x=410,y=360;
 	
 	//int x1=920;
 	//int y1=900;
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 
    	ros::Rate loop_rate(5); // 2Hz 
 
-	struct table image = pgm_imread("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm");
+	struct table image = pgm_imread("src/TurtleBot-pkgs/turtlebot_proj_nav/map/aip_hall.pgm");
 
 	printf("%d\n",image.data[x][y]);
 
