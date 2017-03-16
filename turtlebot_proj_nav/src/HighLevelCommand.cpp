@@ -25,8 +25,10 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1)),
     pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
-    pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
+    pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1)),
+    tfListener(node, ros::Duration(10), true)
 {
+    
     seekingMarkerState = 0;
     closestMarkerId.data = 0;
     GlobalGoalMarkerId.data = 5;
@@ -53,7 +55,8 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1)),
     pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1)),
     pubSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
-    pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1))
+    pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1)),
+    tfListener(node, ros::Duration(10), true)
 {
     seekingMarkerState = 0;
     closestMarkerId.data = 0;

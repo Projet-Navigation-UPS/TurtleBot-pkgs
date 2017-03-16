@@ -27,13 +27,9 @@
 #define SOUND_CLEANINGSTART 5
 #define SOUND_CLEANINGEND 6
 
-#define X_GOAL1 2
+
 #define PI 3.1416
-#define Y_GOAL1 2
-#define X_GOAL2 2
-#define Y_GOAL2 4
-#define X_GOAL3 4
-#define Y_GOAL3 4
+
 
 class HighLevelCommand 
 {
@@ -59,7 +55,7 @@ private:
     
     //TF
     tf::TransformListener tfListener;
-    tf::StampedTransform transform;
+    //tf::StampedTransform transform;
     
 
     actionlib_msgs::GoalStatusArray goalStatus;
