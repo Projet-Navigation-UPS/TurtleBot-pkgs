@@ -1,0 +1,9 @@
+<launch>
+      
+  <group ns="nav">
+  <!-- Set rviz -->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d /home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_proj_nav/config/localisation.rviz" />
+  </group>
+
+</launch>
+
