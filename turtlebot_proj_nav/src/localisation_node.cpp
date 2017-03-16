@@ -65,6 +65,7 @@ int main(int argc, char** argv){
 	    {
 		if(GLOBAL_SEARCH == 1)
 		    {
+		        std::cout << " GLOBAL_SEARCH " << std::endl ;
 			if(li.waitForTransform("/camera_rgb_optical_frame", "/ar_marker_0", ros::Time(0), ros::Duration(TIMEOUT_AR_DETEC))) // wait for tf during 1 min
 			    {
 				GLOBAL_SEARCH = 0 ; // search once
