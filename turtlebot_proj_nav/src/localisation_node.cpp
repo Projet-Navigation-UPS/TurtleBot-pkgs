@@ -20,7 +20,7 @@ void askForMarkerCallback(const std_msgs::Empty& empty) {
     GLOBAL_SEARCH = 1;
 }
 
-void readMarkerCallBback(const ar_track_alvar_msgs::AlvarMarker::ConstPtr& msg)
+void readMarkerCallback(const ar_track_alvar_msgs::AlvarMarker::ConstPtr& msg)
 {
   std::cout << "callback id : " << msg->id << std::endl;
     if(msg->id >= 0) 
@@ -39,6 +39,7 @@ int main(int argc, char** argv){
 
     //  Subscribers and Publishers
     ros::Subscriber askForMarker = node.subscribe("/nav/HLC/askForMarker", 10, askForMarkerCallback);
+    ros::Subscriber readMarker = node.subscribe("/ar_pose_marker", 10, readMarkerCallback);
     ros::Publisher idMarker_pub = node.advertise<std_msgs::Int16>("/nav/loca/markerSeen", 50); 
     ros::Publisher odom_pub = node.advertise<geometry_msgs::Transform>("/new_odom", 50);
     geometry_msgs::Transform odom_msg;
