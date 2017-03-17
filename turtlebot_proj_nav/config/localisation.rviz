@@ -6,6 +6,8 @@ Panels:
       Expanded:
         - /TF1/Frames1
         - /TF1/Tree1
+        - /Global cost map1
+        - /Markers visibility map1
       Splitter Ratio: 0.75
     Tree Height: 797
   - Class: rviz/Selection
@@ -25,7 +27,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: Image
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -522,6 +524,15 @@ Visualization Manager:
       Topic: /move_base/NavfnROS/plan
       Unreliable: false
       Value: true
+    - Alpha: 0.7
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: true
+      Enabled: true
+      Name: Markers visibility map
+      Topic: /markers_visibility_map
+      Unreliable: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -541,22 +552,22 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 17.5895
+      Distance: 15.4176
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.06
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 1.38523
-        Y: 0.533604
-        Z: 0.21862
+        X: 0.48991
+        Y: 1.22387
+        Z: 1.22156
       Name: Current View
       Near Clip Distance: 0.01
-      Pitch: 1.5698
+      Pitch: 0.944798
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.75906
+      Yaw: 3.92408
     Saved: ~
 Window Geometry:
   Displays:
