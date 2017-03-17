@@ -14,7 +14,7 @@ void displayGraphVisib(Graph g, float x1[], float y1[], float t[])
 
 	x1[a]=g[*vertexPair.first].x;
 	y1[a]=g[*vertexPair.first].y;
-	t[a]=-(g[*vertexPair.first].orientation);
+	t[a]=(g[*vertexPair.first].orientation);
 	a+=1;
     }
     
@@ -41,21 +41,21 @@ void Ecriture_carte_visib()
 	//nombre d'amers	
 	int nbr_amers=6;
 	//stockage des positions des amers en pixels	
-	int x[nbr_amers-1];
-    	int y[nbr_amers-1];   
+	int x[nbr_amers];
+    	int y[nbr_amers];   
 	float t[nbr_amers]; //orientation des amers
 	int i,j,k,l,o,p=0,r=0,s=0,u=0,w=0,a;
 	float dist=0.0 ; //variable pour le calcul de la distance
 	int pix[largeur][hauteur];
 	int v[nbr_amers][nbr_amers];
-	float yn[nbr_amers];
+	float yn[nbr_amers],xn[nbr_amers];
 	float x1[nbr_amers],y1[nbr_amers]; // position des amers en m
     	float angle[nbr_amers-1];
 	float alphamax[nbr_amers-1];
 	int distancemax;
 	int distancemin;
 	float distancem=2;
-	float xn;
+	float xp[nbr_amers],yp[nbr_amers];
 
 	// Conversion m -> pixel
 
@@ -104,16 +104,40 @@ void Ecriture_carte_visib()
 				dist = sqrt(pow(i-y[k],2)+pow(j-x[k],2)); // calcul de la distance du pixel par rapport aux amers
 
 				// calcul de la normale
-				if(t[k]<3*pi/2 && t[k]>pi/2) 
-					xn = 1;
-				else 	xn = -1;				
+				if((t[k]<pi/2.0 && t[k]>=0) || (t[k]<2*pi && t[k]>=3*pi/2)) 
+					xn[k] = 1;
+				else 	xn[k] = -1;				
 					
-				if(t[k]<pi)
-					yn[k] = -(tan(t[k])*xn);
-				else yn[k] = (tan(t[k])*xn);
-					
+				if(t[k]>=0 && t[k]<pi)
+				{	yn[k] = -(tan(t[k])*abs(xn[k]));
+				}
+				else yn[k] = (tan(t[k])*abs(xn[k]));
+				
+				//printf("t=%f \n",t[k]);
+				
+				if(t[k]>=0.0 && t[k]<pi/2.0)
+				{
+					xp[k]=(j-x[k]);
+					yp[k]=-(-i+y[k]);
+				}
+				if(t[k]>=pi/2.0 && t[k]<pi)
+				{
+					xp[k]=(j-x[k]);
+					yp[k]=(-i+y[k]);
+				}
+				if(t[k]>=pi && t[k]<3.0*pi/2.0)
+				{
+					xp[k]=(j-x[k]);
+					yp[k]=-(-i+y[k]);
+				}
+				if(t[k]>=3.0*pi/2.0 && t[k]<2.0*pi)
+				{
+					xp[k]=(j-x[k]);
+					yp[k]=(-i+y[k]);
+				}
+				
 				//calcul de l'angle (produit vectoriel)
-				angle[k]=acos(((j-x[k])*xn+((i-y[k])*yn[k]))/(sqrt(pow((j-x[k]),2)+pow((i-y[k]),2))*(sqrt(pow(xn,2)+pow(yn[k],2)))));					
+				angle[k]=acos((xp[k]*xn[k]+(yp[k]*yn[k]))/(sqrt(pow(xp[k],2)+pow(yp[k],2))*(sqrt(pow(xn[k],2)+pow(yn[k],2)))));					
 				
 				// Si la distance est comprise entre la distance min et la distance max et dans l'angle de champ de vision de l'amer, le pixel blanc passe en gris	
 				if((dist<=distancemax && dist>=distancemin) && (angle[k]<=alphamax[k] && angle[k]>=-alphamax[k]) && (pix[j][i]!=0) ) 
