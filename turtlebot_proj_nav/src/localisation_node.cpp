@@ -22,6 +22,7 @@ void askForMarkerCallback(const std_msgs::Empty& empty) {
 
 void readMarkerCallBback(const ar_track_alvar_msgs::AlvarMarker::ConstPtr& msg)
 {
+  std::cout << "callback id : " << msg->id << std::endl;
     if(msg->id >= 0) 
 	ID_MARKER_DETECTED = msg->id;
     else
@@ -91,7 +92,7 @@ int main(int argc, char** argv){
 			    if(ID_MARKER_DETECTED != -1) 
 				{
 				    GLOBAL_SEARCH = 0 ; // search once
-
+				    std::cout << " MARKER DETECTED " << std::endl ;
 				    tf::Transform transform_cameraMarker;    
 				    tf::Transform transform_robotMarker;  
 				    tf::Transform transform_markerRobot;   
