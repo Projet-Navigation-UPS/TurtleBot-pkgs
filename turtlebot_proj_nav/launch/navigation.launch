@@ -28,12 +28,13 @@
     <!--<arg name="custom_param_file" value="$(arg custom_param_file)"/> -->
   </include>
  
-  <group ns="nav">
+  <!-- Markers visibility reader -->
+  <node pkg="turtlebot_proj_nav" name="visibility_marker" type="visib_pgmreader_node"/>
     
   <!-- Simple command -->
   <node pkg="turtlebot_proj_nav" name="command" type="command_node"/>
   
-  </group>
+
 
   <!-- Set rviz -->
   <!--<node pkg="rviz" type="rviz" name="rviz" args="-d /home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_proj_nav/config/localisation.rviz" />-->
