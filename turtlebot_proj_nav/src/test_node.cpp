@@ -18,9 +18,14 @@
 #include "move_base_msgs/MoveBaseAction.h"
 #include <tf/transform_listener.h>
 #include "turtlebot_proj_nav/command.h"
+#include "std_msgs/Bool.h"
+#include "std_msgs/Empty.h"
+#include "std_msgs/Int16.h"
+#include <unistd.h>
+//#include "turtlebot_proj_nav/MarkersVisibility.h"
 
 
-
+bool go = false;
 
 /*void callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg)
 {
@@ -63,7 +68,19 @@ void callbackLocation(const nav_msgs::Odometry& msg)
     std::cout<<currentLocation<<std::endl;
 }*/
 
+void callbackAskForMarker(const std_msgs::Empty& msg)
+{
+    go = true;
+    ROS_INFO("RECEIVED");
+}
 
+/*bool srvMarkersVisibility(turtlebot_proj_nav::MarkersVisibility::Request  &req,
+         turtlebot_proj_nav::MarkersVisibility::Response &res)
+{
+  res.markers = 0;
+  ROS_INFO("sending back response: [%ld]", (long int)res.markers);
+  return true;
+}*/
 
 int main(int argc, char **argv)
 {
@@ -84,9 +101,10 @@ int main(int argc, char **argv)
     ros::Subscriber subGoalStatusArray(node.subscribe("/move_base/status", 1, &callbackGoalStatusArray));
     ros::Subscriber subLocation(node.subscribe("/odom", 1, &callbackLocation));*/
     
-    ros::Publisher pubCommand(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1));
-    
-
+    ros::Publisher pubMarkerSeen(node.advertise<std_msgs::Int16>("/nav/loca/markerSeen", 1));
+    ros::Subscriber subAskForMarker(node.subscribe("/nav/HLC/askForMarker", 1, &callbackAskForMarker));
+    //ros::ServiceServer srvMarkersVisibility(node.advertiseService("markers_visibility", srvMarkersVisibility));
+    //ros::Publisher pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1));
     /*nav_msgs::Path path;
     geometry_msgs::PoseStamped pose1, pose2, pose3, goal;
     nav_msgs::Odometry location;
@@ -145,7 +163,9 @@ int main(int argc, char **argv)
 
     commandFinished.data = true;*/
     float time = 0;
-    
+    unsigned int microseconds = 1000000;
+
+
     
     
     
@@ -163,23 +183,27 @@ int main(int argc, char **argv)
         //pubCmdFinished.publish(commandFinished);
         std::cout<<time<<std::endl;
         
-        if(time>1 && time <2)
+        if(go)
         {
             
-            turtlebot_proj_nav::command msg;
-            msg.linearVelocity = 0.2;
-            msg.angularVelocity = 1.5;
-            msg.distance = 0.2;
-            msg.angle = 3.14;
-            pubCommand.publish(msg);
-            ROS_INFO("Command sent...");
+            std_msgs::Int16 msg;
+            msg.data = 2;
+            pubMarkerSeen.publish(msg);
+            ROS_INFO("True sent...");
+            go=false;
             
         
         }
         
-        
+        /*if(time>2)
+        {
+            std_msgs::Empty msg;
+            pubAskForMarker.publish(msg);
+            ROS_INFO("EMPTY SENT");
+        }*/
         
         time = time + 0.5;
+        //usleep(microseconds);
         loop_rate.sleep();
     }
     

@@ -102,7 +102,7 @@ NodeProperty nextNode(int sourceId, int targetId, std::string xmlFile)
         
         if (g[*vP.first].id == sourceId) 
         {
-            ROS_INFO("Next goal (%lf,%lf)",g[p[*vP.first]].x,g[p[*vP.first]].y);
+            ROS_INFO("Next marker (%lf,%lf)",g[p[*vP.first]].x,g[p[*vP.first]].y);
             node = g[p[*vP.first]];
         }
     }

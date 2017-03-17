@@ -1,16 +1,7 @@
 <launch>
-        <!-- Reset odom -->
-        <node pkg="rostopic" type="rostopic" name="reset_odom" args="pub /mobile_base/commands/reset_odometry std_msgs/Empty"/>
       
-
-        <!-- Set map server -->	
-        <arg name="map_file" default="/home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_proj_nav/map/aip_hall.yaml"/>
-        <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
-
-        <!-- Set tf broadcaster-->
-        <node pkg="turtlebot_proj_nav" type="localisation_node" name="localisation_node" output="screen"/>
-        <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher" args="2.0 1.0 0.0 0.0 -0.707 0.0 0.707 map marker_0 100" />
-
+    
+    <node pkg="turtlebot_proj_nav" type="localisation_node" name="localisation_node" output="screen"/> 
 
 	<arg name="marker_size" default="16" />
 	<arg name="max_new_marker_error" default="0.08" />
@@ -29,8 +20,5 @@
 		<remap from="camera_image"  to="$(arg cam_image_topic)" />
 		<remap from="camera_info"   to="$(arg cam_info_topic)" />
 	</node>
-
-        <!-- Set rviz -->
-        <node pkg="rviz" type="rviz" name="rviz" args="-d /home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_proj_nav/config/localisation.rviz" />
 
 </launch>
