@@ -12,6 +12,7 @@
 #include "move_base_msgs/MoveBaseActionFeedback.h"
 #include "move_base_msgs/MoveBaseActionGoal.h"
 #include <tf/transform_listener.h>
+#include <tf2/transform_datatypes.h>
 #include <string>
 #include "graph.hpp"
 #include "turtlebot_proj_nav/command.h"
@@ -27,13 +28,9 @@
 #define SOUND_CLEANINGSTART 5
 #define SOUND_CLEANINGEND 6
 
-#define X_GOAL1 2
+
 #define PI 3.1416
-#define Y_GOAL1 2
-#define X_GOAL2 2
-#define Y_GOAL2 4
-#define X_GOAL3 4
-#define Y_GOAL3 4
+
 
 class HighLevelCommand 
 {
@@ -50,7 +47,7 @@ private:
     //ros::ServiceClient srvMarkersVisibility;
 
     //Messages
-    std_msgs::Bool locationAvailable, goalReached, commandBusy/*, disableCommand*/;
+    std_msgs::Bool locationAvailable, goalReached, commandBusy, responseMarker, askMarker;
     std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId, markerSeen, makersVisibility;
     std_msgs::Empty empty;
     
@@ -59,7 +56,7 @@ private:
     
     //TF
     tf::TransformListener tfListener;
-    tf::StampedTransform transform;
+    //
     
 
     actionlib_msgs::GoalStatusArray goalStatus;
@@ -86,10 +83,12 @@ public:
     HighLevelCommand(ros::NodeHandle& node, int finalGoal);
     ~HighLevelCommand();
     
-    bool marker();
+    int marker();
     bool location();
     bool finalGoal();
     bool intermediateGoal();
+    bool markerResponse();
+    bool getAskMarker();
     
     float distance(float x1, float y1, float x2, float y2);
     

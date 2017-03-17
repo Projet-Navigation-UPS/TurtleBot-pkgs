@@ -11,7 +11,7 @@ int main(int argc, char **argv)
     ros::NodeHandle node;
     //ros::Rate loop_rate(0.5); // 1Hz 
 
-    HighLevelCommand HLC(node,4);
+    HighLevelCommand HLC(node,1);
     
     int hlcCurrentState;
     
@@ -31,7 +31,6 @@ int main(int argc, char **argv)
         
             //Perception
             case 0:
-                
                 if(HLC.marker() != -1)
                 {
                     ROS_INFO("Marker seen...");
@@ -47,9 +46,15 @@ int main(int argc, char **argv)
             
             //AskForMarker
             case 1:
-                ROS_INFO("AskForMarker...");
-                HLC.askForMarker();
-                hlcCurrentState = 0;    
+                //std::cout<<HLC.getAskMarker()<<std::endl;
+                //std::cout<<HLC.markerResponse()<<std::endl;
+                
+                if(HLC.markerResponse()) hlcCurrentState = 0;
+                else if(!HLC.getAskMarker())
+                { 
+                    ROS_INFO("AskForMarker...");
+                    HLC.askForMarker();
+                }
                 break;
             
             //Location
@@ -58,7 +63,7 @@ int main(int argc, char **argv)
                 if(HLC.location())
                 {
                     ROS_INFO("Location ready...");
-                    hlcCurrentState = 3;
+                    hlcCurrentState = 2;
                 }
                 else 
                 {
