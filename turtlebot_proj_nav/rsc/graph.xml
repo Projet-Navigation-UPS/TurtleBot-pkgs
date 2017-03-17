@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>  
 <DirectedGraph Title="ARMarkers" >  
    <Nodes>  
-      <Node Id="0" Label="ARMarker0"  PositionX="0.0" PositionY="2.0" Orientation="0.0"/>  
+      <Node Id="0" Label="ARMarker0"  PositionX="0.5" PositionY="2.0" Orientation="0.0"/>  
       <Node Id="1" Label="ARMarker1"  PositionX="4.0" PositionY="4.0" Orientation="1.57"/>
    </Nodes>  
    <Links>  
