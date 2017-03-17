@@ -7,7 +7,7 @@
 #include <iostream>
 
 static const int DEBUG = 0;
-static const int TIMEOUT_AR_DETEC = 30;
+static const int TIMEOUT_AR_DETEC = 5;
 
 int GLOBAL_SEARCH;
 
@@ -31,7 +31,8 @@ int main(int argc, char** argv){
 
     // Statics TFs
     tf::StampedTransform transform_mapMarker;
-    li.lookupTransform("/map", "/marker_0", ros::Time(0), transform_mapMarker);
+    li.waitForTransform("/map", "/marker_0", ros::Time(0), ros::Duration(10));
+    li.lookupTransform ("/map", "/marker_0", ros::Time(0), transform_mapMarker);
     /* transform_mapMarker.setOrigin(tf::Vector3(2.0, 1.0, 0.0));        
        transform_mapMarker.setRotation(tf::Quaternion(0.0, -0.707, 0.0, 0.707)); */
 
