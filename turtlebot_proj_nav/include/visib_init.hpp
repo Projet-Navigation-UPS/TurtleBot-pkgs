@@ -32,11 +32,9 @@ struct table	//image structure
 	int rows;
 };
 
-void displayGraphVisib(Graph g, float x1[], float y1[]);
+void displayGraphVisib(Graph g, float x1[], float y1[], float t[]);
 
 void Ecriture_carte_visib();
-
-//void Lecture_carte_visib();
 
 table pgm_imread(char *argv);
 

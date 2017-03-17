@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 {
 	int r=0;
 
-    ROS_INFO("Launching writer visibility ...");
+    ROS_INFO("Launching writer visibility ...\n_______________________________________________________________");
     ros::init(argc, argv, "visib");
     ros::NodeHandle node;
 
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     {
 		ros::spinOnce();
     	
-		cout << "Ending writer visibility " << endl;
+		ROS_INFO("Ending writer visibility");
 		r=1;
 		loop_rate.sleep();
     }
