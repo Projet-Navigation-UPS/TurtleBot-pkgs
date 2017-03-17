@@ -14,7 +14,7 @@ void displayGraphVisib(Graph g, float x1[], float y1[], float t[])
 
 	x1[a]=g[*vertexPair.first].x;
 	y1[a]=g[*vertexPair.first].y;
-	t[a]=(g[*vertexPair.first].orientation);
+	t[a]=g[*vertexPair.first].orientation;
 	a+=1;
     }
     
@@ -179,7 +179,7 @@ void Ecriture_carte_visib()
 /******** FONCTION DE LECTURE DE PGM ******************/
 table pgm_imread(char *argv)			//reads pgm image
 	{
-	char line[80];
+	char line[70];
 	int imagetype = 0, cols, rows, maxintensity, p2read;
 	int **data;
 	unsigned char p5read;
@@ -190,7 +190,7 @@ table pgm_imread(char *argv)			//reads pgm image
 	        cerr<<argv[1]<<" either cannot be read or does not exist\n";
         	exit(0);
 	        }
-	infile.getline(line, 80);
+	infile.getline(line, 70);
 	if(line[0] == 'P')
 		switch(line[1])
 			{
@@ -204,7 +204,7 @@ table pgm_imread(char *argv)			//reads pgm image
 		exit(0);
 		}
 	while (infile.peek()=='#')
-        	infile.getline(line,80); 	//read all the comments and oomit them.
+        	infile.getline(line,70); 	//read all the comments and oomit them.
 	infile >> cols >> rows >> maxintensity;	//read the no of coloumns rows and pixel intensity
 	data = new int* [cols];		//memory allocation
 	if (!data)
