@@ -1,5 +1,5 @@
 <launch>
-  <node name="true_map" pkg="map_server" type="map_server" args="$(find turtlebot_proj_nav)/map/aip_hall.pgm 0.1">
+  <node name="true_map" pkg="map_server" type="map_server" args="$(find turtlebot_proj_nav)/map/aip_map.pgm 0.1">
     <remap from="map" to="/truemap" />
   </node>
   <node name="common_map" pkg="map_server" type="map_server" args="$(find turtlebot_proj_nav)/map/visib.pgm 0.1">
