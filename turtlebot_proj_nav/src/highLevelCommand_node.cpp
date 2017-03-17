@@ -63,7 +63,7 @@ int main(int argc, char **argv)
                 if(HLC.location())
                 {
                     ROS_INFO("Location ready...");
-                    hlcCurrentState = 2;
+                    hlcCurrentState = 3;
                 }
                 else 
                 {
