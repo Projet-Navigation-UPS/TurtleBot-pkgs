@@ -1,20 +1,38 @@
 <launch>
+    
+    <!-- Reset odom -->
+    <node pkg="rostopic" type="rostopic" name="reset_odom" args="pub /mobile_base/commands/reset_odometry std_msgs/Empty"/>
+    
+    
+    <!-- TF broadcaster -->
+    <node pkg="tf" type="static_transform_publisher" name="base_tf_publisher" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 base_footprint base_link 100" />
+    <node pkg="turtlebot_proj_nav" type="localisation_broadcaster_node" name="localisation_broadcaster_node" output="screen"/> 
+    
+    
+    <!-- We must specify an absolute topic name because if not it will be prefixed by "$(arg camera)".
+         Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 --> 
+    <!-- <arg name="scan_topic" value="/scan" />
+  </include> -->
 
-  <arg name="planner" default="base"/>
-  <arg name="local_planner" default="dwa"/>  <!-- dwa, trajectory -->
-  <arg name="localization" default="amcl"/>
+  <!-- Map server -->
+  <arg name="map_file" default="$(find turtlebot_proj_nav)/map/aip_map.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+  <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher" args="0.53 1.28 0.31 -0.5 -0.5 -0.5 0.5 map marker_0 100" />
 
-  <!-- <arg name="map" default="$(find reem_gazebo_2dnav)/maps/map.yaml"/> -->
-
-  <!-- Map -->
-  <include file="$(find reem_gazebo_maps)/launch/map.launch"/>
-
-  <!-- Localization -->
-  <include file="$(find reem_gazebo_2dnav)/launch/amcl_diff.launch"/>
-
-  <!-- Planning -->
-  <include file="$(find reem_gazebo_2dnav)/launch/move_$(arg planner).launch">
-    <arg name="local_planner" value="$(arg local_planner)"/>
+  <!-- Move Base -->
+  <include file="$(find turtlebot_proj_nav)/launch/includes/move_base.launch.xml">
+    <!--<arg name="custom_param_file" value="$(arg custom_param_file)"/> -->
   </include>
+ 
+  <group ns="nav">
+    
+  <!-- Simple command -->
+  <node pkg="turtlebot_proj_nav" name="command" type="command_node"/>
+  
+  </group>
+
+  <!-- Set rviz -->
+  <!--<node pkg="rviz" type="rviz" name="rviz" args="-d /home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_proj_nav/config/localisation.rviz" />-->
 
 </launch>
+

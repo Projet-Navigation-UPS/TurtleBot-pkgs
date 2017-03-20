@@ -7,7 +7,7 @@
 #include <iostream>
 
 static const int DEBUG = 0;
-static const int TIMEOUT_AR_DETEC = 30;
+static const int TIMEOUT_AR_DETEC = 5;
 
 int GLOBAL_SEARCH;
 
@@ -31,7 +31,8 @@ int main(int argc, char** argv){
 
     // Statics TFs
     tf::StampedTransform transform_mapMarker;
-    li.lookupTransform("/map", "/marker_0", ros::Time(0), transform_mapMarker);
+    li.waitForTransform("/map", "/marker_0", ros::Time(0), ros::Duration(10));
+    li.lookupTransform ("/map", "/marker_0", ros::Time(0), transform_mapMarker);
     /* transform_mapMarker.setOrigin(tf::Vector3(2.0, 1.0, 0.0));        
        transform_mapMarker.setRotation(tf::Quaternion(0.0, -0.707, 0.0, 0.707)); */
 
@@ -66,7 +67,7 @@ int main(int argc, char** argv){
 
 		if(GLOBAL_SEARCH == 1)
 		{
-
+		        std::cout << " GLOBAL_SEARCH " << std::endl ;
 			if(li.waitForTransform("/camera_rgb_optical_frame", "/ar_marker_0", ros::Time(0), ros::Duration(TIMEOUT_AR_DETEC))) 
 			{
 				GLOBAL_SEARCH = 0 ; // search once
@@ -130,7 +131,7 @@ int main(int argc, char** argv){
 	    }
         catch (tf::TransformException ex)
 	    {
-		    std::cout << " TransformException " << std::endl;
+		std::cout << " TransformException " << std::endl;
 	    }
         ros::spinOnce(); 
     }
