@@ -28,6 +28,13 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1)),
     tfListener(node, ros::Duration(10), true)
 {
+    currentLocation.pose.pose.position.x = 0;
+    currentLocation.pose.pose.position.y = 0;
+    currentLocation.pose.pose.position.z = 0;
+    currentLocation.pose.pose.orientation.x = 0;
+    currentLocation.pose.pose.orientation.y = 0;
+    currentLocation.pose.pose.orientation.z = 0;
+    currentLocation.pose.pose.orientation.w = 1;
     seekingMarkerState = 0;
     markerSeen.data = -1;
     closestMarkerId.data = -1;
@@ -61,6 +68,13 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1)),
     tfListener(node, ros::Duration(10), true)
 {
+    currentLocation.pose.pose.position.x = 0;
+    currentLocation.pose.pose.position.y = 0;
+    currentLocation.pose.pose.position.z = 0;
+    currentLocation.pose.pose.orientation.x = 0;
+    currentLocation.pose.pose.orientation.y = 0;
+    currentLocation.pose.pose.orientation.z = 0;
+    currentLocation.pose.pose.orientation.w = 1;
     seekingMarkerState = 0;
     markerSeen.data = -1;
     closestMarkerId.data = -1;
@@ -92,22 +106,8 @@ void HighLevelCommand::callbackMarkerSeen(const std_msgs::Int16& msg)
 
 void HighLevelCommand::callbackLocation(const nav_msgs::Odometry& msg)
 {
-    //std::cout<<"MESSAGE"<<std::endl;
-    //std::cout<<msg.pose.pose.position<<std::endl;
-    //std::cout<<msg.pose.pose.orientation<<std::endl;
     currentLocation = msg;
     currentLocation.header.frame_id = "map";       
-    /*geometry_msgs::PoseStamped location;
-    location.header = msg.header;
-    location.pose = msg.pose.pose;
-            
-    geometry_msgs::PoseStamped transformed_location;
-    tfListener.transformPose("map", location, transformed_location);      
-    currentLocation.pose.pose = transformed_location.pose;
-    std::cout<<"TRANSFORMED"<<std::endl;
-    //std::cout<<currentLocation.pose.pose.position<<std::endl;
-    //std::cout<<currentLocation.pose.pose.orientation<<std::endl;*/
-
     locationAvailable.data = true;
 }
 
@@ -132,21 +132,7 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
         //std::cout<<"MoveBaseActionResult"<<std::endl;
         //std::cout<<msg<<std::endl;
         goalReached.data = true;
-      
-        /*float dist = 100.0;
-        Graph g = xmlToGraph("graph.xml");
-        typedef boost::graph_traits<Graph>::vertex_iterator vertex_iter;
-        std::pair<vertex_iter, vertex_iter> vertexPair;
-        for (vertexPair = vertices(g); vertexPair.first != vertexPair.second; ++vertexPair.first)
-        {
-            if(distance(g[*vertexPair.first].x, g[*vertexPair.first].y, currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y)<dist) 
-            {
-                closestMarkerId.data = g[*vertexPair.first].id;
-                dist = distance(g[*vertexPair.first].x, g[*vertexPair.first].y, currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y);
-            }
-        }*/
     }
-    //enableSimpleCommand();
     seekingMarkerState = 0;
 }
 void HighLevelCommand::callbackMoveBaseActionFeedback(const move_base_msgs::MoveBaseActionFeedback& msg)
@@ -161,7 +147,6 @@ void HighLevelCommand::callbackMoveBaseActionGoal(const move_base_msgs::MoveBase
     //std::cout<<msg<<std::endl;
     moveBaseActionGoal = msg;
 }
-
 
 
 //States
@@ -334,7 +319,6 @@ void HighLevelCommand::sendGoal()
 {
     transformLocationFromOdomToMap();
 
-    //disableSimpleCommand();
     markerSeen.data =-1;
     goalReached.data = false;
     NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
@@ -363,19 +347,7 @@ void HighLevelCommand::askForMarker()
     pubAskForMarker.publish(empty);
 }
 
-/*void HighLevelCommand::disableSimpleCommand()
-{
-    disableCommand.data = true;
-    pubCommandState.publish(disableCommand);
-    
-}
 
-void HighLevelCommand::enableSimpleCommand()
-{
-    disableCommand.data = false;
-    pubCommandState.publish(disableCommand);
-    
-}*/
 
 
 
