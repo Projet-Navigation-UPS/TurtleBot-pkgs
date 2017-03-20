@@ -20,7 +20,7 @@ int main(int argc, char **argv)
     while (ros::ok()) 
     {
         
-        ros::spinOnce();
+        ros::spin();
         switch (hlcCurrentState)
         {
             //Init
@@ -31,10 +31,11 @@ int main(int argc, char **argv)
         
             //Visible markers
             case -1:
-                if((HLC.markersVisibility() != -1) && (HLC.markersVisibility() != 0))
+                //if((HLC.markersVisibility() != -1) && (HLC.markersVisibility() != 0))
+                if(true)
                 {
                     ROS_INFO("In visiblity zone...");
-                    hlcCurrentState = 0;
+                    hlcCurrentState = 1;
                 }
                 else if(HLC.markersVisibility() == -1)
                 {
