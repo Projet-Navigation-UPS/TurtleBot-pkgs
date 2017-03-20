@@ -8,7 +8,7 @@
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     //Services
-    clientMarkersVisibility(node.serviceClient<turtlebot_proj_nav::MarkersVisibility>("/nav/markers_visibility")),
+    clientMarkersVisibility(node.serviceClient<turtlebot_proj_nav::MarkersVisibility>("/nav/visibility_marker")),
 
     //Subsribers
     subscriberCommandBusy(node.subscribe("/nav/command_busy", 1, &HighLevelCommand::callbackCommandBusy,this)),
@@ -48,7 +48,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     //Services
-    clientMarkersVisibility(node.serviceClient<turtlebot_proj_nav::MarkersVisibility>("/nav/markers_visibility")),
+    clientMarkersVisibility(node.serviceClient<turtlebot_proj_nav::MarkersVisibility>("/nav/visibility_marker")),
 
     //Subsribers
     subscriberCommandBusy(node.subscribe("/nav/command_busy", 1, &HighLevelCommand::callbackCommandBusy,this)),
