@@ -10,7 +10,7 @@
 #include <string>
 
 static const int DEBUG = 0;
-static const int TIMEOUT_AR_DETEC = 5;
+static const int TIMEOUT_AR_DETEC = 15;
 static const int NB_MARKER = 2;
 
 int GLOBAL_SEARCH;
@@ -45,7 +45,7 @@ int main(int argc, char** argv){
     geometry_msgs::Transform odom_msg;
 
     // Statics TFs
-    tf::StampedTransform transform_mapMarker;
+    tf::StampedTransform transforms_mapMarker[NB_MARKER];
     for(int i = 0; i < NB_MARKER; i++)
     	{
     	    std::stringstream sstf;
@@ -53,7 +53,7 @@ int main(int argc, char** argv){
     	    std::string stf;
     	    stf = sstf.str();
     	    li.waitForTransform("/map", stf, ros::Time(0), ros::Duration(5));
-    	    li.lookupTransform ("/map", stf, ros::Time(0), transform_mapMarker);
+    	    li.lookupTransform ("/map", stf, ros::Time(0), transforms_mapMarker[i]);
     	}
 
     tf::Transform transform_robotCamera;
@@ -92,7 +92,7 @@ int main(int argc, char** argv){
 	    		    if(ID_MARKER_DETECTED != -1) 
 	    			{
 	    			    GLOBAL_SEARCH = 0 ; // search once
-	    			    std::cout << " MARKER DETECTED " << std::endl ;
+	    			    std::cout << " MARKER DETECTED: " << ID_MARKER_DETECTED << std::endl ;
 	    			    tf::Transform transform_cameraMarker;    
 	    			    tf::Transform transform_robotMarker;  
 	    			    tf::Transform transform_markerRobot;   
@@ -103,6 +103,7 @@ int main(int argc, char** argv){
 	    			    sstf << "/ar_marker_" << ID_MARKER_DETECTED;
 	    			    std::string stf;
 	    			    stf = sstf.str();
+				    std::cout << " LOOKING FOR TF: " << stf << std::endl ;
 	    			    li.waitForTransform("/camera_rgb_optical_frame", stf, ros::Time(0), ros::Duration(TIMEOUT_AR_DETEC));
 	    			    li.lookupTransform("/camera_rgb_optical_frame", stf, ros::Time(0), transform_imageMarker);
 
@@ -119,7 +120,7 @@ int main(int argc, char** argv){
 	    			    transform_markerRobot = transform_robotMarker.inverse(); 
 
 	    			    // map to robot
-	    			    transform_mapRobot = transform_mapMarker;
+	    			    transform_mapRobot = transforms_mapMarker[ID_MARKER_DETECTED];
 	    			    transform_mapRobot *= transform_markerRobot ;
                 
 	    			    // message creation
@@ -159,7 +160,7 @@ int main(int argc, char** argv){
 	    	{
 	    	    std::cout << " TransformException " << std::endl;
 	    	}
-	    ros::spin(); 
+	    ros::spinOnce(); 
 	}
     return 0;
 };
