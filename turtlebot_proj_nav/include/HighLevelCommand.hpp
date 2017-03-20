@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 #include "std_msgs/Bool.h"
 #include "std_msgs/Int16.h"
+#include "std_msgs/Float64.h"
 #include "nav_msgs/Odometry.h"
 #include "actionlib_msgs/GoalStatusArray.h"
 #include "geometry_msgs/PoseStamped.h"
@@ -50,6 +51,7 @@ private:
     std_msgs::Bool locationAvailable, goalReached, commandBusy, responseMarker, askMarker;
     std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId, markerSeen, makersVisibility;
     std_msgs::Empty empty;
+    std_msgs::Float64 FinalGoalX, FinalGoalY;
     
     //States
     int seekingMarkerState;
@@ -80,18 +82,21 @@ private:
 public:
 
     HighLevelCommand(ros::NodeHandle& node);
-    HighLevelCommand(ros::NodeHandle& node, int finalGoal);
+    HighLevelCommand(ros::NodeHandle& node, float x_finalGoal, float y_finalGoal);
     ~HighLevelCommand();
     
+    void init(float threshold);
     int marker();
     int seekMarker();
     int markersVisibility();
+    int getClosestMarkerToXYPosition(float x, float y);
     
     bool location();
-    bool finalGoal();
+    bool finalGoal(float threshold);
     bool intermediateGoal();
     bool markerResponse();
     bool getAskMarker();
+    bool finalMarkerGoal();
     
     float distance(float x1, float y1, float x2, float y2);
     

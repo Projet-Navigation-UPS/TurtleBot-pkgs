@@ -38,7 +38,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     seekingMarkerState = 0;
     markerSeen.data = -1;
     closestMarkerId.data = -1;
-    GlobalGoalMarkerId.data = 5;
+    GlobalGoalMarkerId.data = 0;
     commandBusy.data = true;
     locationAvailable.data = false;
     goalReached.data = false;
@@ -46,7 +46,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     askMarker.data=false;
 }
 
-HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
+HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, float x_finalGoal, float y_finalGoal):
     //Services
     clientMarkersVisibility(node.serviceClient<turtlebot_proj_nav::MarkersVisibility>("/nav/visibility_marker")),
 
@@ -68,22 +68,18 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1)),
     tfListener(node, ros::Duration(10), true)
 {
-    currentLocation.pose.pose.position.x = 0;
-    currentLocation.pose.pose.position.y = 0;
-    currentLocation.pose.pose.position.z = 0;
-    currentLocation.pose.pose.orientation.x = 0;
-    currentLocation.pose.pose.orientation.y = 0;
-    currentLocation.pose.pose.orientation.z = 0;
-    currentLocation.pose.pose.orientation.w = 1;
     seekingMarkerState = 0;
     markerSeen.data = -1;
     closestMarkerId.data = -1;
-    GlobalGoalMarkerId.data = finalGoal;
+    GlobalGoalMarkerId.data = -1;
     commandBusy.data = true;
     locationAvailable.data = false;
     goalReached.data = false;
     responseMarker.data=false;
     askMarker.data=false;
+    FinalGoalX.data= x_finalGoal;
+    FinalGoalY.data= y_finalGoal;
+    
 }
 
 HighLevelCommand::~HighLevelCommand(){}
@@ -196,13 +192,24 @@ bool HighLevelCommand::getAskMarker()
     return askMarker.data;
 }
 
-bool HighLevelCommand::finalGoal()
+bool HighLevelCommand::finalGoal(float threshold)
 { 
-    if(closestMarkerId.data == GlobalGoalMarkerId.data) 
+    transformLocationFromOdomToMap();
+    if(distance(currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y, FinalGoalX.data, FinalGoalY.data) < threshold) 
     {
         playSound(SOUND_CLEANINGEND);
         return true;
     } 
+    else return false;
+}
+
+bool HighLevelCommand::finalMarkerGoal()
+{ 
+    if(closestMarkerId.data == GlobalGoalMarkerId.data) 
+    {
+        return true;
+        GlobalGoalMarkerId.data = -1;
+    }
     else return false;
 }
 
@@ -317,23 +324,43 @@ void HighLevelCommand::transformLocationFromOdomToMap()
 
 void HighLevelCommand::sendGoal()
 {
-    transformLocationFromOdomToMap();
-
-    markerSeen.data =-1;
-    goalReached.data = false;
-    NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
-    currentGoal.header.seq = 1;
-    currentGoal.header.stamp = ros::Time::now();
-    currentGoal.header.frame_id = "map";
-    currentGoal.pose.position.x = marker.x + 0.1*cos(marker.orientation);    
-    currentGoal.pose.position.y = marker.y + 0.1*sin(marker.orientation);    
-    currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
-    currentGoal.pose.orientation.x = 0;
-    currentGoal.pose.orientation.y = 0;
-    currentGoal.pose.orientation.z = 0;
-    currentGoal.pose.orientation.w = 1;
-    ROS_INFO("Next goal (%lf,%lf)",currentGoal.pose.position.x,currentGoal.pose.position.y);
-    pubGoal.publish(currentGoal);
+    if(GlobalGoalMarkerId.data != -1)
+    {
+        transformLocationFromOdomToMap();
+        markerSeen.data =-1;
+        goalReached.data = false;
+        NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
+        currentGoal.header.seq = 1;
+        currentGoal.header.stamp = ros::Time::now();
+        currentGoal.header.frame_id = "map";
+        currentGoal.pose.position.x = marker.x + 0.1*cos(marker.orientation);    
+        currentGoal.pose.position.y = marker.y + 0.1*sin(marker.orientation);    
+        currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
+        currentGoal.pose.orientation.x = 0;
+        currentGoal.pose.orientation.y = 0;
+        currentGoal.pose.orientation.z = 0;
+        currentGoal.pose.orientation.w = 1;
+        ROS_INFO("Next goal (%lf,%lf)",currentGoal.pose.position.x,currentGoal.pose.position.y);
+        pubGoal.publish(currentGoal);
+    }
+    else 
+    {
+        transformLocationFromOdomToMap();
+        markerSeen.data =-1;
+        goalReached.data = false;
+        currentGoal.header.seq = 1;
+        currentGoal.header.stamp = ros::Time::now();
+        currentGoal.header.frame_id = "map";
+        currentGoal.pose.position.x = FinalGoalX.data;    
+        currentGoal.pose.position.y = FinalGoalX.data;    
+        currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
+        currentGoal.pose.orientation.x = 0;
+        currentGoal.pose.orientation.y = 0;
+        currentGoal.pose.orientation.z = 0;
+        currentGoal.pose.orientation.w = 1;
+        ROS_INFO("Next goal (%lf,%lf)",currentGoal.pose.position.x,currentGoal.pose.position.y);
+        pubGoal.publish(currentGoal);
+    }
 }
 
 void HighLevelCommand::findGlobalGoal()
@@ -348,6 +375,30 @@ void HighLevelCommand::askForMarker()
 }
 
 
+int HighLevelCommand::getClosestMarkerToXYPosition(float x, float y)
+{
+    float dist = 100.0;
+    int closestGoalMarkerId = -1;
+    Graph g = xmlToGraph("graph.xml");
+    typedef boost::graph_traits<Graph>::vertex_iterator vertex_iter;
+    std::pair<vertex_iter, vertex_iter> vertexPair;
+    for (vertexPair = vertices(g); vertexPair.first != vertexPair.second; ++vertexPair.first)
+    {
+        if(distance(g[*vertexPair.first].x, g[*vertexPair.first].y, x, y)<dist) 
+        {
+            closestGoalMarkerId = g[*vertexPair.first].id;
+            dist = distance(g[*vertexPair.first].x, g[*vertexPair.first].y, x, y);
+        }
+    }
+    return closestGoalMarkerId;
+}
+
+void HighLevelCommand::init(float threshold)
+{
+    transformLocationFromOdomToMap();
+    if(distance(currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y, FinalGoalX.data, FinalGoalY.data) > threshold)
+        GlobalGoalMarkerId.data = getClosestMarkerToXYPosition(FinalGoalX.data,FinalGoalY.data);
+}
 
 
 
