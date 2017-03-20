@@ -44,6 +44,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     goalReached.data = false;
     responseMarker.data=false;
     askMarker.data=false;
+    goalAborted.data=false;
 }
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, float x_finalGoal, float y_finalGoal):
@@ -79,6 +80,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, float x_finalGoal, flo
     askMarker.data=false;
     FinalGoalX.data= x_finalGoal;
     FinalGoalY.data= y_finalGoal;
+    goalAborted.data=false;
     
 }
 
@@ -128,6 +130,11 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
         //std::cout<<"MoveBaseActionResult"<<std::endl;
         //std::cout<<msg<<std::endl;
         goalReached.data = true;
+    }
+    else if(moveBaseActionResult.status.status == 4) 
+    {
+        playSound(SOUND_ERROR);
+        goalAborted.data = true;
     }
     seekingMarkerState = 0;
 }
@@ -187,6 +194,11 @@ bool HighLevelCommand::markerResponse()
     return responseMarker.data;
 }
 
+bool HighLevelCommand::getGoalAborted()
+{
+    return goalAborted.data;
+}
+
 bool HighLevelCommand::getAskMarker()
 {
     return askMarker.data;
@@ -207,8 +219,8 @@ bool HighLevelCommand::finalMarkerGoal()
 { 
     if(closestMarkerId.data == GlobalGoalMarkerId.data) 
     {
-        return true;
         GlobalGoalMarkerId.data = -1;
+        return true;
     }
     else return false;
 }
@@ -324,11 +336,13 @@ void HighLevelCommand::transformLocationFromOdomToMap()
 
 void HighLevelCommand::sendGoal()
 {
+    goalAborted.data=false;
+    markerSeen.data =-1;
+    goalReached.data = false;
+    transformLocationFromOdomToMap();
+        
     if(GlobalGoalMarkerId.data != -1)
     {
-        transformLocationFromOdomToMap();
-        markerSeen.data =-1;
-        goalReached.data = false;
         NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
         currentGoal.header.seq = 1;
         currentGoal.header.stamp = ros::Time::now();
@@ -345,9 +359,6 @@ void HighLevelCommand::sendGoal()
     }
     else 
     {
-        transformLocationFromOdomToMap();
-        markerSeen.data =-1;
-        goalReached.data = false;
         currentGoal.header.seq = 1;
         currentGoal.header.stamp = ros::Time::now();
         currentGoal.header.frame_id = "map";

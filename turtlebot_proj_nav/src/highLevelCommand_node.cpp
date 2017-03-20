@@ -111,7 +111,8 @@ int main(int argc, char **argv)
             
             //Movement    
             case 4:
-                if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
+                if(HLC.getGoalAborted()) hlcCurrentState = -1;
+                else if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
                 else 
                 {
                     ROS_INFO("Intermediate goal reached...");
