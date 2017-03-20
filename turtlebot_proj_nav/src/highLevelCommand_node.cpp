@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     
     int hlcCurrentState;
     
-    hlcCurrentState = -1;
+    hlcCurrentState = -2;
 
     while (ros::ok()) 
     {
@@ -24,11 +24,29 @@ int main(int argc, char **argv)
         switch (hlcCurrentState)
         {
             //Init
-            case -1:
+            case -2:
                 ROS_INFO("Init...");
-                hlcCurrentState = 1;    
+                hlcCurrentState = -1;    
                 break;
         
+            //Visible markers
+            case -1:
+                if((HLC.markersVisibility() != -1) && (HLC.markersVisibility() != 0))
+                {
+                    ROS_INFO("In visiblity zone...");
+                    hlcCurrentState = 0;
+                }
+                else if(HLC.markersVisibility() == -1)
+                {
+                    hlcCurrentState = -1;
+                }
+                else
+                {
+                    ROS_INFO("Not in visiblity zone...");
+                    hlcCurrentState = 7;
+                } 
+                break;
+
             //Perception
             case 0:
                 if(HLC.marker() != -1)
@@ -106,6 +124,12 @@ int main(int argc, char **argv)
             case 6:
                 ROS_INFO("Choosing new global Goal...");
                 hlcCurrentState = 0;
+                break; 
+            
+            //Find visibility zone
+            case 7:
+                ROS_INFO("Seeking a visibility zone...");
+                hlcCurrentState = 7;
                 break; 
                    
             default:

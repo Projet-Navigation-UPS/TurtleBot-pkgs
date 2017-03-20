@@ -16,7 +16,7 @@
 #include <string>
 #include "graph.hpp"
 #include "turtlebot_proj_nav/command.h"
-//#include "turtlebot_proj_nav/MarkersVisibility.h"
+#include "turtlebot_proj_nav/MarkersVisibility.h"
 #include "std_msgs/Empty.h"
 #include <unistd.h>
 
@@ -44,7 +44,7 @@ private:
     ros::Publisher pubGoal, pubSound, pubCommand, pubCommandState, pubAskForMarker;
     
     //Services
-    //ros::ServiceClient srvMarkersVisibility;
+    ros::ServiceClient clientMarkersVisibility;
 
     //Messages
     std_msgs::Bool locationAvailable, goalReached, commandBusy, responseMarker, askMarker;
@@ -84,6 +84,9 @@ public:
     ~HighLevelCommand();
     
     int marker();
+    int seekMarker();
+    int markersVisibility();
+    
     bool location();
     bool finalGoal();
     bool intermediateGoal();
@@ -93,11 +96,12 @@ public:
     float distance(float x1, float y1, float x2, float y2);
     
     void sendGoal();
-    int seekMarker();
     void findGlobalGoal();
     void playSound(int sound);
     void sendDistanceAndAngleCommand(const float linearVelocity, const float angularVelocity, const float distance, const float angle);
     void askForMarker();
+    
+    void transformLocationFromOdomToMap();
     
     //void disableSimpleCommand();
     //void enableSimpleCommand();
