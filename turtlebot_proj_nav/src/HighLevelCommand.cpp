@@ -8,7 +8,7 @@
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     //Services
-    //srvMarkersVisibility(node.serviceClient<turtlebot_proj_nav::MarkersVisibility>("/nav/markers_visibility")),
+    clientMarkersVisibility(node.serviceClient<turtlebot_proj_nav::MarkersVisibility>("/nav/markers_visibility")),
 
     //Subsribers
     subscriberCommandBusy(node.subscribe("/nav/command_busy", 1, &HighLevelCommand::callbackCommandBusy,this)),
@@ -18,7 +18,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &HighLevelCommand::callbackMoveBaseActionGoal,this)),
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
     subMarkerSeen(node.subscribe("/nav/loca/markerSeen", 1, &HighLevelCommand::callbackMarkerSeen,this)),
-    subMarkersVisibility(node.subscribe("/nav/visibility_marker", 1, &HighLevelCommand::callbackMarkersVisibility,this)),
+    //subMarkersVisibility(node.subscribe("/nav/visibility_marker", 1, &HighLevelCommand::callbackMarkersVisibility,this)),
 
     //Publishers
     /*pubCommandState(node.advertise<std_msgs::Bool>("/nav/command/state", 1)),*/
@@ -28,13 +28,11 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1)),
     tfListener(node, ros::Duration(10), true)
 {
-    
     seekingMarkerState = 0;
-    closestMarkerId.data = 0;
-    GlobalGoalMarkerId.data = 5;
-    //disableCommand.data == false;
-    commandBusy.data = true;
     markerSeen.data = -1;
+    closestMarkerId.data = -1;
+    GlobalGoalMarkerId.data = 5;
+    commandBusy.data = true;
     locationAvailable.data = false;
     goalReached.data = false;
     responseMarker.data=false;
@@ -42,6 +40,9 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
 }
 
 HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
+    //Services
+    clientMarkersVisibility(node.serviceClient<turtlebot_proj_nav::MarkersVisibility>("/nav/markers_visibility")),
+
     //Subsribers
     subscriberCommandBusy(node.subscribe("/nav/command_busy", 1, &HighLevelCommand::callbackCommandBusy,this)),
     subLocation(node.subscribe("/odom", 1, &HighLevelCommand::callbackLocation,this)),
@@ -50,7 +51,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &HighLevelCommand::callbackMoveBaseActionGoal,this)),
     subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &HighLevelCommand::callbackMoveBaseActionResult,this)),
     subMarkerSeen(node.subscribe("/nav/loca/markerSeen", 1, &HighLevelCommand::callbackMarkerSeen,this)),
-    subMarkersVisibility(node.subscribe("/nav/markers_visibility", 1, &HighLevelCommand::callbackMarkersVisibility,this)),
+    //subMarkersVisibility(node.subscribe("/nav/markers_visibility", 1, &HighLevelCommand::callbackMarkersVisibility,this)),
 
     //Publishers
     /*pubCommandState(node.advertise<std_msgs::Bool>("/command/state", 1)),*/
@@ -61,11 +62,10 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, int finalGoal):
     tfListener(node, ros::Duration(10), true)
 {
     seekingMarkerState = 0;
-    closestMarkerId.data = 0;
-    GlobalGoalMarkerId.data = finalGoal;
-    //disableCommand.data == false;
-    commandBusy.data = true;
     markerSeen.data = -1;
+    closestMarkerId.data = -1;
+    GlobalGoalMarkerId.data = finalGoal;
+    commandBusy.data = true;
     locationAvailable.data = false;
     goalReached.data = false;
     responseMarker.data=false;
@@ -76,10 +76,7 @@ HighLevelCommand::~HighLevelCommand(){}
 
 
 //Callbacks
-void HighLevelCommand::callbackMarkersVisibility(const std_msgs::Int16& msg)
-{
-    makersVisibility = msg;
-}
+
 void HighLevelCommand::callbackCommandBusy(const std_msgs::Bool& msg)
 {
     commandBusy = msg;
@@ -179,6 +176,24 @@ int HighLevelCommand::marker()
     }
     responseMarker.data=false;
     return markerSeen.data;   
+}
+
+int HighLevelCommand::markersVisibility()
+{
+    turtlebot_proj_nav::MarkersVisibility srv;
+    transformLocationFromOdomToMap();
+    srv.request.x = currentLocation.pose.pose.position.x;
+    srv.request.y = currentLocation.pose.pose.position.y;
+    if (clientMarkersVisibility.call(srv))
+    {
+        ROS_INFO("%d visible markers", (int)srv.response.markers);
+        return srv.response.markers;
+    }
+    else
+    {
+        ROS_ERROR("Failed to call service markers_visibility");
+        return -1;
+    }
 }
 
 bool HighLevelCommand::location()
@@ -301,8 +316,7 @@ int HighLevelCommand::seekMarker()
     
 }
 
-
-void HighLevelCommand::sendGoal()
+void HighLevelCommand::transformLocationFromOdomToMap()
 {
     tf::StampedTransform transformMapOdom, transformMapRobot, transformOdomRobot;
     tfListener.lookupTransform("/map", "/odom", ros::Time(0), transformMapOdom);
@@ -312,9 +326,13 @@ void HighLevelCommand::sendGoal()
     transformOdomRobot.setRotation(tf::Quaternion( currentLocation.pose.pose.orientation.x, currentLocation.pose.pose.orientation.y, currentLocation.pose.pose.orientation.z, currentLocation.pose.pose.orientation.w));
     
     transformMapRobot *= transformOdomRobot; 
-    
-    
     tf::poseTFToMsg(transformMapRobot, currentLocation.pose.pose);
+}
+
+
+void HighLevelCommand::sendGoal()
+{
+    transformLocationFromOdomToMap();
 
     //disableSimpleCommand();
     markerSeen.data =-1;
