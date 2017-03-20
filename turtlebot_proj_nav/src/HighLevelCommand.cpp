@@ -349,8 +349,8 @@ void HighLevelCommand::sendGoal()
         currentGoal.header.seq = 1;
         currentGoal.header.stamp = ros::Time::now();
         currentGoal.header.frame_id = "map";
-        currentGoal.pose.position.x = marker.x + 0.1*cos(marker.orientation);    
-        currentGoal.pose.position.y = marker.y + 0.1*sin(marker.orientation);    
+        currentGoal.pose.position.x = marker.x + 0.70*cos(marker.orientation);    
+        currentGoal.pose.position.y = marker.y + 0.70*sin(marker.orientation);    
         currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
         currentGoal.pose.orientation.x = 0;
         currentGoal.pose.orientation.y = 0;
