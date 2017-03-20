@@ -37,8 +37,8 @@ int main(int argc, char **argv)
             
             //Visible markers
             case -1:
-                if((HLC.markersVisibility() != -1) && (HLC.markersVisibility() != 0))
-                //if(true)
+                //if((HLC.markersVisibility() != -1) && (HLC.markersVisibility() != 0))
+                if(true)
                 {
                     ROS_INFO("In visiblity zone...");
                     hlcCurrentState = 1;
