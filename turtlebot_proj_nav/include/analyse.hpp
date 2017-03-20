@@ -1,5 +1,5 @@
 #ifndef _ANALYSE_H_
-#define _ANALYSE_H_
+#define _ANALYSE_H
 
 #include "objet.h"
 
