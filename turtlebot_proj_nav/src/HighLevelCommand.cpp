@@ -135,6 +135,8 @@ void HighLevelCommand::callbackMoveBaseActionResult(const move_base_msgs::MoveBa
     {
         playSound(SOUND_ERROR);
         goalAborted.data = true;
+        std::cout<<msg<<std::endl;
+        std::cout<<goalAborted<<std::endl;
     }
     seekingMarkerState = 0;
 }
