@@ -13,17 +13,12 @@ find_package(catkin REQUIRED COMPONENTS
   kobuki_msgs
   cv_bridge
   image_transport
-  nav_msgs
-  actionlib_msgs
-  move_base_msgs
   tf
-  cmake_modules
-  
 )
 
 ## System dependencies are found with CMake's conventions
-find_package(Boost REQUIRED COMPONENTS system thread)
-find_package(TinyXML REQUIRED)
+# find_package(Boost REQUIRED COMPONENTS system)
+
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -55,17 +50,17 @@ find_package(TinyXML REQUIRED)
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
+ add_message_files(
    FILES
    command.msg
  )
 
 ## Generate services in the 'srv' folder
- add_service_files(
-   FILES
-   MarkersVisibility.srv
+# add_service_files(
+#   FILES
+#   Service1.srv
 #   Service2.srv
- )
+# )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -75,7 +70,7 @@ add_message_files(
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
+ generate_messages(
    DEPENDENCIES
    std_msgs
  )
@@ -110,10 +105,10 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES turtlebot_proj_nav
   CATKIN_DEPENDS roscpp std_msgs message_runtime
-  DEPENDS TinyXML
+#  DEPENDS system_lib
 )
 
 ###########
@@ -125,34 +120,27 @@ catkin_package(
 # include_directories(include)
 include_directories(
     include
-  ${catkin_INCLUDE_DIRS}
-  ${TinyXML_INCLUDE_DIRS}
-  ${Boost_INCLUDE_DIRS}
+#  ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
-
-# add_library(turtlebot_proj_nav
-#   src/${PROJECT_NAME}/turtlebot_proj_nav.cpp
+# add_library(turtlebot_navigation
+#   src/${PROJECT_NAME}/turtlebot_navigation.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(turtlebot_proj_nav ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(turtlebot_navigation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-add_executable(localisation_node src/localisation_node.cpp)
-add_executable(localisation_broadcaster_node src/localisation_broadcaster_node.cpp)
+## Add cmake target dependencies of the executable
+## same as for the library above
 add_executable(bgr_to_rgb_converter_node src/bgrConverter_node.cpp )
 add_executable(ballSearch_node src/ballSearch_node.cpp src/BallSearch.cpp src/GraphicServer.cpp src/TurtleBotCamera.cpp src/analyse.cpp src/traitement.cpp)
 add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer.cpp)
-add_executable(highLevelCommand_node src/highLevelCommand_node.cpp src/HighLevelCommand.cpp src/graph.cpp)
-add_executable(test_node src/test_node.cpp)
-add_executable(odom_tests_node src/odom_node.cpp src/TurtleBotCommand.cpp )
-add_executable(directedGraph_node src/directedGraph.cpp  src/graph.cpp)
-add_executable(visib_pgmwriter_node src/visib_pgmwriter_node.cpp src/visib_init.cpp)
-add_executable(visib_pgmreader_node src/visib_pgmreader_node.cpp src/visib_init.cpp)
+add_executable(localisation_node src/localisation_node.cpp)
+
 
 
 ## Add cmake target dependencies of the executable
@@ -160,16 +148,9 @@ add_executable(visib_pgmreader_node src/visib_pgmreader_node.cpp src/visib_init.
 add_dependencies(command_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(bgr_to_rgb_converter_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ballSearch_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(highLevelCommand_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(test_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(odom_tests_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(directedGraph_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-# add_dependencies(turtlebot_proj_nav_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(turtlebot_proj_nav_node
-#   ${catkin_LIBRARIES}
-# )
+
 target_link_libraries(ballSearch_node
   ${catkin_LIBRARIES}
 )
@@ -182,29 +163,6 @@ target_link_libraries(bgr_to_rgb_converter_node
 target_link_libraries(localisation_node 
   ${catkin_LIBRARIES}
 )
-target_link_libraries(localisation_broadcaster_node 
-  ${catkin_LIBRARIES}
-)
-target_link_libraries(highLevelCommand_node
-  ${catkin_LIBRARIES}
-)
-target_link_libraries(test_node
-  ${catkin_LIBRARIES}
-)
-target_link_libraries(odom_tests_node
-  ${catkin_LIBRARIES}
-)
-target_link_libraries(directedGraph_node
-  ${catkin_LIBRARIES}
-  ${TinyXML_LIBRARIES}
-)
-target_link_libraries(visib_pgmwriter_node
-  ${catkin_LIBRARIES}
-)
-target_link_libraries(visib_pgmreader_node
-  ${catkin_LIBRARIES}
-)
-
 
 #############
 ## Install ##
@@ -221,7 +179,7 @@ target_link_libraries(visib_pgmreader_node
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS turtlebot_proj_nav turtlebot_proj_nav_node
+# install(TARGETS turtlebot_navigation turtlebot_navigation_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -246,7 +204,7 @@ target_link_libraries(visib_pgmreader_node
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_turtlebot_proj_nav.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_turtlebot_navigation.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
