@@ -17,19 +17,25 @@
   <!-- Map server -->
   <arg name="map_file" default="$(find turtlebot_proj_nav)/map/aip_map.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
-  <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher" args="0.53 1.28 0.31 -0.5 -0.5 -0.5 0.5 map marker_0 100" />
+  <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher_1" args="4.70 4.44 0.31 0.0 -0.707 0.0 0.707 map marker_0 100" />
+  <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher_0" args="0.53 1.28 0.31 -0.5 -0.5 -0.5 0.5 map marker_1 100" />
+  <node name="common_map" pkg="map_server" type="map_server" args="$(find turtlebot_proj_nav)/map/visib.yaml">
+    <remap from="map" to="/markers_visibility_map" />
+  </node>
+  
 
   <!-- Move Base -->
   <include file="$(find turtlebot_proj_nav)/launch/includes/move_base.launch.xml">
     <!--<arg name="custom_param_file" value="$(arg custom_param_file)"/> -->
   </include>
  
-  <group ns="nav">
+  <!-- Markers visibility reader -->
+  <node pkg="turtlebot_proj_nav" name="visibility_marker" type="visib_pgmreader_node"/>
     
   <!-- Simple command -->
   <node pkg="turtlebot_proj_nav" name="command" type="command_node"/>
   
-  </group>
+
 
   <!-- Set rviz -->
   <!--<node pkg="rviz" type="rviz" name="rviz" args="-d /home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_proj_nav/config/localisation.rviz" />-->

@@ -11,7 +11,7 @@ int main(int argc, char **argv)
     ros::NodeHandle node;
     //ros::Rate loop_rate(0.5); // 1Hz 
 
-    HighLevelCommand HLC(node,1);
+    HighLevelCommand HLC(node,0);
     
     int hlcCurrentState;
     

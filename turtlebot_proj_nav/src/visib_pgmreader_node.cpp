@@ -27,6 +27,8 @@
 using namespace std;
 
 
+
+
 int main(int argc, char **argv)
 {
 	int x=800,y=900;
