@@ -13,4 +13,4 @@
        <Property Id="Orientation" Label="Orientation" DataType="float64" /> 
        <Property Id="Cost" Label="Cost" DataType="int32" /> 
    </Properties>  
-</DirectedGraph>  
+</DirectedGraph> 

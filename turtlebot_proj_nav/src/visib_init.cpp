@@ -50,8 +50,8 @@ void Ecriture_carte_visib()
 	int v[nbr_amers][nbr_amers];
 	float yn[nbr_amers],xn[nbr_amers];
 	float x1[nbr_amers],y1[nbr_amers]; // position des amers en m
-    	float angle[nbr_amers];
-	float alphamax[nbr_amers];
+    	float angle[nbr_amers-1];
+	float alphamax[nbr_amers-1];
 	int distancemax;
 	int distancemin;
 	float distancem=2;
@@ -68,14 +68,14 @@ void Ecriture_carte_visib()
 		
 	for(a=0;a<nbr_amers;a++)
 	{	
-		x[a]=x1[a];//*100/2;//0.494134897;
-		y[a]=y1[a];//*100/2;//0.494134897;
+		x[a]=(x1[a]+12.2)/0.05;
+		y[a]=-(y1[a]+13.8-32)/0.05;
 		alphamax[a]=pi/4;
 	}
 
-	distancemax=distancem*100/5;//0.494134897;
+	distancemax=distancem/0.05;
 	ROS_INFO("Dmax = %d",distancemax);
-	distancemin=20/5;//0.494134897;	
+	distancemin=0.20/0.05;	
 	ROS_INFO("Dmin = %d",distancemin);
 
     	ofstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm", ios::out | ios::trunc);  
