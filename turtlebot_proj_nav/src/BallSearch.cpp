@@ -140,7 +140,7 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
                 case 6:
                     ROS_INFO("Abandon recherche... \n");
                     break;
-		case 7:
+		        case 7:
                     ROS_INFO("Recherche finie... \n");
                     break;
                 default:
