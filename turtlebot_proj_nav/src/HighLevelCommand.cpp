@@ -398,6 +398,7 @@ void HighLevelCommand::init(float threshold)
     transformLocationFromOdomToMap();
     if(distance(currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y, FinalGoalX.data, FinalGoalY.data) > threshold)
         GlobalGoalMarkerId.data = getClosestMarkerToXYPosition(FinalGoalX.data,FinalGoalY.data);
+    ROS_INFO("Closest Marker to goal = %d",GlobalGoalMarkerId.data);
 }
 
 
