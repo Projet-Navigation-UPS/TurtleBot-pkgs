@@ -17,11 +17,17 @@
 #include "move_base_msgs/MoveBaseGoal.h"
 #include "move_base_msgs/MoveBaseAction.h"
 #include <tf/transform_listener.h>
+#include "turtlebot_proj_nav/command.h"
+#include "std_msgs/Bool.h"
+#include "std_msgs/Empty.h"
+#include "std_msgs/Int16.h"
+#include <unistd.h>
+//#include "turtlebot_proj_nav/MarkersVisibility.h"
 
 
+bool go = false;
 
-
-void callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg)
+/*void callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg)
 {
     std::cout<<"MoveBaseActionResult"<<std::endl;
     std::cout<<msg<<std::endl;
@@ -60,9 +66,21 @@ void callbackLocation(const nav_msgs::Odometry& msg)
     currentLocation.pose.pose = transformed_location.pose;
     
     std::cout<<currentLocation<<std::endl;
+}*/
+
+void callbackAskForMarker(const std_msgs::Empty& msg)
+{
+    go = true;
+    ROS_INFO("RECEIVED");
 }
 
-
+/*bool srvMarkersVisibility(turtlebot_proj_nav::MarkersVisibility::Request  &req,
+         turtlebot_proj_nav::MarkersVisibility::Response &res)
+{
+  res.markers = 0;
+  ROS_INFO("sending back response: [%ld]", (long int)res.markers);
+  return true;
+}*/
 
 int main(int argc, char **argv)
 {
@@ -77,14 +95,17 @@ int main(int argc, char **argv)
     //ros::Publisher pubCmdFinished(node.advertise<std_msgs::Bool>("/nav/CommandFinished", 1));
     //ros::Publisher pubGoal(node.advertise<geometry_msgs::PoseStamped>("/move_base_simple/goal", 1));
     
-    ros::Subscriber subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &callbackMoveBaseActionResult));
+    /*ros::Subscriber subMoveBaseActionResult(node.subscribe("/move_base/result", 1, &callbackMoveBaseActionResult));
     ros::Subscriber subMoveBaseActionFeedback(node.subscribe("/move_base/feedback", 1, &callbackMoveBaseActionFeedback));
     ros::Subscriber subMoveBaseActionGoal(node.subscribe("/move_base/goal", 1, &callbackMoveBaseActionGoal));
     ros::Subscriber subGoalStatusArray(node.subscribe("/move_base/status", 1, &callbackGoalStatusArray));
-    ros::Subscriber subLocation(node.subscribe("/odom", 1, &callbackLocation));
+    ros::Subscriber subLocation(node.subscribe("/odom", 1, &callbackLocation));*/
     
-
-    nav_msgs::Path path;
+    ros::Publisher pubMarkerSeen(node.advertise<std_msgs::Int16>("/nav/loca/markerSeen", 1));
+    ros::Subscriber subAskForMarker(node.subscribe("/nav/HLC/askForMarker", 1, &callbackAskForMarker));
+    //ros::ServiceServer srvMarkersVisibility(node.advertiseService("markers_visibility", srvMarkersVisibility));
+    //ros::Publisher pubAskForMarker(node.advertise<std_msgs::Empty>("/nav/HLC/askForMarker", 1));
+    /*nav_msgs::Path path;
     geometry_msgs::PoseStamped pose1, pose2, pose3, goal;
     nav_msgs::Odometry location;
     std_msgs::Bool commandFinished;
@@ -140,9 +161,11 @@ int main(int argc, char **argv)
     goal.pose.orientation.z = 0;
     goal.pose.orientation.w = 1;
 
-    commandFinished.data = true;
+    commandFinished.data = true;*/
     float time = 0;
-    
+    unsigned int microseconds = 1000000;
+
+
     
     
     
@@ -158,8 +181,29 @@ int main(int argc, char **argv)
         //pubGoal.publish(goal);
         //std::cout<<goal<<std::endl;
         //pubCmdFinished.publish(commandFinished);
-        //std::cout<<time<<std::endl;
+        std::cout<<time<<std::endl;
+        
+        if(go)
+        {
+            
+            std_msgs::Int16 msg;
+            msg.data = 2;
+            pubMarkerSeen.publish(msg);
+            ROS_INFO("True sent...");
+            go=false;
+            
+        
+        }
+        
+        /*if(time>2)
+        {
+            std_msgs::Empty msg;
+            pubAskForMarker.publish(msg);
+            ROS_INFO("EMPTY SENT");
+        }*/
+        
         time = time + 0.5;
+        //usleep(microseconds);
         loop_rate.sleep();
     }
     

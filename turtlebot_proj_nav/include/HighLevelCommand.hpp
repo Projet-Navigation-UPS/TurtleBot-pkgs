@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 #include "std_msgs/Bool.h"
+#include "std_msgs/Int16.h"
 #include "nav_msgs/Odometry.h"
 #include "actionlib_msgs/GoalStatusArray.h"
 #include "geometry_msgs/PoseStamped.h"
@@ -11,6 +12,13 @@
 #include "move_base_msgs/MoveBaseActionFeedback.h"
 #include "move_base_msgs/MoveBaseActionGoal.h"
 #include <tf/transform_listener.h>
+#include <tf2/transform_datatypes.h>
+#include <string>
+#include "graph.hpp"
+#include "turtlebot_proj_nav/command.h"
+//#include "turtlebot_proj_nav/MarkersVisibility.h"
+#include "std_msgs/Empty.h"
+#include <unistd.h>
 
 #define SOUND_ON 0
 #define SOUND_OFF 1
@@ -20,24 +28,37 @@
 #define SOUND_CLEANINGSTART 5
 #define SOUND_CLEANINGEND 6
 
+
+#define PI 3.1416
+
+
 class HighLevelCommand 
 {
     
 private:
     
     //Subscrbers
-    ros::Subscriber subLocation, subGoalStatus, subMoveBaseActionFeedback, subMoveBaseActionGoal, subMoveBaseActionResult;
-    
+    ros::Subscriber subLocation, subGoalStatus, subMoveBaseActionFeedback, subMoveBaseActionGoal, subMoveBaseActionResult, subscriberCommandBusy, subMarkerSeen, subMarkersVisibility;
+
     //Publishers
-    ros::Publisher pubGoal, pubSound;
+    ros::Publisher pubGoal, pubSound, pubCommand, pubCommandState, pubAskForMarker;
+    
+    //Services
+    //ros::ServiceClient srvMarkersVisibility;
 
     //Messages
-    std_msgs::Bool locationAvailable, goalReached;
+    std_msgs::Bool locationAvailable, goalReached, commandBusy, responseMarker, askMarker;
+    std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId, markerSeen, makersVisibility;
+    std_msgs::Empty empty;
+    
+    //States
+    int seekingMarkerState;
     
     //TF
     tf::TransformListener tfListener;
-    tf::StampedTransform transform;
+    //
     
+
     actionlib_msgs::GoalStatusArray goalStatus;
     nav_msgs::Odometry currentLocation;
     move_base_msgs::MoveBaseActionResult  moveBaseActionResult;
@@ -47,6 +68,9 @@ private:
     
     geometry_msgs::PoseStamped currentGoal;
     
+    void callbackMarkersVisibility(const std_msgs::Int16& msg);
+    void callbackMarkerSeen(const std_msgs::Int16& msg);
+    void callbackCommandBusy(const std_msgs::Bool& msg);
     void callbackLocation(const nav_msgs::Odometry& msg);
     void callbackGoalStatus(const actionlib_msgs::GoalStatusArray& msg);
     void callbackMoveBaseActionResult(const move_base_msgs::MoveBaseActionResult& msg);
@@ -56,13 +80,27 @@ private:
 public:
 
     HighLevelCommand(ros::NodeHandle& node);
+    HighLevelCommand(ros::NodeHandle& node, int finalGoal);
     ~HighLevelCommand();
     
+    int marker();
     bool location();
+    bool finalGoal();
+    bool intermediateGoal();
+    bool markerResponse();
+    bool getAskMarker();
     
+    float distance(float x1, float y1, float x2, float y2);
     
     void sendGoal();
+    int seekMarker();
+    void findGlobalGoal();
     void playSound(int sound);
+    void sendDistanceAndAngleCommand(const float linearVelocity, const float angularVelocity, const float distance, const float angle);
+    void askForMarker();
+    
+    //void disableSimpleCommand();
+    //void enableSimpleCommand();
     
 
 };

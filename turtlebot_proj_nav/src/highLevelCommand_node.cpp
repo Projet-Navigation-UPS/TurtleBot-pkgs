@@ -4,86 +4,119 @@
 
 
 
-
 int main(int argc, char **argv)
 {
     ROS_INFO("Launching highLevelCommande_node ...");
     ros::init(argc, argv, "highLevelCommande_node");
     ros::NodeHandle node;
-    ros::Rate loop_rate(0.5); // 1Hz 
+    //ros::Rate loop_rate(0.5); // 1Hz 
 
-    HighLevelCommand HLC(node);
+    HighLevelCommand HLC(node,1);
     
-    int currentState;
+    int hlcCurrentState;
     
-    currentState = 0;
+    hlcCurrentState = -1;
 
     while (ros::ok()) 
     {
         
-
-        switch (currentState)
+        ros::spinOnce();
+        switch (hlcCurrentState)
         {
+            //Init
+            case -1:
+                ROS_INFO("Init...");
+                hlcCurrentState = 1;    
+                break;
+        
+            //Perception
             case 0:
+                if(HLC.marker() != -1)
+                {
+                    ROS_INFO("Marker seen...");
+                    hlcCurrentState = 2;
+                }
+                else
+                {
+                    ROS_INFO("Seeking marker...");
+                    HLC.seekMarker();
+                    hlcCurrentState = 1;
+                } 
+                break;
+            
+            //AskForMarker
+            case 1:
+                //std::cout<<HLC.getAskMarker()<<std::endl;
+                //std::cout<<HLC.markerResponse()<<std::endl;
+                
+                if(HLC.markerResponse()) hlcCurrentState = 0;
+                else if(!HLC.getAskMarker())
+                { 
+                    ROS_INFO("AskForMarker...");
+                    HLC.askForMarker();
+                }
+                break;
+            
+            //Location
+            case 2:
                 
                 if(HLC.location())
                 {
                     ROS_INFO("Location ready...");
-                    currentState = 1;
+                    hlcCurrentState = 3;
                 }
                 else 
                 {
                     ROS_INFO("Wait for location...");
-                    currentState = 0;
+                    hlcCurrentState = 2;
                 }    
                 break;
-            case 1:
-                /*if(HLC.near_Goal())
+            
+            //Goals    
+            case 3:
+                if(HLC.finalGoal())
                 {
-                    ROS_INFO("Goal reached...");
-                    currentState = 1;
-                }*/
-                //else 
+                    hlcCurrentState = 5;
+                }
+                else 
                 {   
                     ROS_INFO("Send goal...");
                     HLC.sendGoal();
-                    currentState = 2;
+                    hlcCurrentState = 4;
                 }
                 break;
-            case 2:
-                /*if(HLC.path_Found())
+            
+            //Movement    
+            case 4:
+                if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
+                else 
                 {
-                    ROS_INFO("Launch mouvement...");
-                    HLC.follow_Path();
-                    currentState = 3;
+                    ROS_INFO("Intermediate goal reached...");
+                    hlcCurrentState = 1;
                 }
-                else
-                {
-                    ROS_INFO("Wait for path planning...");
-                    currentState = 2;
-                }*/
-                ROS_INFO("Launch mouvement...");
                 break;
-            /*case 3:
-                if(HLC.command_Finished())
-                {
-                    ROS_INFO("Mouvement finished...");
-                    currentState = 0;
-                }
-                else
-                {
-                    ROS_INFO("Wait for the robot to follow the path...");
-                    currentState = 3;
-                }
-                break;*/
+            
+            //Final goal reached    
+            case 5:
+                ROS_INFO("Goal reached...");
+                hlcCurrentState = 6;
+                break;
+            
+            //Find new global goal
+            case 6:
+                ROS_INFO("Choosing new global Goal...");
+                hlcCurrentState = 0;
+                break; 
+                   
             default:
-                currentState = 0;
+                hlcCurrentState = 0;
+                HLC.findGlobalGoal();
                 break;
 
         }
 
-        ros::spinOnce();
-        loop_rate.sleep();
+        usleep(2000000);
+        //loop_rate.sleep();
     }
     
     return 0;
