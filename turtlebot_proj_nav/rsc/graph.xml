@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<DirectedGraph Title="ARMarkers" >  
+   <Nodes>  
+      <Node Id="0" Label="ARMarker0"  PositionX="4.70" PositionY="4.44" Orientation="3.1416"/>  
+      <Node Id="1" Label="ARMarker1"  PositionX="0.53" PositionY="1.28" Orientation="1.57"/>
+   </Nodes>  
+   <Links>  
+      <Link Source="0" Target="1" Cost="2"  />
+   </Links>  
+   <Properties>  
+       <Property Id="PositionX" Label="Position X" DataType="float64" /> 
+       <Property Id="PositionY" Label="Position Y" DataType="float64" /> 
+       <Property Id="Orientation" Label="Orientation" DataType="float64" /> 
+       <Property Id="Cost" Label="Cost" DataType="int32" /> 
+   </Properties>  
+</DirectedGraph> 
