@@ -7,7 +7,7 @@ BallSearch::BallSearch(ros::NodeHandle& node):
     //Subsribers
     subscriberCommandBusy(node.subscribe("/nav/command_busy", 1, &BallSearch::callbackCommandBusy,this)),
     //Publishers
-    publisherBallReference(node.advertise<recherche_balle_tp1::command>("/nav/ball_reference", 1))
+    publisherBallReference(node.advertise<recherche_balle_tp1::command>("/nav/open_loop_command", 1))
 {
     command_busy.data = true;
     etat_recherche = 0;
@@ -135,7 +135,7 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
                 case 5:
                     ROS_INFO("On tourne à droite de 2Pi \n");
                     this->sendBallReference(0, -1.5, 0, 2*PI);
-                    etat_recherche = 6;
+                    etat_recherche = 0;
                     break;
                 case 6:
                     ROS_INFO("Abandon recherche... \n");

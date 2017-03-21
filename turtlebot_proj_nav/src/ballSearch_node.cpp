@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     ROS_INFO("Launching ballSearch_node ...\n");
     ros::init(argc, argv, "ballSearch_node");
     ros::NodeHandle n;
-    ros::Rate loop_rate(0.3); // 0.3Hz 
+    ros::Rate loop_rate(0.5); // 0.3Hz 
 
     BallSearch ballSearch(n);
     TurtleBotCamera turtleBotCamera(n);
@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 	     graphicServer.sendImageDisplay(turtleBotCamera.getCameraRgbImageColor());
 	     
 	     ROS_INFO("Recherche de la balle...\n");
-       Objet * obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 0) ;
+       	     Objet * obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 0) ;
             
             switch (currentState)
             {
@@ -67,18 +67,21 @@ int main(int argc, char **argv)
                 break;
             case 1:
                 ROS_INFO("=> on tourne de %lf degrés\n", (obj->Theta));
-                if (obj->Theta<-2) 
+                if (obj->Theta<-10) 
                 ballSearch.sendBallReference(0.2, -1, 0, -(obj->Theta)*PI/180);
-	              else if (obj->Theta>2) 
-	              ballSearch.sendBallReference(0.2, 1, 0, (obj->Theta)*PI/180);
-	              else
-	              currentState=2;
+              	else if (obj->Theta>10) 
+              	ballSearch.sendBallReference(0.2, 1, 0, (obj->Theta)*PI/180);
+              	else
+              	currentState=2;
                 break;
             case 2:
                 ROS_INFO("=> on avance de %lf m\n", (obj->Dist)-0.5);
-	              ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5, 0);
+	        ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5, 0);
+		currentState=3;
                 break;    
-                
+            case 3:
+                ROS_INFO("Approche...");
+                break;    
             default:
                 currentState = 0;
                 break;

@@ -71,8 +71,8 @@ void TurtleBotCommand::displayMobileBaseCommandsVelocity()
 void TurtleBotCommand::stop()
 {
     TurtleBotCommand::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, 0);
-    busy.data = false;
-    pubCommandState.publish(busy);
+    //busy.data = false;
+    //pubCommandState.publish(busy);
 }
 
 void TurtleBotCommand::move(const float linearVelocity)

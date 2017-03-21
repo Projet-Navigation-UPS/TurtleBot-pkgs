@@ -2,7 +2,7 @@
 #include "TurtleBotCommand.hpp"
 #include <cmath>
 
-#define FREQ 10 //10 Hz
+#define FREQ 20 //10 Hz
 
 int main(int argc, char **argv)
 {
