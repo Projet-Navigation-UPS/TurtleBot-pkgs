@@ -191,6 +191,11 @@ bool HighLevelCommand::location()
     return locationAvailable.data;
 }
 
+bool HighLevelCommand::getCommandBusy()
+{
+    return commandBusy.data;
+}
+
 bool HighLevelCommand::markerResponse()
 {
     return responseMarker.data;

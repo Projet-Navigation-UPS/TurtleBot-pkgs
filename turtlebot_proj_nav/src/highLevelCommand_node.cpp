@@ -13,9 +13,10 @@ int main(int argc, char **argv)
 
     HighLevelCommand HLC(node,3.0,3.0);
     
-    int hlcCurrentState;
+    int hlcCurrentState, hlcNextState;
     
     hlcCurrentState = -2;
+    hlcNextState = -2;
 
     while (ros::ok()) 
     {
