@@ -73,7 +73,7 @@ int main(int argc, char **argv)
             //AskForMarker
             case 1:                
                 if(HLC.markerResponse()) hlcCurrentState = 0;
-                else if(!HLC.getAskMarker())
+                else if(!HLC.getAskMarker() && !HLC.getCommandBusy())
                 { 
                     ROS_INFO("AskForMarker...");
                     HLC.askForMarker();
