@@ -9,7 +9,7 @@ int main(int argc, char **argv)
     ROS_INFO("Launching highLevelCommande_node ...");
     ros::init(argc, argv, "highLevelCommande_node");
     ros::NodeHandle node;
-    ros::Rate loop_rate(0.5); // 1Hz 
+    ros::Rate loop_rate(1); // 1Hz 
 
     HighLevelCommand HLC(node,3.0,3.0);
     

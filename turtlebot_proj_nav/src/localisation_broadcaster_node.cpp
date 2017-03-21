@@ -39,7 +39,7 @@ int main(int argc, char** argv){
     // Localisation TF
     transform_mapOdom = transform_empty;
 
-    ros::Rate loop_rate(5); 
+    ros::Rate loop_rate(60); 
     while(ros::ok())
     {
         br.sendTransform(tf::StampedTransform(transform_mapOdom, ros::Time::now(), "map", "odom"));
