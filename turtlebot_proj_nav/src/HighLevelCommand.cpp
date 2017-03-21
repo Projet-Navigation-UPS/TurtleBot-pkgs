@@ -304,11 +304,8 @@ int HighLevelCommand::seekMarker()
                 sendDistanceAndAngleCommand(0, 1.5, 0, 7*PI/4);
                 seekingMarkerState = 0;
                 break;
-            case 7:
-                ROS_INFO("Abort seeking... ");
-                break;
             default:
-                ROS_INFO("Abort seeking... ");
+                seekingMarkerState = 0;
                 break;
 
         }
