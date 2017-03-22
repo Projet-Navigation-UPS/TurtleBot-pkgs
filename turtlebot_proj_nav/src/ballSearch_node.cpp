@@ -35,6 +35,8 @@ int main(int argc, char **argv)
     
     ROS_INFO("Initiating ...\n");
     ballSearch.attente(0,1); // Waiting 1 sec 0 nanosec
+    
+    Objet * obj;
 
    while (ros::ok()) 
    {
@@ -48,12 +50,13 @@ int main(int argc, char **argv)
 	     graphicServerConvert.sendImageDisplay(image);
 	     graphicServer.sendImageDisplay(turtleBotCamera.getCameraRgbImageColor());
 	     
-	     ROS_INFO("Recherche de la balle...");
-       	     Objet * obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE) ;
+	     
             
             switch (currentState)
             {
             case 0:
+                ROS_INFO("Recherche de la balle...");
+       	        obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE) ;
                 if(obj == NULL) 
                 {
                     ROS_INFO("Pas de balle trouvée...");
@@ -67,7 +70,8 @@ int main(int argc, char **argv)
                 }   
                 break;
             case 1:
-                
+                ROS_INFO("Recherche de la balle...");
+       	        obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE) ;
                 if ((obj->Theta<-10) && !ballSearch.getCommandState()) 
                 {
                     ballSearch.sendBallReference(0.2, -1, 0, -(obj->Theta)*PI/180);
@@ -84,6 +88,8 @@ int main(int argc, char **argv)
               	    currentState=1;
                 break;
             case 2:
+                ROS_INFO("Recherche de la balle...");
+       	        obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE) ;
                 if (!ballSearch.getCommandState()) 
                 {
                     ROS_INFO("On avance de %lf m", (obj->Dist)-0.5);
