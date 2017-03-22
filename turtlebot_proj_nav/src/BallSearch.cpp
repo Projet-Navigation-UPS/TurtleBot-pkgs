@@ -66,7 +66,7 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
          
       // Analyse de l'image  : decoupage en regions      
       int nbRegions = Etiqueter_Region(binRVB,width,height);
-      ROS_INFO("Nombre de regions etiquetees : %d \n", nbRegions);
+      ROS_INFO("Nombre de regions etiquetees : %d ", nbRegions);
       listeObj = new Objet[nbRegions];
 
       // Extraction des attributs de chaque région segmentée
@@ -99,7 +99,7 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
 	
       if ( num_obj == -1 ) 
       {
-         ROS_INFO("\nPas de balle visible");
+         ROS_INFO("Pas de balle visible");
          
          if (!command_busy.data)
          {
@@ -107,50 +107,43 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
          switch (etat_recherche)
             {
                 case 0:
-                    ROS_INFO("On tourne à gauche de Pi/3 \n");
+                    ROS_INFO("On tourne à gauche de Pi/3 ");
                     this->sendBallReference(0, 1.5, 0, PI/3);
                     etat_recherche = 1;
                     break;
                 case 1:
-                    ROS_INFO("On tourne à droite de 2Pi/3 \n");
+                    ROS_INFO("On tourne à droite de 2Pi/3 ");
                     this->sendBallReference(0, -1.5, 0, 2*PI/3);
                     etat_recherche = 2;
                     break;
                 case 2:
-                    ROS_INFO("On tourne à gauche de Pi \n");
+                    ROS_INFO("On tourne à gauche de Pi ");
                     this->sendBallReference(0, 1.5, 0, PI);
                     etat_recherche = 3;
                     break;
                 case 3:
-                    ROS_INFO("On tourne à droite de 4Pi/3 \n");
+                    ROS_INFO("On tourne à droite de 4Pi/3 ");
                     this->sendBallReference(0, -1.5, 0, 4*PI/3);
                     etat_recherche = 4;
                     break;
                 case 4:
-                    ROS_INFO("On tourne à droite de 5Pi/3 \n");
+                    ROS_INFO("On tourne à droite de 5Pi/3 ");
                     this->sendBallReference(0, 1.5, 0, 5*PI/3);
                     etat_recherche = 5;
                     break;
                 case 5:
-                    ROS_INFO("On tourne à droite de 2Pi \n");
+                    ROS_INFO("On tourne à droite de 2Pi ");
                     this->sendBallReference(0, -1.5, 0, 2*PI);
                     etat_recherche = 0;
                     break;
-                case 6:
-                    ROS_INFO("Abandon recherche... \n");
-                    break;
-		        case 7:
-                    ROS_INFO("Recherche finie... \n");
-                    break;
                 default:
-                    ROS_INFO("Abandon recherche... \n");
+                    etat_recherche = 0;
                     break;
-
             }
          }
       }
       else {         
-         ROS_INFO("Numéro objet intéressant : %d \n", num_obj);
+         ROS_INFO("Numéro objet intéressant : %d ", num_obj);
 
          obj = new Objet;
          obj->Ucg = listeObj[num_obj].Ucg;
@@ -164,11 +157,11 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
          obj->Hmax = listeObj[num_obj].Hmax;
          obj->Wmin = listeObj[num_obj].Wmin;
          obj->Wmax = listeObj[num_obj].Wmax;
-	 double focale = 8.6; // trouvée de facon empirique
+	     double focale = 8.6; // trouvée de facon empirique
          //std::cout << "focale:" << focale<<endl;
-	 double diametre_balle = 10.5;
-	 double diametre_balle_image = obj->Wmax - obj->Wmin ;
-	 double z = 55 / diametre_balle_image  ;
+	     double diametre_balle = 10.5;
+	     double diametre_balle_image = obj->Wmax - obj->Wmin ;
+	     double z = 55 / diametre_balle_image  ;
 
          double d = obj->Vcg - (double) (width)/2.0;
          double x = (d * diametre_balle) / diametre_balle_image;//(obj->Wmax - obj->Wmin);
@@ -179,8 +172,6 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
          //printf("Barycentre : (%d, %d), Wmin, Wmax : (%d,%d), Hmin, Hmax : (%d,%d), Bounding box : (%d,%d), distance : %.2lf, Surface : %d \n", obj->Vcg, obj->Ucg,obj->Wmin,obj->Wmax, obj->Hmin, obj->Hmax, obj->Hmax-obj->Hmin, obj->Wmax-obj->Wmin, z, obj->Surface); 
          obj->Dist = z;
          obj->Theta = -theta*180.0/PI;
-
-	etat_recherche = 7;
          
       }
    

@@ -48,37 +48,37 @@ int main(int argc, char **argv)
 	     graphicServerConvert.sendImageDisplay(image);
 	     graphicServer.sendImageDisplay(turtleBotCamera.getCameraRgbImageColor());
 	     
-	     ROS_INFO("Recherche de la balle...\n");
-       	     Objet * obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 0) ;
+	     ROS_INFO("Recherche de la balle...");
+       	     Objet * obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE) ;
             
             switch (currentState)
             {
             case 0:
                 if(obj == NULL) 
                 {
-                    ROS_INFO("Pas de balle trouvée. \n");
+                    ROS_INFO("Pas de balle trouvée...");
                 }
                 else 
                 {
-                  ROS_INFO("distance estimée à la balle en m : %lf \n",  (obj->Dist));
-                  ROS_INFO("angle estimé par rapport à la balle (degrés) : %lf \n", obj->Theta);
-                  ROS_INFO("centre de la balle : (%d,%d) \n", obj->Ucg, obj->Vcg);
+                  ROS_INFO("Distance estimée à la balle en m : %lf", (obj->Dist));
+                  ROS_INFO("Angle estimé par rapport à la balle (degrés) : %lf ", obj->Theta);
+                  ROS_INFO("Centre de la balle : (%d,%d) ", obj->Ucg, obj->Vcg);
                   currentState=1;
                 }   
                 break;
             case 1:
-                ROS_INFO("=> on tourne de %lf degrés\n", (obj->Theta));
+                ROS_INFO("On tourne de %lf degrés", (obj->Theta));
                 if (obj->Theta<-10) 
-                ballSearch.sendBallReference(0.2, -1, 0, -(obj->Theta)*PI/180);
+                    ballSearch.sendBallReference(0.2, -1, 0, -(obj->Theta)*PI/180);
               	else if (obj->Theta>10) 
-              	ballSearch.sendBallReference(0.2, 1, 0, (obj->Theta)*PI/180);
+              	    ballSearch.sendBallReference(0.2, 1, 0, (obj->Theta)*PI/180);
               	else
-              	currentState=2;
+              	    currentState=2;
                 break;
             case 2:
-                ROS_INFO("=> on avance de %lf m\n", (obj->Dist)-0.5);
-	        ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5, 0);
-		currentState=3;
+                ROS_INFO("On avance de %lf m", (obj->Dist)-0.5);
+	            ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5, 0);
+		        currentState=3;
                 break;    
             case 3:
                 ROS_INFO("Approche...");
@@ -87,7 +87,6 @@ int main(int argc, char **argv)
                 currentState = 0;
                 break;
 		      }
-
          
          loop_rate.sleep();
     }
