@@ -9,13 +9,14 @@ int main(int argc, char **argv)
     ROS_INFO("Launching highLevelCommande_node ...");
     ros::init(argc, argv, "highLevelCommande_node");
     ros::NodeHandle node;
-    //ros::Rate loop_rate(0.5); // 1Hz 
+    ros::Rate loop_rate(1); // 1Hz 
 
-    HighLevelCommand HLC(node,1);
+    HighLevelCommand HLC(node,3.0,3.0);
     
-    int hlcCurrentState;
+    int hlcCurrentState, hlcNextState;
     
-    hlcCurrentState = -1;
+    hlcCurrentState = -2;
+    hlcNextState = -2;
 
     while (ros::ok()) 
     {
@@ -24,11 +25,36 @@ int main(int argc, char **argv)
         switch (hlcCurrentState)
         {
             //Init
-            case -1:
+            case -2:
+            
                 ROS_INFO("Init...");
-                hlcCurrentState = 1;    
+                if(HLC.location()) 
+                {
+                    HLC.init(1.5);
+                    hlcCurrentState = -1;
+                }
                 break;
-        
+            
+            
+            //Visible markers
+            case -1:
+                //if((HLC.markersVisibility() != -1) && (HLC.markersVisibility() != 0))
+                if(true)
+                {
+                    ROS_INFO("In visiblity zone...");
+                    hlcCurrentState = 1;
+                }
+                else if(HLC.markersVisibility() == -1)
+                {
+                    hlcCurrentState = -1;
+                }
+                else
+                {
+                    ROS_INFO("Not in visiblity zone...");
+                    hlcCurrentState = 7;
+                } 
+                break;
+
             //Perception
             case 0:
                 if(HLC.marker() != -1)
@@ -45,12 +71,9 @@ int main(int argc, char **argv)
                 break;
             
             //AskForMarker
-            case 1:
-                //std::cout<<HLC.getAskMarker()<<std::endl;
-                //std::cout<<HLC.markerResponse()<<std::endl;
-                
+            case 1:                
                 if(HLC.markerResponse()) hlcCurrentState = 0;
-                else if(!HLC.getAskMarker())
+                else if(!HLC.getAskMarker() && !HLC.getCommandBusy())
                 { 
                     ROS_INFO("AskForMarker...");
                     HLC.askForMarker();
@@ -72,11 +95,12 @@ int main(int argc, char **argv)
                 }    
                 break;
             
-            //Goals    
+            //Marker Goals    
             case 3:
-                if(HLC.finalGoal())
+                if(HLC.finalMarkerGoal())
                 {
                     hlcCurrentState = 5;
+                    ROS_INFO("Final Marker Goal reached...");
                 }
                 else 
                 {   
@@ -88,7 +112,8 @@ int main(int argc, char **argv)
             
             //Movement    
             case 4:
-                if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
+                if(HLC.getGoalAborted()) hlcCurrentState = -1;
+                else if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
                 else 
                 {
                     ROS_INFO("Intermediate goal reached...");
@@ -96,27 +121,43 @@ int main(int argc, char **argv)
                 }
                 break;
             
-            //Final goal reached    
+            //Final marker goal reached    
             case 5:
-                ROS_INFO("Goal reached...");
+                ROS_INFO("Send last goal...");
+                HLC.sendGoal();
                 hlcCurrentState = 6;
                 break;
             
-            //Find new global goal
+            //Final Goal reaching
             case 6:
-                ROS_INFO("Choosing new global Goal...");
-                hlcCurrentState = 0;
+                if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
+                else 
+                {
+                    ROS_INFO("Final goal reached...");
+                    HLC.finalGoal(1.5);
+                    hlcCurrentState = 8;
+                };
+                break; 
+            
+            //Find visibility zone
+            case 7:
+                ROS_INFO("Seeking a visibility zone...");
+                hlcCurrentState = 7;
+                break; 
+                
+            //End
+            case 8:
+                ROS_INFO("The end."); 
                 break; 
                    
             default:
-                hlcCurrentState = 0;
+                hlcCurrentState = -2;
                 HLC.findGlobalGoal();
                 break;
 
         }
 
-        usleep(2000000);
-        //loop_rate.sleep();
+        loop_rate.sleep();
     }
     
     return 0;

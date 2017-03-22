@@ -26,76 +26,57 @@
 
 using namespace std;
 
-
+bool markersVisibility(turtlebot_proj_nav::MarkersVisibility::Request  &req, turtlebot_proj_nav::MarkersVisibility::Response &res)
+    {
+        ROS_INFO("request: x=%lf, y=%lf", req.x, req.y);
+        struct table image = pgm_imread("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm");
+ 
+        int x,y;
+        x = (req.x+12.2)/0.05;
+        y = -(req.y-18.2)/0.05;
+	    
+        if(image.data[x][y]==12)
+		{
+			res.markers=1;
+		}
+		else if(image.data[x][y]==9)
+		{
+			res.markers=2;
+		}
+		else if(image.data[x][y]==6)
+		{
+			res.markers=3;
+		}
+		else if(image.data[x][y]==3)
+		{
+			res.markers=4;
+		}
+		else if(image.data[x][y]==15)
+		{
+			res.markers=0;
+			ROS_INFO("No visible markers : %d", res.markers);
+		}
+        else
+        {
+            res.markers=0;
+			ROS_INFO("Indetermine (5 amers visibles en meme temps ou centre de l'amer detecte) : %d", res.markers);
+        }
+        
+        ROS_INFO("Sending back visible markers : [%d]", (int)res.markers);
+        return true;
+    }
 
 
 int main(int argc, char **argv)
 {
-	int x=800,y=900;
-	
-	ROS_INFO("Launching reader visibility ...\n_______________________________________________________________");
+	ROS_INFO("Launching reader visibility ...");
     ros::init(argc, argv, "visibility_pgmreader_node");
     ros::NodeHandle node;
 
-	ros::Publisher pubVisib(node.advertise<std_msgs::Int16>("/nav/visibility_marker", 1));
 
-	std_msgs::Int16 visib;
-	visib.data=0;
+    ros::ServiceServer serviceMarkersVisibility = node.advertiseService("/nav/visibility_marker", markersVisibility);
+    ROS_INFO("Ready send visible markers.");
+    ros::spin();
 
-   	ros::Rate loop_rate(5); // 2Hz 
-
-	struct table image = pgm_imread("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm");
-
-	
-
-	              
-         
-    while (ros::ok()) 
-    {
-		ros::spinOnce();
-
-        // !!! recup les positions x et y du robot et les mettre ici
-        
-        if(image.data[x][y]==12)
-					{
-						visib.data=1;
-						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
-						pubVisib.publish(visib);
-					}
-					else if(image.data[x][y]==9)
-					{
-						visib.data=2;
-						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
-						pubVisib.publish(visib);
-					}
-					else if(image.data[x][y]==6)
-					{
-						visib.data=3;
-						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
-						pubVisib.publish(visib);
-					}
-					else if(image.data[x][y]==3)
-					{
-						visib.data=4;
-						ROS_INFO("Nombre d'amers visibles : %d", visib.data);
-						pubVisib.publish(visib);
-					}
-					else if(image.data[x][y]==15)
-					{
-						visib.data=0;
-						ROS_INFO("Pas d amer visible : %d", visib.data);
-						pubVisib.publish(visib);
-					}
-                    else
-                    {
-                        visib.data=0;
-						ROS_INFO("Indetermine (5 amers visibles en meme temps ou centre de l'amer detecte) : %d", visib.data);
-						pubVisib.publish(visib);
-                    }
-
-        loop_rate.sleep();
-    }
-
-return 0;
-
+    return 0;
 }
