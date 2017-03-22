@@ -67,22 +67,40 @@ int main(int argc, char **argv)
                 }   
                 break;
             case 1:
-                ROS_INFO("On tourne de %lf degrés", (obj->Theta));
-                if (obj->Theta<-10) 
+                
+                if ((obj->Theta<-10) && !ballSearch.getCommandState()) 
+                {
                     ballSearch.sendBallReference(0.2, -1, 0, -(obj->Theta)*PI/180);
-              	else if (obj->Theta>10) 
+                    ROS_INFO("On tourne de %lf degrés", (obj->Theta));
+                }
+              	else if ((obj->Theta>10) && !ballSearch.getCommandState()) 
+              	{
               	    ballSearch.sendBallReference(0.2, 1, 0, (obj->Theta)*PI/180);
-              	else
+              	    ROS_INFO("On tourne de %lf degrés", (obj->Theta));
+              	}
+              	else if (!ballSearch.getCommandState())
               	    currentState=2;
+              	else 
+              	    currentState=1;
                 break;
             case 2:
-                ROS_INFO("On avance de %lf m", (obj->Dist)-0.5);
-	            ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5, 0);
-		        currentState=3;
+                if (!ballSearch.getCommandState()) 
+                {
+                    ROS_INFO("On avance de %lf m", (obj->Dist)-0.5);
+	                ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5, 0);
+		            currentState=3;
+                }
                 break;    
             case 3:
-                ROS_INFO("Approche...");
-                break;    
+                if (!ballSearch.getCommandState()) 
+                {
+                    currentState=4;
+                }
+                else ROS_INFO("En approche de la balle...");
+                break;  
+            case 4:
+                ROS_INFO("Balle atteinte !");
+                break;       
             default:
                 currentState = 0;
                 break;

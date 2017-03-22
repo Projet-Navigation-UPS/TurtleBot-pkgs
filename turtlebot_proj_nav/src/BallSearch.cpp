@@ -29,6 +29,7 @@ void BallSearch::sendBallReference(const float linearVelocity, const float angul
     else ROS_INFO("COMMAND BUSY !");
 }
 
+bool BallSearch::getCommandState(){return command_busy.data;}
 
 void BallSearch::callbackCommandBusy(const std_msgs::Bool& msg)
 {
@@ -46,6 +47,8 @@ void BallSearch::attente(int nsec, int sec)
   delai_vie_appli.tv_sec = sec;
   nanosleep(&delai_vie_appli,NULL);
 }
+
+
 
 //******************************************************************************
 // Recherche_fleche : Fonction qui permet de trouver la fleche verte sur fond rouge
@@ -141,6 +144,7 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
                     break;
             }
          }
+         else ROS_INFO("En mouvement...");
       }
       else {         
          ROS_INFO("Numéro objet intéressant : %d ", num_obj);
