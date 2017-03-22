@@ -7,6 +7,10 @@
 #include "TurtleBotCamera.hpp"
 #include "GraphicServer.hpp"
 
+#define BALLE_ROUGE 0
+#define BALLE_VERTE 1
+#define BALLE_BLEUE 2
+
 using namespace std;
 
 int main(int argc, char **argv)
@@ -35,11 +39,9 @@ int main(int argc, char **argv)
    while (ros::ok()) 
    {
          ros::spinOnce();
-         
-         
-              	    	    
+             	    	    
 	     raw = turtleBotCamera.getCameraRgbImageColorRaw();
-	     rawFiltrageImage = filtrage_image(raw, CAMERA_WIDTH, CAMERA_HEIGHT, 0);
+	     rawFiltrageImage = filtrage_image(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE);
 	     image = turtleBotCamera.convertRawToSensorMsgsImage(rawFiltrageImage, CAMERA_HEIGHT, CAMERA_WIDTH, "mono8", ' ', CAMERA_STEP_MONO);
 	     
 
