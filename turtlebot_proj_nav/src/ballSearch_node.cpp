@@ -1,6 +1,5 @@
 #include "ros/ros.h"
 #include "BallSearch.hpp"
-#include "command.h"
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>

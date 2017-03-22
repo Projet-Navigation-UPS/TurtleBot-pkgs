@@ -5,6 +5,7 @@
 #include "traitement.hpp"
 #include "analyse.hpp"
 #include "std_msgs/Bool.h"
+#include "turtlebot_proj_nav/command.h"
 
 
 class BallSearch 

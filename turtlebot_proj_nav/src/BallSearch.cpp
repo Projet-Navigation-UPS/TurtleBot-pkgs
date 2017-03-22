@@ -1,5 +1,4 @@
 #include "BallSearch.hpp"
-#include "command.h"
 #include <math.h>
 
 
@@ -7,7 +6,7 @@ BallSearch::BallSearch(ros::NodeHandle& node):
     //Subsribers
     subscriberCommandBusy(node.subscribe("/nav/command_busy", 1, &BallSearch::callbackCommandBusy,this)),
     //Publishers
-    publisherBallReference(node.advertise<recherche_balle_tp1::command>("/nav/open_loop_command", 1))
+    publisherBallReference(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1))
 {
     command_busy.data = true;
     etat_recherche = 0;
@@ -19,7 +18,7 @@ void BallSearch::sendBallReference(const float linearVelocity, const float angul
 {
     if (!command_busy.data)
     {
-        recherche_balle_tp1::command msgBallReference;
+        turtlebot_proj_nav::command msgBallReference;
         msgBallReference.linearVelocity = linearVelocity;
         msgBallReference.angularVelocity = angularVelocity;
         msgBallReference.distance = distance;

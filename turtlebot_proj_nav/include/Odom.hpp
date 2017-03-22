@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "kobuki_msgs/SensorState.h"
+#include "turtlebot_proj_nav/command.h"
 
 
 class Odom
