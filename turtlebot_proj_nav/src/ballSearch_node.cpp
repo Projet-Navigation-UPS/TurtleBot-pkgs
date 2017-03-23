@@ -61,13 +61,14 @@ int main(int argc, char **argv)
                 if(obj == NULL) 
                 {
                     ROS_INFO("Pas de balle trouvée...");
+                        
                 }
                 else 
                 {
-                  ROS_INFO("Distance estimée à la balle en m : %lf", (obj->Dist));
-                  ROS_INFO("Angle estimé par rapport à la balle (degrés) : %lf ", obj->Theta);
-                  ROS_INFO("Centre de la balle : (%d,%d) ", obj->Ucg, obj->Vcg);
-                  currentState=1;
+                    ROS_INFO("Distance estimée à la balle en m : %lf", (obj->Dist));
+                    ROS_INFO("Angle estimé par rapport à la balle (degrés) : %lf ", obj->Theta);
+                    ROS_INFO("Centre de la balle : (%d,%d) ", obj->Ucg, obj->Vcg);
+                    currentState=1;
                 }   
                 break;
             case 1:
@@ -109,6 +110,19 @@ int main(int argc, char **argv)
                 break;  
             case 4:
                 ROS_INFO("Balle atteinte !");
+                break;
+            case 5:
+                if (!ballSearch.getCommandState()) 
+                {
+                    ballSearch.seekBall();
+                    currentState=6;
+                }
+                break; 
+            case 6:
+                if (!ballSearch.getCommandState()) 
+                {
+                    currentState=0;
+                }
                 break;       
             default:
                 currentState = 0;

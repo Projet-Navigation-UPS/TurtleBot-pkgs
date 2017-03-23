@@ -34,6 +34,7 @@ public:
     void callbackCommandBusy(const std_msgs::Bool& msg); 
     Objet * Recherche_balle(unsigned char* raw, int  width, int height, int couleur);
     void attente(int nsec, int sec);
+    void seekBall();
     bool getCommandState();
 
 };

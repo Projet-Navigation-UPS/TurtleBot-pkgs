@@ -103,48 +103,7 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
       if ( num_obj == -1 ) 
       {
          ROS_INFO("Pas de balle visible");
-         
-         if (!command_busy.data)
-         {
-         
-         switch (etat_recherche)
-            {
-                case 0:
-                    ROS_INFO("On tourne à gauche de Pi/3 ");
-                    this->sendBallReference(0, 1.5, 0, PI/3);
-                    etat_recherche = 1;
-                    break;
-                case 1:
-                    ROS_INFO("On tourne à droite de 2Pi/3 ");
-                    this->sendBallReference(0, -1.5, 0, 2*PI/3);
-                    etat_recherche = 2;
-                    break;
-                case 2:
-                    ROS_INFO("On tourne à gauche de Pi ");
-                    this->sendBallReference(0, 1.5, 0, PI);
-                    etat_recherche = 3;
-                    break;
-                case 3:
-                    ROS_INFO("On tourne à droite de 4Pi/3 ");
-                    this->sendBallReference(0, -1.5, 0, 4*PI/3);
-                    etat_recherche = 4;
-                    break;
-                case 4:
-                    ROS_INFO("On tourne à droite de 5Pi/3 ");
-                    this->sendBallReference(0, 1.5, 0, 5*PI/3);
-                    etat_recherche = 5;
-                    break;
-                case 5:
-                    ROS_INFO("On tourne à droite de 2Pi ");
-                    this->sendBallReference(0, -1.5, 0, 2*PI);
-                    etat_recherche = 0;
-                    break;
-                default:
-                    etat_recherche = 0;
-                    break;
-            }
-         }
-         else ROS_INFO("En mouvement...");
+
       }
       else {         
          ROS_INFO("Numéro objet intéressant : %d ", num_obj);
@@ -181,3 +140,50 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
    
    return obj;
 } 
+
+
+void BallSearch::seekBall()
+{
+    if(!command_busy.data)
+    {
+        switch (etat_recherche)
+        {
+            case 0:
+                ROS_INFO("On tourne à gauche de Pi/3 ");
+                this->sendBallReference(0, 1.5, 0, PI/3);
+                etat_recherche = 1;
+                break;
+            case 1:
+                ROS_INFO("On tourne à droite de 2Pi/3 ");
+                this->sendBallReference(0, -1.5, 0, 2*PI/3);
+                etat_recherche = 2;
+                break;
+            case 2:
+                ROS_INFO("On tourne à gauche de Pi ");
+                this->sendBallReference(0, 1.5, 0, PI);
+                etat_recherche = 3;
+                break;
+            case 3:
+                ROS_INFO("On tourne à droite de 4Pi/3 ");
+                this->sendBallReference(0, -1.5, 0, 4*PI/3);
+                etat_recherche = 4;
+                break;
+            case 4:
+                ROS_INFO("On tourne à droite de 5Pi/3 ");
+                this->sendBallReference(0, 1.5, 0, 5*PI/3);
+                etat_recherche = 5;
+                break;
+            case 5:
+                ROS_INFO("On tourne à droite de 2Pi ");
+                this->sendBallReference(0, -1.5, 0, 2*PI);
+                etat_recherche = 0;
+                break;
+            default:
+                etat_recherche = 0;
+                break;
+        }
+    }
+    else ROS_INFO("Commande occupée...");
+
+}
+ 
