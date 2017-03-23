@@ -6,6 +6,7 @@
 #include <math.h>
 #include "TurtleBotCamera.hpp"
 #include "GraphicServer.hpp"
+#include <unistd.h>
 
 #define BALLE_ROUGE 0
 #define BALLE_VERTE 1
@@ -18,7 +19,7 @@ int main(int argc, char **argv)
     ROS_INFO("Launching ballSearch_node ...\n");
     ros::init(argc, argv, "ballSearch_node");
     ros::NodeHandle n;
-    ros::Rate loop_rate(0.5); // 0.3Hz 
+    //ros::Rate loop_rate(0.5); // 0.3Hz 
 
     BallSearch ballSearch(n);
     TurtleBotCamera turtleBotCamera(n);
@@ -34,7 +35,7 @@ int main(int argc, char **argv)
     
     
     ROS_INFO("Initiating ...\n");
-    ballSearch.attente(0,1); // Waiting 1 sec 0 nanosec
+    usleep(1000000);
     
     Objet * obj;
 
@@ -55,6 +56,7 @@ int main(int argc, char **argv)
             switch (currentState)
             {
             case 0:
+                usleep(1000000);
                 ROS_INFO("Recherche de la balle...");
        	        obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE) ;
                 if(obj == NULL) 
@@ -70,6 +72,7 @@ int main(int argc, char **argv)
                 }   
                 break;
             case 1:
+                usleep(1000000);
                 ROS_INFO("Recherche de la balle...");
        	        obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE) ;
                 if ((obj->Theta<-10) && !ballSearch.getCommandState()) 
@@ -88,6 +91,7 @@ int main(int argc, char **argv)
               	    currentState=1;
                 break;
             case 2:
+                usleep(1000000);
                 ROS_INFO("Recherche de la balle...");
        	        obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE) ;
                 if (!ballSearch.getCommandState()) 
@@ -112,7 +116,7 @@ int main(int argc, char **argv)
                 break;
 		      }
          
-         loop_rate.sleep();
+         //loop_rate.sleep();
     }
     
     return 0;
