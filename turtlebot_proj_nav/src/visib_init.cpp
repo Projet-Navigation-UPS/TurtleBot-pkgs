@@ -36,8 +36,8 @@ using namespace std;
 void Ecriture_carte_visib()
 {	
 	//taille de la fenetre
-   	int largeur=512;
-	int hauteur=640;
+   	int largeur=640;
+	int hauteur=480;
 	//nombre d'amers	
 	int nbr_amers=2;
 	//stockage des positions des amers en pixels	
@@ -66,12 +66,17 @@ void Ecriture_carte_visib()
 	Graph Graph_test = xmlToGraph("graph.xml");
     	displayGraphVisib(Graph_test,x1,y1,t);
 		
-	for(a=0;a<nbr_amers;a++)
+/*	for(a=0;a<nbr_amers;a++)
 	{	
 		x[a]=(x1[a]+12.2)/0.05;
-		y[a]=-(y1[a]+13.8-32)/0.05;
+		y[a]=-(y1[a]+13.8-32)/0.05;*/
 		alphamax[a]=pi/4;
-	}
+	//}
+	x[0]=356;
+	y[0]=214;
+	
+	x[1]=335;
+	y[1]=255;
 
 	distancemax=distancem/0.05;
 	ROS_INFO("Dmax = %d",distancemax);

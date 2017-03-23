@@ -11,7 +11,7 @@ int main(int argc, char **argv)
     ros::NodeHandle node;
     ros::Rate loop_rate(1); // 1Hz 
 
-    HighLevelCommand HLC(node,3.0,3.0);
+    HighLevelCommand HLC(node,1.7,-0.5);
     
     int hlcCurrentState, hlcNextState;
     
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
                 ROS_INFO("Init...");
                 if(HLC.location()) 
                 {
-                    HLC.init(1.5);
+                    HLC.init(0.1);
                     hlcCurrentState = -1;
                 }
                 break;
