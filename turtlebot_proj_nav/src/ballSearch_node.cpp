@@ -19,7 +19,8 @@ int main(int argc, char **argv)
     ROS_INFO("Launching ballSearch_node ...\n");
     ros::init(argc, argv, "ballSearch_node");
     ros::NodeHandle n;
-
+    ros::Rate loop_rate(0.5);
+    
     BallSearch ballSearch(n);
     TurtleBotCamera turtleBotCamera(n);
     GraphicServer graphicServer(n,"/nav/camera/color");
@@ -34,13 +35,12 @@ int main(int argc, char **argv)
     
     
     ROS_INFO("Initiating ...\n");
-    usleep(1000000);
     
     Objet * obj;
 
    while (ros::ok()) 
    {
-         ros::spinOnce();
+         
              	    	    
 	     raw = turtleBotCamera.getCameraRgbImageColorRaw();
 	     rawFiltrageImage = filtrage_image(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE);
@@ -55,7 +55,6 @@ int main(int argc, char **argv)
             switch (currentState)
             {
             case 0:
-                usleep(1000000);
                 ROS_INFO("Recherche de la balle...");
        	        obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE) ;
                 if(obj == NULL) 
@@ -72,7 +71,6 @@ int main(int argc, char **argv)
                 }   
                 break;
             case 1:
-                usleep(1000000);
                 ROS_INFO("Recherche de la balle...");
        	        obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE) ;
                 if ((obj->Theta<-5) && !ballSearch.getCommandState()) 
@@ -91,7 +89,6 @@ int main(int argc, char **argv)
               	    currentState=1;
                 break;
             case 2:
-                usleep(1000000);
                 ROS_INFO("Recherche de la balle...");
        	        obj = ballSearch.Recherche_balle(raw, CAMERA_WIDTH, CAMERA_HEIGHT, BALLE_ROUGE) ;
                 if (!ballSearch.getCommandState()) 
@@ -128,6 +125,9 @@ int main(int argc, char **argv)
                 currentState = 0;
                 break;
 		      }
+		      
+		      ros::spinOnce();
+		      loop_rate.sleep();
          
     }
     
