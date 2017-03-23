@@ -35,10 +35,29 @@
   <!-- Simple command -->
   <node pkg="turtlebot_proj_nav" name="command" type="command_node"/>
   
+  <!-- Localization -->
+  <node pkg="turtlebot_proj_nav" type="localisation_node" name="localisation_node" output="screen"/> 
 
+	<arg name="marker_size" default="16" />
+	<arg name="max_new_marker_error" default="0.08" />
+	<arg name="max_track_error" default="0.2" />
+
+	<arg name="cam_image_topic" default="/camera/depth_registered/points" />
+	<arg name="cam_info_topic" default="/camera/depth_registered/camera_info" />
+	<arg name="output_frame" default="/camera_rgb_optical_frame" />
+
+	<node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkers" respawn="false" output="screen">
+		<param name="marker_size"           type="double" value="$(arg marker_size)" />
+		<param name="max_new_marker_error"  type="double" value="$(arg max_new_marker_error)" />
+		<param name="max_track_error"       type="double" value="$(arg max_track_error)" />
+		<param name="output_frame"          type="string" value="$(arg output_frame)" />
+
+		<remap from="camera_image"  to="$(arg cam_image_topic)" />
+		<remap from="camera_info"   to="$(arg cam_info_topic)" />
+	</node>
 
   <!-- Set rviz -->
-  <!--<node pkg="rviz" type="rviz" name="rviz" args="-d /home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_proj_nav/config/localisation.rviz" />-->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find turtlebot_proj_nav)/config/localisation.rviz" />
 
 </launch>
 
