@@ -61,7 +61,7 @@ int main(int argc, char **argv)
                 if(obj == NULL) 
                 {
                     ROS_INFO("Pas de balle trouvée...");
-                        
+                    currentState=5;    
                 }
                 else 
                 {
