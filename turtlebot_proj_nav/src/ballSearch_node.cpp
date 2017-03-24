@@ -43,6 +43,7 @@ int main(int argc, char **argv)
     
     ROS_INFO("Initiating ...\n");
     ballSearch.attente(0,1); // Waiting 1 sec 0 nanosec
+    bool command_sent = false;
 
    while (ros::ok()) 
    {
@@ -68,16 +69,23 @@ int main(int argc, char **argv)
             {
                ROS_INFO("No ball found");
             }
-            else 
+            else if(!command_sent)
             {
                ROS_INFO("Distance estimated to the ball : %lf m",  (obj->Dist));
                ROS_INFO("Angle estimated to the ball: %lf degrees", obj->Theta);
                ROS_INFO("Center of the ball : (%d,%d) ", obj->Ucg, obj->Vcg);
             
                // Send distance and angle command to reach the ball
-	           if (obj->Theta<0) ballSearch.sendBallReference(0.2, -1.5, (obj->Dist)-0.5,-(obj->Theta)*PI/180);
-	           else ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.5,(obj->Theta)*PI/180);
-             
+	           if (obj->Theta<0) 
+	           {
+	                ballSearch.sendBallReference(0.2, -1.5, (obj->Dist)-0.7,-(obj->Theta)*PI/180);
+	                command_sent = true;
+	           }
+	           else 
+	           {
+	                ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.7,(obj->Theta)*PI/180);
+	                command_sent = true;
+               }
                
             }
 

@@ -44,6 +44,7 @@ public:
     void sendBallReference(const float linearVelocity, const float angularVelocity, const float distance, const float angle);
     Objet * Recherche_balle(unsigned char* raw, int  width, int height, int couleur);
     void attente(int nsec, int sec);
+    bool getCommandState();
 
 };
 

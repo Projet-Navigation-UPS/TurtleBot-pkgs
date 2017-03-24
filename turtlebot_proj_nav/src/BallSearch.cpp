@@ -13,7 +13,7 @@ BallSearch::BallSearch(ros::NodeHandle& node):
     //Subsribers
     subscriberCommandBusy(node.subscribe("/nav/command_busy", 1, &BallSearch::callbackCommandBusy,this)),
     //Publishers
-    publisherBallReference(node.advertise<turtlebot_proj_nav::command>("/nav/ball_reference", 1))
+    publisherBallReference(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1))
 {
     command_busy.data = true;
     etat_recherche = 0;
@@ -189,3 +189,5 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
    
    return obj;
 } 
+
+bool BallSearch::getCommandState(){return command_busy.data;}
