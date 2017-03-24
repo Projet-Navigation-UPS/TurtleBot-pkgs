@@ -8,9 +8,9 @@ int main(int argc, char **argv)
 {
     ROS_INFO("Launching highLevelCommande_node ...");
     
-    if (argc != 3)
+    if (argc != 5)
     {
-        ROS_ERROR("USAGE: highLevelCommande_node X_goal Y_goal");
+        ROS_ERROR("USAGE: highLevelCommande_node X_goal Y_goal XY_threshold XY_precision");
         return 1;
     }
     
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
                 ROS_INFO("Init...");
                 if(HLC.location()) 
                 {
-                    HLC.init(1);
+                    HLC.init(atof(argv[3]));
                     hlcCurrentState = -1;
                 }
                 break;
@@ -141,7 +141,7 @@ int main(int argc, char **argv)
                 else 
                 {
                     ROS_INFO("Final goal reached...");
-                    HLC.finalGoal(1.5);
+                    HLC.finalGoal(atof(argv[4]));
                     hlcCurrentState = 8;
                 };
                 break; 
@@ -154,12 +154,11 @@ int main(int argc, char **argv)
                 
             //End
             case 8:
-                ROS_INFO("The end."); 
+                return 1; 
                 break; 
                    
             default:
                 hlcCurrentState = -2;
-                HLC.findGlobalGoal();
                 break;
 
         }
