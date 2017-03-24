@@ -1,3 +1,12 @@
+/*
+  visib_pgmreader_node.cpp
+  Thibaut AGHNATIOS
+
+  ROS Node which read pgm file of markers visibility map and return the number of markers for the position of the robot in the map
+  !!! Don't work correctly and limited for 4 markers visible at the same time
+ 
+ */
+
 #include "ros/ros.h"
 #include "HighLevelCommand.hpp"
 #include <stdlib.h>
@@ -34,7 +43,8 @@ bool markersVisibility(turtlebot_proj_nav::MarkersVisibility::Request  &req, tur
         int x,y;
         x = (req.x+12.2)/0.05;
         y = -(req.y-18.2)/0.05;
-	    
+
+		// For the position of the robot (x,y), comparing the value to return the number of markers visible for this position    
         if(image.data[x][y]==12)
 		{
 			res.markers=1;
@@ -59,7 +69,7 @@ bool markersVisibility(turtlebot_proj_nav::MarkersVisibility::Request  &req, tur
         else
         {
             res.markers=0;
-			ROS_INFO("Indetermine (5 amers visibles en meme temps ou centre de l'amer detecte) : %d", res.markers);
+			ROS_INFO("Undetermined (5 visible markers at the same time or in the center of marker detected) : %d", res.markers);
         }
         
         ROS_INFO("Sending back visible markers : [%d]", (int)res.markers);
@@ -69,11 +79,12 @@ bool markersVisibility(turtlebot_proj_nav::MarkersVisibility::Request  &req, tur
 
 int main(int argc, char **argv)
 {
-	ROS_INFO("Launching reader visibility ...");
+    // ROS node init
+    ROS_INFO("Launching reader visibility ...");
     ros::init(argc, argv, "visibility_pgmreader_node");
     ros::NodeHandle node;
 
-
+	// Launching service which return the number of visible markers
     ros::ServiceServer serviceMarkersVisibility = node.advertiseService("/nav/visibility_marker", markersVisibility);
     ROS_INFO("Ready send visible markers.");
     ros::spin();
