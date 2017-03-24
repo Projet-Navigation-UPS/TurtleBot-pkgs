@@ -1,3 +1,11 @@
+/*
+  visib_init.hpp
+  Thibaut AGHNATIOS
+
+  Header file 
+ 
+ */
+
 #ifndef _VISIB_INIT_HPP_
 #define _VISIB_INIT_HPP_
 
