@@ -1,3 +1,12 @@
+/*
+  visib_init.cpp
+  Thibaut AGHNATIOS
+
+  displayGraphVisib : Function which create a graph and recover positions and orientation of markers
+  Ecriture_carte_visib : Generating a visibility map (PGM P2) and need to modify window scale and number of markers
+  pgm_imread : Reading pgm file and return image struct
+ */
+
 #include "visib_init.hpp"
 #include "graph.cpp"
 
@@ -35,39 +44,36 @@ using namespace std;
 
 void Ecriture_carte_visib()
 {	
-	//taille de la fenetre
+	//Window scale (!!! to modify if you don't use 512*640)
    	int largeur=512;
 	int hauteur=640;
-	//nombre d'amers	
+	//Markers number (!!! to modify)
 	int nbr_amers=2;
-	//stockage des positions des amers en pixels	
+	//Storage of markers positions in pixels	
 	int x[nbr_amers];
     	int y[nbr_amers];   
-	float t[nbr_amers]; //orientation des amers
+	float t[nbr_amers]; //Markers orientation (theta)
 	int i,j,k,l,o,p=0,r=0,s=0,u=0,w=0,a;
-	float dist=0.0 ; //variable pour le calcul de la distance
+	float dist=0.0 ; //Variable for the calculation of the distance
 	int pix[largeur][hauteur];
 	int v[nbr_amers][nbr_amers];
 	float yn[nbr_amers],xn[nbr_amers];
-	float x1[nbr_amers],y1[nbr_amers]; // position des amers en m
+	float x1[nbr_amers],y1[nbr_amers]; // Position of markers in meters
     	float angle[nbr_amers-1];
-	float alphamax[nbr_amers-1];
+	float alphamax[nbr_amers-1]; //angle of view
 	int distancemax;
 	int distancemin;
-	float distancem=2;
+	float distancem=2; //Range of marker's visibility (2 meter)
 	float xp[nbr_amers],yp[nbr_amers];
 
-	// Conversion m -> pixel
 
-	//1px = 0.494134897 cm
-	// x px = 337cm
-
-	//Lecture du graphe pour recuperer les positions des amers
+	//Reading the graph to retrieve positions of markers (positions x1 and y1; orientation t)
 	Graph Graph_test = xmlToGraph("graph.xml");
     	displayGraphVisib(Graph_test,x1,y1,t);
 		
 	for(a=0;a<nbr_amers;a++)
 	{	
+		// Convert meter to pixel (resolution 0.05 and window scale 512*640) !!!to modify if window scale different
 		x[a]=(x1[a]+12.2)/0.05;
 		y[a]=-(y1[a]+13.8-32)/0.05;
 		alphamax[a]=pi/4;
@@ -75,15 +81,15 @@ void Ecriture_carte_visib()
 
 	distancemax=distancem/0.05;
 	ROS_INFO("Dmax = %d",distancemax);
-	distancemin=0.20/0.05;	
+	distancemin=0.20/0.05; // Minimal range of marker's visibility for turtlebot (0.20 meter)	
 	ROS_INFO("Dmin = %d",distancemin);
 
     	ofstream fichier("src/TurtleBot-pkgs/turtlebot_proj_nav/map/visib.pgm", ios::out | ios::trunc);  
-		// ouverture en écriture avec effacement du fichier ouvert
+		// Opening file in writing mode with deletion of open file
 
    	if(fichier && (r<1))
         {	
-		//Entete du pgm
+		//Head of pgm
 		ROS_INFO("Creation de la carte");
 		fichier << "P2" << endl;
 		fichier << "#Thibaut" << endl;
@@ -93,17 +99,17 @@ void Ecriture_carte_visib()
 	}
 			
     
-	for (i=0;i<hauteur;i++) // colonne
+	for (i=0;i<hauteur;i++) // Rows
 	{
-		for (j=0;j<largeur;j++) // ligne
+		for (j=0;j<largeur;j++) // Line
 		{
 			pix[j][i]=15;
 			
-			for(k=0;k<nbr_amers;k++) // boucle pour les amers
+			for(k=0;k<nbr_amers;k++) // Loop for markers
 			{
-				dist = sqrt(pow(i-y[k],2)+pow(j-x[k],2)); // calcul de la distance du pixel par rapport aux amers
+				dist = sqrt(pow(i-y[k],2)+pow(j-x[k],2)); // Distance calculation of the current pixel compared to markers
 
-				// calcul de la normale
+				// Calculation of normal
 				if((t[k]<pi/2.0 && t[k]>=0) || (t[k]<2*pi && t[k]>=3*pi/2)) 
 					xn[k] = 1;
 				else 	xn[k] = -1;				
@@ -136,27 +142,27 @@ void Ecriture_carte_visib()
 					yp[k]=(-i+y[k]);
 				}
 				
-				//calcul de l'angle (produit vectoriel)
+				//calculating the angle (vector product)
 				angle[k]=acos((xp[k]*xn[k]+(yp[k]*yn[k]))/(sqrt(pow(xp[k],2)+pow(yp[k],2))*(sqrt(pow(xn[k],2)+pow(yn[k],2)))));					
 				
-				// Si la distance est comprise entre la distance min et la distance max et dans l'angle de champ de vision de l'amer, le pixel blanc passe en gris	
+				// If the distance is between the minimal distance and the maximal distance and too in the angle of view of the marker, the white pixel changes to gray	
 				if((dist<=distancemax && dist>=distancemin) && (angle[k]<=alphamax[k] && angle[k]>=-alphamax[k]) && (pix[j][i]!=0) ) 
 				{	
 					pix[j][i]-=3;
 				}
 				else 
-					if(dist == 0.0) //si la distance est nulle ca veut dire que c'est l'amer (on le met noir)
+					if(dist == 0.0)//If the distance is null it means that it is the marker's postion (we put the pixel black=0)
 					{	
 						pix[j][i]=0;
 					}
 			}
 
-			if(r<1)	//flag pour savoir si l'ecriture s'est deja faite 1 fois
+			if(r<1)	//Flag to know if the writing has already been done 1 time
 			{	
 				fichier << pix[j][i] << " " ;
 				p+=1;
 			}
-			if(p>=70 && (r<1))// Retour a la ligne chaque 70 termes pour respecter le format P2
+			if(p>=70 && (r<1))// Back to line each 70 terms to respect the P2 format
 			{
 				fichier << endl;
 				p=0;		
@@ -176,7 +182,7 @@ void Ecriture_carte_visib()
 		}
 }
 
-/******** FONCTION DE LECTURE DE PGM ******************/
+/******** PGM READING FUNCTION ******************/
 table pgm_imread(char *argv)			//reads pgm image
 	{
 	char line[70];
