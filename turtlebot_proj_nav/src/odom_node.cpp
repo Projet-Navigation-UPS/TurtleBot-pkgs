@@ -1,7 +1,6 @@
 #include "ros/ros.h"
 #include "TurtleBotCommand.hpp"
 #include "Odom.hpp"
-#include "command.h"
 #include "std_msgs/Bool.h"
 
 #include <cmath>
