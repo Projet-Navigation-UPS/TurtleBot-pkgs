@@ -7,11 +7,18 @@
 int main(int argc, char **argv)
 {
     ROS_INFO("Launching highLevelCommande_node ...");
+    
+    if (argc != 3)
+    {
+        ROS_ERROR("USAGE: highLevelCommande_node X_goal Y_goal");
+        return 1;
+    }
+    
     ros::init(argc, argv, "highLevelCommande_node");
     ros::NodeHandle node;
     ros::Rate loop_rate(1); // 1Hz 
 
-    HighLevelCommand HLC(node,3.0,3.0);
+    HighLevelCommand HLC(node,atof(argv[1]),atof(argv[2]));
     
     int hlcCurrentState, hlcNextState;
     
@@ -30,7 +37,7 @@ int main(int argc, char **argv)
                 ROS_INFO("Init...");
                 if(HLC.location()) 
                 {
-                    HLC.init(1.5);
+                    HLC.init(1);
                     hlcCurrentState = -1;
                 }
                 break;
