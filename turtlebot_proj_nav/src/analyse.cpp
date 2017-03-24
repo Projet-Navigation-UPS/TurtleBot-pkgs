@@ -1,3 +1,8 @@
+/*
+  analyse.cpp
+  
+  Image processing functions 
+ */
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
@@ -13,7 +18,7 @@ int Avancer_Etiquetage(unsigned char* image, int width, int height, int h, int w
 
    int dx, dy; /* indices de balayage des 8 voisins */
    
- //  if (etiquette > 255 ) etiquette = 255;
+  //  if (etiquette > 255 ) etiquette = 255;
   //          printf("ds Avancer_Etiquetage : %d\n",etiquette);
   //          printf("ds Avancer_Etiquetage h : %d\n",h);
   //          printf("ds Avancer_Etiquetage w : %d\n",w);
