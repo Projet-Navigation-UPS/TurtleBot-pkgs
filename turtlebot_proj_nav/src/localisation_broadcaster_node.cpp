@@ -1,3 +1,12 @@
+/*
+  localisation_broadcaster.cpp
+  Marine Bouchet & Tristan Klempka
+
+  ROS Node which broadcast constantly the robot position.
+  Initial pos can be set by running :
+  "rostopic pub -r 10 /new_odom geometry_msgs/Transform '{translation:  {x: 0.1, y: 0.0, z: 0.0}, rotation: {x: 0.0,y: 0.0,z: 0.0, w: 1.0}}'"
+  
+ */
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
@@ -5,7 +14,7 @@
 #include <std_msgs/Empty.h>
 #include <iostream>
 
-/* rostopic pub -r 10 /new_odom geometry_msgs/Transform '{translation:  {x: 0.1, y: 0.0, z: 0.0}, rotation: {x: 0.0,y: 0.0,z: 0.0, w: 1.0}}' */
+static const int NODE_FREQ = 60; // Must be > ~50 Hz
 
 tf::Transform transform_mapOdom;
 ros::Publisher pub_resetodom;
@@ -18,10 +27,11 @@ void odomCallback(const geometry_msgs::Transform& new_odom) {
 }
 
 int main(int argc, char** argv){
+    // ROS node init
     ros::init(argc, argv, "localisation_broadcaster_node");
     ros::NodeHandle node; 
  
-    //  Broadcaster and Listener
+    // Transform broadcaster and listener
     tf::TransformBroadcaster br;
     tf::TransformListener li;
 
@@ -39,7 +49,8 @@ int main(int argc, char** argv){
     // Localisation TF
     transform_mapOdom = transform_empty;
 
-    ros::Rate loop_rate(60); 
+    ros::Rate loop_rate(NODE_FREQ);
+    // Classic ROS loop
     while(ros::ok())
     {
         br.sendTransform(tf::StampedTransform(transform_mapOdom, ros::Time::now(), "map", "odom"));
