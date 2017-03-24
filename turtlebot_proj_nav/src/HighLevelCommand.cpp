@@ -366,7 +366,7 @@ void HighLevelCommand::sendGoal()
         currentGoal.header.stamp = ros::Time::now();
         currentGoal.header.frame_id = "map";
         currentGoal.pose.position.x = FinalGoalX.data;    
-        currentGoal.pose.position.y = FinalGoalX.data;    
+        currentGoal.pose.position.y = FinalGoalY.data;    
         currentGoal.pose.position.z = currentLocation.pose.pose.position.z;
         currentGoal.pose.orientation.x = 0;
         currentGoal.pose.orientation.y = 0;
@@ -412,7 +412,7 @@ void HighLevelCommand::init(float threshold)
     transformLocationFromOdomToMap();
     if(distance(currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y, FinalGoalX.data, FinalGoalY.data) > threshold)
         GlobalGoalMarkerId.data = getClosestMarkerToXYPosition(FinalGoalX.data,FinalGoalY.data);
-    ROS_INFO("Closest Marker to goal = %d",GlobalGoalMarkerId.data);
+    ROS_INFO("Closest Marker to goal -> %d",GlobalGoalMarkerId.data);
 }
 
 
