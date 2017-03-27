@@ -29,9 +29,7 @@
 #define SOUND_CLEANINGSTART 5
 #define SOUND_CLEANINGEND 6
 
-
 #define PI 3.1416
-
 
 class HighLevelCommand 
 {
@@ -49,7 +47,7 @@ private:
 
     //Messages
     std_msgs::Bool locationAvailable, goalReached, commandBusy, responseMarker, askMarker, goalAborted;
-    std_msgs::Int16 closestMarkerId, GlobalGoalMarkerId, markerSeen, makersVisibility;
+    std_msgs::Int16 closestMarkerId, globalGoalMarkerId, markerSeen, makersVisibility;
     std_msgs::Empty empty;
     std_msgs::Float64 FinalGoalX, FinalGoalY;
     
@@ -85,7 +83,7 @@ public:
     HighLevelCommand(ros::NodeHandle& node, float x_finalGoal, float y_finalGoal);
     ~HighLevelCommand();
     
-    void init(float threshold);
+    int init(float threshold);
     int marker();
     int seekMarker();
     int markersVisibility();
@@ -110,10 +108,6 @@ public:
     
     void transformLocationFromOdomToMap();
     
-    //void disableSimpleCommand();
-    //void enableSimpleCommand();
-    
-
 };
 
 #endif

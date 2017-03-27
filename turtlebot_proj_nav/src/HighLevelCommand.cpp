@@ -37,7 +37,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node):
     seekingMarkerState = 0;
     markerSeen.data = -1;
     closestMarkerId.data = -1;
-    GlobalGoalMarkerId.data = 0;
+    globalGoalMarkerId.data = -1;
     commandBusy.data = true;
     locationAvailable.data = false;
     goalReached.data = false;
@@ -71,7 +71,7 @@ HighLevelCommand::HighLevelCommand(ros::NodeHandle& node, float x_finalGoal, flo
     seekingMarkerState = 0;
     markerSeen.data = -1;
     closestMarkerId.data = -1;
-    GlobalGoalMarkerId.data = -1;
+    globalGoalMarkerId.data = -1;
     commandBusy.data = true;
     locationAvailable.data = false;
     goalReached.data = false;
@@ -223,9 +223,9 @@ bool HighLevelCommand::finalGoal(float threshold)
 
 bool HighLevelCommand::finalMarkerGoal()
 { 
-    if(closestMarkerId.data == GlobalGoalMarkerId.data) 
+    if(closestMarkerId.data == globalGoalMarkerId.data) 
     {
-        GlobalGoalMarkerId.data = -1;
+        globalGoalMarkerId.data = -1;
         return true;
     }
     else return false;
@@ -344,9 +344,9 @@ void HighLevelCommand::sendGoal()
     goalReached.data = false;
     transformLocationFromOdomToMap();
         
-    if(GlobalGoalMarkerId.data != -1)
+    if(globalGoalMarkerId.data != -1)
     {
-        NodeProperty marker = nextNode(closestMarkerId.data, GlobalGoalMarkerId.data, "graph.xml");
+        NodeProperty marker = nextNode(closestMarkerId.data, globalGoalMarkerId.data, "graph.xml");
         currentGoal.header.seq = 1;
         currentGoal.header.stamp = ros::Time::now();
         currentGoal.header.frame_id = "map";
@@ -407,12 +407,13 @@ int HighLevelCommand::getClosestMarkerToXYPosition(float x, float y)
     return closestGoalMarkerId;
 }
 
-void HighLevelCommand::init(float threshold)
+int HighLevelCommand::init(float threshold)
 {
     transformLocationFromOdomToMap();
     if(distance(currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y, FinalGoalX.data, FinalGoalY.data) > threshold)
-        GlobalGoalMarkerId.data = getClosestMarkerToXYPosition(FinalGoalX.data,FinalGoalY.data);
-    ROS_INFO("Closest Marker to goal -> %d",GlobalGoalMarkerId.data);
+        globalGoalMarkerId.data = getClosestMarkerToXYPosition(FinalGoalX.data,FinalGoalY.data);
+    ROS_INFO("Closest Marker to the goal -> %d",globalGoalMarkerId.data);
+    return globalGoalMarkerId.data;
 }
 
 
