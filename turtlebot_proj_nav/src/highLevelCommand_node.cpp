@@ -1,5 +1,5 @@
 /*
-  HightLevelCommand_node.cpp
+  hightLevelCommand_node.cpp
   Bruno Dato
 
   ROS Node which supervises the navigation of the robot between markers towards the final goal.
