@@ -2,7 +2,7 @@
   BallSearch.cpp
   Bruno Dato, Marine Bouchet & Thibaut Aghnatios 
 
-  Class which provide the search for a ball and communication with the command_node 
+  Class which provides the search for a ball and communication with the command_node 
  
  */
 #include "BallSearch.hpp"
@@ -15,7 +15,9 @@ BallSearch::BallSearch(ros::NodeHandle& node):
     //Publishers
     publisherBallReference(node.advertise<turtlebot_proj_nav::command>("/nav/open_loop_command", 1))
 {
+    // Wait for the command to update its busyness
     command_busy.data = true;
+    // Initialise seeking ball FSM
     etat_recherche = 0;
 }
 
