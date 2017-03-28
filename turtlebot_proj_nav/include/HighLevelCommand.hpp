@@ -1,3 +1,10 @@
+/*
+  HightLevelCommand.cpp
+  Bruno Dato
+
+  Header file for HightLevelCommand class.
+ 
+ */
 #ifndef _HIGHLEVELCOMMAND_
 #define _HIGHLEVELCOMMAND_
 
@@ -34,7 +41,7 @@ class HighLevelCommand
 private:
     
     //Subscrbers
-    ros::Subscriber subLocation, subMoveBaseActionResult, subscriberCommandBusy, subMarkerSeen;
+    ros::Subscriber subLocation, subMoveBaseActionResult, subCommandBusy, subMarkerSeen;
 
     //Publishers
     ros::Publisher pubGoal, pubSound, pubCommand, pubAskForMarker;

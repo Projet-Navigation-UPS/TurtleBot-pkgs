@@ -1,3 +1,10 @@
+/*
+  HightLevelCommand_node.cpp
+  Bruno Dato
+
+  ROS Node which supervises the navigation of the robot between markers towards the final goal.
+ 
+ */
 #include "ros/ros.h"
 #include "HighLevelCommand.hpp"
 #include <stdlib.h>
