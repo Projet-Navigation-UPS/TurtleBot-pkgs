@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 
    while (ros::ok()) 
    {
-         // Launch callbacks which received messages
+         // Launches callbacks which received messages
          ros::spinOnce();
          
          // Get robot RGB image raw     	    	    

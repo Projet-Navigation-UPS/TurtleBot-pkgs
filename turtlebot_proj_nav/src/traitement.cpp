@@ -1,3 +1,10 @@
+/*
+  traitement.cpp
+  modified by Bruno Dato (erosion, dilatation, ouverture & fermeture)
+
+  Image processing functions.
+ 
+ */
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>

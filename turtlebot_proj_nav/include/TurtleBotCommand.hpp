@@ -28,16 +28,15 @@ private:
     ros::Publisher publisherMobileBaseCommandsVelocity, pubCommandState;
     
     //Subscibers
-    ros::Subscriber subCommandReceived, subCommandState;
+    ros::Subscriber subCommandReceived;
     
     //Messages
     geometry_msgs::Twist mobileBaseCommandsVelocity;
-    std_msgs::Bool busy, enabled;
+    std_msgs::Bool busy;
     turtlebot_proj_nav::command commandAsked;
     
     //CallBacks
     void callBackCommandReceived(const turtlebot_proj_nav::command& msg);
-    void callBackEnableCommand(const std_msgs::Bool& msg);
         
 public:
 

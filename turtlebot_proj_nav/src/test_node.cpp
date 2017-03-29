@@ -1,3 +1,10 @@
+/*
+  test_node.cpp
+  Bruno Dato
+
+  ROS Node with examples of publisher and subscriber to test nodes.
+ 
+ */
 #include "ros/ros.h"
 #include <stdlib.h>
 #include "std_msgs/Bool.h"

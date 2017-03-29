@@ -25,8 +25,7 @@ public:
     : it_(nh_)
   {
     // Subscribe to input video feed and publish output video feed
-    image_sub_ = it_.subscribe("/camera/rgb/image_color", 1, 
-      &ImageConverter::imageCb, this);
+    image_sub_ = it_.subscribe("/camera/rgb/image_color", 1, &ImageConverter::imageCb, this);
     image_pub_ = it_.advertise("/nav/image_converter/output_video", 1);
   }
 
