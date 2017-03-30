@@ -1,3 +1,9 @@
+/*
+  traitement.hpp
+
+  Header file 
+ 
+ */
 #ifndef _TRAITEMENT_H_
 #define _TRAITEMENT_H
 

@@ -1,3 +1,10 @@
+/*
+  TurtleBotCommand.hpp
+  Bruno Dato & Tristant Klempka
+
+  Header file 
+ 
+ */
 #ifndef _TURTLEBOTCOMMAND_
 #define _TURTLEBOTCOMMAND_
 
@@ -12,17 +19,17 @@ const float ROBOT_LINEAR_MAX_VELOCITY = 0.25;
 const float ROBOT_ANGULAR_MAX_VELOCITY = 2;
 
 const float ROBOT_MAX_LINEAR_VELOCITY = 0.5f;
-const float ROBOT_MAX_ANGULAR_VELOCITY = 3.14f;
+const float ROBOT_MAX_ANGULAR_VELOCITY = 3.1416f;
 
 class TurtleBotCommand 
 {    
 private:
 
+    // Boolean states
     bool turning;
     bool moving;
     bool stopMouvement;
     bool startMouvement;
-    
     
     //Publishers
     ros::Publisher publisherMobileBaseCommandsVelocity, pubCommandState;
@@ -37,43 +44,46 @@ private:
     
     //CallBacks
     void callBackCommandReceived(const turtlebot_proj_nav::command& msg);
+    
+    
+    // Speed command
+    void setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
         
 public:
 
     TurtleBotCommand(ros::NodeHandle& node);
     ~TurtleBotCommand();
     
-    //Motion
+    //Motions
     void stop();
     void move(const float linearVelocity);
     void move();
     void turn(const float angularVelocity);
     void turn();
+    void moveAndTurn(const float linearVelocity, const float angularVelocity);
 
     //Diplays
     void displayMobileBaseCommandsVelocity();
-    void moveAndTurn(const float linearVelocity, const float angularVelocity);
     
     //States
     bool start();
-    bool stop2();
-    bool turtleBotMoving();
-    bool turtleBotTurning();
+    bool movingPhase();
+    bool turningPhase();
     bool commandBusy();
-    bool commandEnabled();
     
     //Durations
     ros::WallDuration turningDuration();
     ros::WallDuration movingDuration();
     
+    // End of motions
     void turningOver();
     void movingOver();
     
+    // Publishing
     void publishCommandState();
-
-private:
+    
+    // Debug function
     geometry_msgs::Twist getMobileBaseCommandsVelocity();
-    void setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ);
     
 };
 

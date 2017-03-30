@@ -1,3 +1,10 @@
+/*
+  GraphicServer.hpp
+  Tristant Klempka 
+
+  Header file 
+ 
+ */
 #ifndef _GRAPHICSERVER_
 #define _GRAPHICSERVER_
 

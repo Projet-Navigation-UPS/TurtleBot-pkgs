@@ -2,7 +2,7 @@
   TurtleBot_command.cpp
   Bruno Dato and Tristan Klempka
 
-  Class to command the turtlebot in speed.
+  Class to command the turtlebot in speed and distance.
  
  */
 #include "TurtleBotCommand.hpp"
@@ -23,10 +23,13 @@ TurtleBotCommand::TurtleBotCommand(ros::NodeHandle& node):
     commandAsked.angle = 0;
     
     // Initialization of the boolean values used for the FSM
+    // The command is not busy
     busy.data = false;
+    // The robot is not turning
     turning = false;
+    // The robot is not moving forward
     moving = false;
-    stopMouvement = true;
+    // A mouvement hasen't been asked yet
     startMouvement = false;
     
     // Initialy the robot doesn't move
@@ -52,7 +55,6 @@ void TurtleBotCommand::callBackCommandReceived(const turtlebot_proj_nav::command
 	    // Set boolean values
 	    turning = true;
 	    moving = false;
-	    stopMouvement = false;
 	    startMouvement = true;
 	    busy.data = true;
 	    // publish busyness
@@ -68,6 +70,7 @@ void TurtleBotCommand::setMobileBaseCommandsVelocity(const float linearX, const 
     mobileBaseCommandsVelocity.angular.x=angularX;
     mobileBaseCommandsVelocity.angular.y=angularY;
     mobileBaseCommandsVelocity.angular.z=angularZ;
+    // publish the message on the associated topic
     publisherMobileBaseCommandsVelocity.publish(mobileBaseCommandsVelocity);
 }
 
@@ -92,41 +95,44 @@ void TurtleBotCommand::stop()
     //pubCommandState.publish(busy);
 }
 
-// Makes the robot move forward at a linear speed of linearVelocity
+// Makes the robot move forward at a defined linear speed 
 void TurtleBotCommand::move(const float linearVelocity)
 {
     TurtleBotCommand::setMobileBaseCommandsVelocity(linearVelocity, 0, 0, 0, 0, 0);
 }
 
+// Makes the robot move forward at the speed defined by the custom command message
 void TurtleBotCommand::move()
 {
     TurtleBotCommand::move(commandAsked.linearVelocity);
 }
 
+// Makes the robot turn on itself at a defined angular speed 
 void TurtleBotCommand::turn(const float angularVelocity)
 {
     TurtleBotCommand::setMobileBaseCommandsVelocity(0, 0, 0, 0, 0, angularVelocity);
 }
 
+// Makes the robot turn on itself at the speed defined by the custom command message 
 void TurtleBotCommand::turn()
 {
     TurtleBotCommand::turn(commandAsked.angularVelocity*1.42);
+    // The angular velocity is multiplied by a correction calculated thanks to several mesurements
 }
 
+// Makes the robot move forward and turn at the same time at linear and angular defined seeds
 void TurtleBotCommand::moveAndTurn(const float linearVelocity, const float angularVelocity)
 {
     TurtleBotCommand::setMobileBaseCommandsVelocity(linearVelocity, 0, 0, 0, 0, angularVelocity);
 }
 
 
-//States
+//Boolean States
 bool TurtleBotCommand::start(){return startMouvement;}
 
-bool TurtleBotCommand::stop2(){return stopMouvement;}
+bool TurtleBotCommand::movingPhase(){return moving;}
 
-bool TurtleBotCommand::turtleBotMoving(){return moving;}
-
-bool TurtleBotCommand::turtleBotTurning(){return turning;}
+bool TurtleBotCommand::turningPhase(){return turning;}
 
 bool TurtleBotCommand::commandBusy(){return busy.data;}
 
@@ -135,15 +141,18 @@ bool TurtleBotCommand::commandBusy(){return busy.data;}
 ros::WallDuration TurtleBotCommand::turningDuration()
 {
     ros::WallDuration duration;
-    if(commandAsked.angularVelocity ==0 || commandAsked.angle == 0) 
+    if(commandAsked.angularVelocity = 0 || commandAsked.angle == 0) 
     {
+        // Duration is zero if the angular speed or the angle commanded is zero 
         duration = ros::WallDuration(0);
     }
     else 
     {
+        // Positive and negative angular speeds can be asked to the command, angles are always positive
         if (commandAsked.angularVelocity<0) duration = ros::WallDuration(-commandAsked.angle/commandAsked.angularVelocity);
         else duration = ros::WallDuration(commandAsked.angle/commandAsked.angularVelocity);
     }
+    // Once the duration is calculated, the movement is started
     startMouvement = false;
     return duration;
 }
@@ -154,10 +163,12 @@ ros::WallDuration TurtleBotCommand::movingDuration()
     ros::WallDuration duration;
     if(commandAsked.linearVelocity == 0 || commandAsked.distance == 0) 
     {
+        // Duration is zero if the linear speed or the distance commanded is zero 
         duration = ros::WallDuration(0);
     }
     else 
     {
+        // Positive and negative linear speeds can be asked to the command, distances are always positive
         if (commandAsked.linearVelocity<0) duration = ros::WallDuration(-commandAsked.distance/commandAsked.linearVelocity);
         else duration = ros::WallDuration(commandAsked.distance/commandAsked.linearVelocity);
     }
@@ -165,25 +176,34 @@ ros::WallDuration TurtleBotCommand::movingDuration()
     return duration;
 }
 
-//
-
+//End of motions
+// Sets all the booleans values when the turning phase is over and stops the mouvement
 void TurtleBotCommand::turningOver()
 {
+    // turning is over
     turning = false;
+    // moving will start
     moving = true;
+    // a new mouvement phase will start
     startMouvement = true;
+    // the robot is stoped
     stop();
 }
 
+// Sets all the booleans values when the moving phase is over and stops the mouvement
 void TurtleBotCommand::movingOver()
 {
+    // moving is over
     moving = false;
-    stopMouvement = true;
+    // stop the robot
     stop();
+    // the command is not busy anymore
     busy.data = false;
+    // publish busyness
     pubCommandState.publish(busy);
 }
 
+// publishes the command state on the associated topic
 void TurtleBotCommand::publishCommandState()
 {
     pubCommandState.publish(busy);

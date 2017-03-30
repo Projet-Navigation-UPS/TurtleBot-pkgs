@@ -52,7 +52,7 @@ int main(int argc, char **argv)
                 
             //Duration calculus
             case 2:
-                if(turtlebotCommand.turtleBotTurning())
+                if(turtlebotCommand.turningPhase())
                 {
                     ROS_INFO("Preparation for turning...");
                     // Calculation of the turning duration
@@ -80,14 +80,14 @@ int main(int argc, char **argv)
                     ROS_INFO("Duration over...");
                     commandCurrentState = 4;
                 }
-                else if(turtlebotCommand.turtleBotTurning())
+                else if(turtlebotCommand.turningPhase())
                 {
                     ROS_INFO("Turning... "); 
                     // If it's a turning phase, we send the command to turn
 		            turtlebotCommand.turn();
                     commandCurrentState = 3;
                 }
-                else if(turtlebotCommand.turtleBotMoving())
+                else if(turtlebotCommand.movingPhase())
                 {
                     ROS_INFO("Moving..."); 
                     // If it's a moving phase, we send the command to move forward
@@ -100,7 +100,7 @@ int main(int argc, char **argv)
             //Duration over
             case 4:
                 
-                if(turtlebotCommand.turtleBotTurning() && !turtlebotCommand.turtleBotMoving())
+                if(turtlebotCommand.turningPhase() && !turtlebotCommand.movingPhase())
 			    {
 			        ROS_INFO( "Turning finished...");
 			        // If the turning phase is over and the moving phase has not passed yet
