@@ -1,30 +1,41 @@
+/*
+  Odom.cpp
+  Bruno Dato & Thibaut Aghnatios
+
+  Class that provides sensors data
+ 
+ */
 #include "Odom.hpp"
 
-
-
-
+//Constructor
 Odom::Odom(ros::NodeHandle& node):
-    m_node(node),
-    subscriberMobileBaseSensorsCore(node.advertise<kobuki_msgs::SensorState>("/mobile_base/sensors/core", 1)),
-{
-    
-}
-
-
-Odom::~Odom
+	subscriberMobileBaseSensorsCore(node.subscribe("/mobile_base/sensors/core", 1, &Odom::callbackTicWheel,this))
 {}
 
+//Destructor
+Odom::~Odom(){}
 
-kobuki_msgs::SensorState TurtleBotCommand::getMobileBaseSensorsCore() 
+//Callback
+// Updates wheels encoders
+void Odom::callbackTicWheel(const kobuki_msgs::SensorState& msg)
+{
+    mobileBaseSensorsCore.left_encoder = msg.left_encoder;
+	mobileBaseSensorsCore.right_encoder = msg.right_encoder;
+    //std::cout<<"Wheels encoders"<<std::endl;
+    //std::cout<<mobileBaseSensorsCore.left_encoder<<std::endl;
+    //std::cout<<mobileBaseSensorsCore.right_encoder<<std::endl;
+
+}
+
+// Returns the current wheels encoder state
+kobuki_msgs::SensorState Odom::getMobileBaseSensorsCore() 
 {
     return mobileBaseSensorsCore;
 }
 
-
-void odom::displayMobileBaseSenorsCore()
+// Displays the wheels encoder state
+void Odom::displayMobileBaseSenorsCore()
 {
-    std::cout<<mobileBaseSensorsCore<<std::endl;
+    std::cout<<mobileBaseSensorsCore.left_encoder<<std::endl;
+	std::cout<<mobileBaseSensorsCore.right_encoder<<std::endl;
 }
-
-
-
