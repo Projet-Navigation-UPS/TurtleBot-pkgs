@@ -1,3 +1,10 @@
+/*
+  TurlteBotCamera.hpp
+  Bruno Dato & Tristan Klempka
+
+  Header file
+ 
+ */
 #ifndef _TURTLEBOTCAMERA_
 #define _TURTLEBOTCAMERA_
 

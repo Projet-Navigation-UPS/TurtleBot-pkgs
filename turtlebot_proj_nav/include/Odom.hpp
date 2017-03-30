@@ -1,5 +1,5 @@
 /*
-  Odom.cpp
+  Odom.hpp
   Bruno Dato & Thibaut Aghnatios
 
   Header file
