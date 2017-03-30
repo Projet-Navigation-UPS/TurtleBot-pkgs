@@ -64,12 +64,14 @@ void TurtleBotCommand::callBackCommandReceived(const turtlebot_proj_nav::command
 // Sends linear and angular speeds to the /mobile_base/commands/velocity topic
 void TurtleBotCommand::setMobileBaseCommandsVelocity(const float linearX, const float linearY, const float linearZ, const float angularX, const float angularY, const float angularZ)
 {
-    mobileBaseCommandsVelocity.linear.x=linearX;
+    if(linearX > ROBOT_MAX_LINEAR_VELOCITY) mobileBaseCommandsVelocity.linear.x=ROBOT_MAX_LINEAR_VELOCITY;
+    else mobileBaseCommandsVelocity.linear.x=linearX;
     mobileBaseCommandsVelocity.linear.y=linearY;
     mobileBaseCommandsVelocity.linear.z=linearZ;
     mobileBaseCommandsVelocity.angular.x=angularX;
     mobileBaseCommandsVelocity.angular.y=angularY;
-    mobileBaseCommandsVelocity.angular.z=angularZ;
+    if(angularZ > ROBOT_MAX_ANGULAR_VELOCITY) mobileBaseCommandsVelocity.angular.z=ROBOT_MAX_ANGULAR_VELOCITY;
+    else mobileBaseCommandsVelocity.angular.z=angularZ;
     // publish the message on the associated topic
     publisherMobileBaseCommandsVelocity.publish(mobileBaseCommandsVelocity);
 }

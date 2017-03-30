@@ -15,8 +15,6 @@
 #include "turtlebot_proj_nav/command.h"
 #include "std_msgs/Bool.h"
 
-const float ROBOT_LINEAR_MAX_VELOCITY = 0.25;
-const float ROBOT_ANGULAR_MAX_VELOCITY = 2;
 
 const float ROBOT_MAX_LINEAR_VELOCITY = 0.5f;
 const float ROBOT_MAX_ANGULAR_VELOCITY = 3.1416f;
