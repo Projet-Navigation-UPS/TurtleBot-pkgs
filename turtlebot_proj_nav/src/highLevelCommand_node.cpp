@@ -41,7 +41,7 @@ int main(int argc, char **argv)
         // FSM
         switch (hlcCurrentState)
         {
-            //Initializarion
+            //Initialization
             case 0:
                 ROS_INFO("[STATE %d] - Init...",hlcCurrentState); 
                 // If localization is available
