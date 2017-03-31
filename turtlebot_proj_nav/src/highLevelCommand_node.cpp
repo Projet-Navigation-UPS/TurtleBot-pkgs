@@ -48,7 +48,7 @@ int main(int argc, char **argv)
                 if(HLC.location()) 
                 {
                     // Calculate the closest marker to the goal
-                    // If there is a closest marler according to the XY_threshold
+                    // If there is a closest marker according to the XY_threshold
                     if(HLC.init(atof(argv[3])) != -1) hlcCurrentState = 1;
                     else hlcCurrentState = 7;
                 }
