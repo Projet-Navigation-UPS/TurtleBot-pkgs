@@ -168,18 +168,6 @@ bool HighLevelCommand::getMarkerAsked()
     return askMarker.data;
 }
 
-// Returns true and plays a sound if the final goal is reached wich a precision under a threshold
-bool HighLevelCommand::finalGoal(float threshold)
-{ 
-    transformLocationFromOdomToMap();
-    if(distance(currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y, FinalGoalX.data, FinalGoalY.data) < threshold) 
-    {
-        playSound(SOUND_CLEANINGEND);
-        return true;
-    } 
-    else return false;
-}
-
 // Return true is true if the final marker goal is reached
 bool HighLevelCommand::finalMarkerGoal()
 { 
@@ -406,5 +394,17 @@ void HighLevelCommand::askForMarker()
 {
     askMarker.data=true;
     pubAskForMarker.publish(empty);
+}
+
+// Returns true and plays a sound if the final goal is reached wich a precision under a threshold
+bool HighLevelCommand::finalGoal(float threshold)
+{ 
+    transformLocationFromOdomToMap();
+    if(distance(currentLocation.pose.pose.position.x, currentLocation.pose.pose.position.y, FinalGoalX.data, FinalGoalY.data) < threshold) 
+    {
+        playSound(SOUND_CLEANINGEND);
+        return true;
+    } 
+    else return false;
 }
 

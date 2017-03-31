@@ -94,7 +94,6 @@ public:
     bool getMarkerResponse();
     bool intermediateGoal();
     bool finalMarkerGoal();
-    bool finalGoal(float threshold);
     bool getGoalAborted();
     bool getCommandState();
     
@@ -104,6 +103,7 @@ public:
     void sendFinalGoal();
     int seekMarker();
     void askForMarker();
+    bool finalGoal(float threshold);
     
 };
 
