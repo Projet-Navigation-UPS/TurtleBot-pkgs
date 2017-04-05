@@ -142,8 +142,8 @@ bool TurtleBotCommand::commandBusy(){return busy.data;}
 //Durations
 ros::WallDuration TurtleBotCommand::turningDuration()
 {
-    ros::WallDuration duration;
-    if(commandAsked.angularVelocity = 0 || commandAsked.angle == 0) 
+    ros::WallDuration duration = ros::WallDuration(0);
+    if(commandAsked.angularVelocity == 0 || commandAsked.angle == 0) 
     {
         // Duration is zero if the angular speed or the angle commanded is zero 
         duration = ros::WallDuration(0);
@@ -157,6 +157,7 @@ ros::WallDuration TurtleBotCommand::turningDuration()
     // Once the duration is calculated, the movement is started
     startMouvement = false;
     return duration;
+    
 }
 
 

@@ -25,7 +25,8 @@ int main(int argc, char **argv)
     // Time when a mouvement will start
     ros::WallTime startTime;
     // Duration of a mouvement 
-    ros::WallDuration duration;
+    ros::WallDuration duration = ros::WallDuration(0);
+    
     
     // Initialization of the command FSM	    
     int commandCurrentState = 1;
