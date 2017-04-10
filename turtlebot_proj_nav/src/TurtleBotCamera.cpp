@@ -1,40 +1,42 @@
+/*
+  TurlteBotCamera.cpp
+  Bruno Dato & Tristan Klempka
+
+  Class that provides image stream data services
+ 
+ */
 #include "TurtleBotCamera.hpp"
 
+// Constructor
 TurtleBotCamera::TurtleBotCamera(ros::NodeHandle& node):
-    m_node(node),
-    //Publishers
-    publisherMobileBaseCommandsSound(node.advertise<kobuki_msgs::Sound>("/mobile_base/commands/sound", 1)),
-    //Subcribers
+    //Subcriber
     subscriberCameraRgbImageColor(node.subscribe("/nav/image_converter/output_video", 1, &TurtleBotCamera::callbackCameraRgbImageColor,this)),
     cameraRgbImageColorVec(CAMERA_HEIGHT*CAMERA_STEP_RGB)
 {
     cameraRgbImageColorRaw = new unsigned char[sizeof(unsigned char) * CAMERA_HEIGHT*CAMERA_STEP_RGB];
 }
+
+// Destructor
 TurtleBotCamera::~TurtleBotCamera()
 {
     delete cameraRgbImageColorRaw;
 }
 
-//Getters
+//Returns the RGB image from the turtlebot's camera in a ros data type
 sensor_msgs::Image TurtleBotCamera::getCameraRgbImageColor()
 {
     return cameraRgbImageColor;
 }
 
+//Returns the RGB image from the turtlebot's camera in a raw data type
 unsigned char* TurtleBotCamera::getCameraRgbImageColorRaw()
 {
     return cameraRgbImageColorRaw;
 }
 
 
-void TurtleBotCamera::setMobileBaseCommandsSound(const int sound)
-{
-    mobileBaseCommandsSound.value = sound;
-    publisherMobileBaseCommandsSound.publish(mobileBaseCommandsSound);
-}
-
-//Callbacks
-// We use a pre allocated vector to facilitate img raw conversion
+//Callback
+// We use a pre allocated vector to facilitate image raw conversion
 void TurtleBotCamera::callbackCameraRgbImageColor(const sensor_msgs::Image& msg)
 {
     cameraRgbImageColor = msg;
@@ -42,7 +44,7 @@ void TurtleBotCamera::callbackCameraRgbImageColor(const sensor_msgs::Image& msg)
     cameraRgbImageColorRaw = &cameraRgbImageColorVec[0];
 }
 
-    
+// Converts a raw image into a ros message image type   
 sensor_msgs::Image TurtleBotCamera::convertRawToSensorMsgsImage(const unsigned char* raw, const int height, const int width, const std::string& encoding, const char is_bigendian, const int step)
 {	
     sensor_msgs::Image sensorMsgsImage;
@@ -67,8 +69,3 @@ void TurtleBotCamera::displaySensorMsgsImage(const std::string& type, const sens
     std::cout<<sensorMsgsImage.step<<std::endl;
 }
 
-
-void TurtleBotCamera::displayMobileBaseCommandsSound()
-{
-    std::cout<<mobileBaseCommandsSound<<std::endl;
-}

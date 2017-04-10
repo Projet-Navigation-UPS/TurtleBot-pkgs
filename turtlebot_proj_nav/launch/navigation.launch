@@ -1,44 +1,65 @@
 <launch>
     
-    <!-- Reset odom -->
-    <node pkg="rostopic" type="rostopic" name="reset_odom" args="pub /mobile_base/commands/reset_odometry std_msgs/Empty"/>
+  <!-- RESET ODOMETRY -->
+  <node pkg="rostopic" type="rostopic" name="reset_odom" args="pub /mobile_base/commands/reset_odometry std_msgs/Empty"/>
     
     
-    <!-- TF broadcaster -->
-    <node pkg="tf" type="static_transform_publisher" name="base_tf_publisher" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 base_footprint base_link 100" />
-    <node pkg="turtlebot_proj_nav" type="localisation_broadcaster_node" name="localisation_broadcaster_node" output="screen"/> 
+  <!-- TF BROADCASTER -->
+  <node pkg="tf" type="static_transform_publisher" name="base_tf_publisher" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 base_footprint base_link 100" />
+  <node pkg="turtlebot_proj_nav" type="localisation_broadcaster_node" name="localisation_broadcaster_node" output="screen"/> 
     
     
-    <!-- We must specify an absolute topic name because if not it will be prefixed by "$(arg camera)".
-         Probably is a bug in the nodelet manager: https://github.com/ros/nodelet_core/issues/7 --> 
-    <!-- <arg name="scan_topic" value="/scan" />
-  </include> -->
-
-  <!-- Map server -->
+  <!-- MAP SERVER -->
+  <!-- Map of the environment -->
   <arg name="map_file" default="$(find turtlebot_proj_nav)/map/aip_map.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+  <!-- Markers positions on the map -->
   <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher_1" args="4.70 4.44 0.31 0.0 -0.707 0.0 0.707 map marker_0 100" />
   <node pkg="tf" type="static_transform_publisher" name="marker_tf_publisher_0" args="0.53 1.28 0.31 -0.5 -0.5 -0.5 0.5 map marker_1 100" />
+  <!-- Visibility map -->
   <node name="common_map" pkg="map_server" type="map_server" args="$(find turtlebot_proj_nav)/map/visib.yaml">
     <remap from="map" to="/markers_visibility_map" />
   </node>
   
 
-  <!-- Move Base -->
+  <!-- MOVE BASE -->
   <include file="$(find turtlebot_proj_nav)/launch/includes/move_base.launch.xml">
     <!--<arg name="custom_param_file" value="$(arg custom_param_file)"/> -->
   </include>
  
-  <!-- Markers visibility reader -->
+ 
+  <!-- MARKERS VISIBILITY READER -->
   <node pkg="turtlebot_proj_nav" name="visibility_marker" type="visib_pgmreader_node"/>
     
-  <!-- Simple command -->
+    
+  <!-- SIMPLE COMMAND -->
   <node pkg="turtlebot_proj_nav" name="command" type="command_node"/>
   
+  
+  <!-- LOCALIZATION -->
+  <node pkg="turtlebot_proj_nav" type="localisation_node" name="localisation_node" output="screen"/> 
+
+	<arg name="marker_size" default="16" />
+	<arg name="max_new_marker_error" default="0.08" />
+	<arg name="max_track_error" default="0.2" />
+
+	<arg name="cam_image_topic" default="/camera/depth_registered/points" />
+	<arg name="cam_info_topic" default="/camera/depth_registered/camera_info" />
+	<arg name="output_frame" default="/camera_rgb_optical_frame" />
+
+	<node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkers" respawn="false" output="screen">
+		<param name="marker_size"           type="double" value="$(arg marker_size)" />
+		<param name="max_new_marker_error"  type="double" value="$(arg max_new_marker_error)" />
+		<param name="max_track_error"       type="double" value="$(arg max_track_error)" />
+		<param name="output_frame"          type="string" value="$(arg output_frame)" />
+
+		<remap from="camera_image"  to="$(arg cam_image_topic)" />
+		<remap from="camera_info"   to="$(arg cam_info_topic)" />
+	</node>
 
 
-  <!-- Set rviz -->
-  <!--<node pkg="rviz" type="rviz" name="rviz" args="-d /home/projturtlebot/Documents/workspace_ros/src/TurtleBot-pkgs/turtlebot_proj_nav/config/localisation.rviz" />-->
+  <!-- RVIZ CONFIGURATION -->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find turtlebot_proj_nav)/config/localisation.rviz" />
 
 </launch>
 

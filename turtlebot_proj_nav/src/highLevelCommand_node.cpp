@@ -1,3 +1,10 @@
+/*
+  hightLevelCommand_node.cpp
+  Bruno Dato
+
+  ROS Node which supervises the navigation of the robot between markers towards the final goal.
+ 
+ */
 #include "ros/ros.h"
 #include "HighLevelCommand.hpp"
 #include <stdlib.h>
@@ -7,155 +14,184 @@
 int main(int argc, char **argv)
 {
     ROS_INFO("Launching highLevelCommande_node ...");
+    
+    //Return usage if the node is not properly launched
+    if (argc != 6)
+    {
+        ROS_ERROR("USAGE: highLevelCommande_node X_GOAL Y_GOAL XY_THRESHOLD XY_PRECISION DISTANCE_TO_MARKERS");
+        return 1;
+    }
+    
     ros::init(argc, argv, "highLevelCommande_node");
     ros::NodeHandle node;
+    // Rate of the node
     ros::Rate loop_rate(1); // 1Hz 
 
-    HighLevelCommand HLC(node,3.0,3.0);
+    // Object which provides hight level commands to control navigation behavior
+    HighLevelCommand HLC(node,atof(argv[1]),atof(argv[2]));
     
-    int hlcCurrentState;
+    // Initialization of FSM
+    int hlcCurrentState = 0;
     
-    hlcCurrentState = -2;
-
     while (ros::ok()) 
     {
-        
+        // Launches callbacks which received messages
         ros::spinOnce();
+        
+        // FSM
         switch (hlcCurrentState)
         {
-            //Init
-            case -2:
-            
-                ROS_INFO("Init...");
+            //Initialization
+            case 0:
+                ROS_INFO("[STATE %d] - Init...",hlcCurrentState); 
+                // If localization is available
                 if(HLC.location()) 
                 {
-                    HLC.init(1.5);
-                    hlcCurrentState = -1;
+                    // Calculate the closest marker to the goal
+                    // If there is a closest marker according to the XY_threshold
+                    if(HLC.init(atof(argv[3])) != -1) hlcCurrentState = 1;
+                    else hlcCurrentState = 7;
                 }
                 break;
             
-            
             //Visible markers
-            case -1:
-                //if((HLC.markersVisibility() != -1) && (HLC.markersVisibility() != 0))
-                if(true)
+            case 1:
+                // If there is more than one visibible marker
+                //if(HLC.markersVisibility() > 0)
+                // The service doesn't work yet so we assume that there are always at least one visible marker
+                if(true) 
                 {
-                    ROS_INFO("In visiblity zone...");
-                    hlcCurrentState = 1;
+                    ROS_INFO("[STATE %d] - In visiblity zone...",hlcCurrentState);
+                    hlcCurrentState = 3;
                 }
                 else if(HLC.markersVisibility() == -1)
                 {
-                    hlcCurrentState = -1;
+                    // Service call failed
+                    hlcCurrentState = 1;
                 }
                 else
                 {
-                    ROS_INFO("Not in visiblity zone...");
-                    hlcCurrentState = 7;
+                    ROS_INFO("[STATE %d] - Not in visiblity zone...",hlcCurrentState);
+                    hlcCurrentState = 9;
                 } 
                 break;
 
             //Perception
-            case 0:
-                if(HLC.marker() != -1)
+            case 2:
+                // If a markers is seen
+                if(HLC.markerID() != -1)
                 {
-                    ROS_INFO("Marker seen...");
-                    hlcCurrentState = 2;
+                    ROS_INFO("[STATE %d] - Marker seen...",hlcCurrentState);
+                    hlcCurrentState = 4;
                 }
                 else
                 {
-                    ROS_INFO("Seeking marker...");
+                    ROS_INFO("[STATE %d] - Seeking marker...",hlcCurrentState);
+                    // Calls a FSM to seek markers
                     HLC.seekMarker();
-                    hlcCurrentState = 1;
+                    hlcCurrentState = 3;
                 } 
                 break;
             
             //AskForMarker
-            case 1:                
-                if(HLC.markerResponse()) hlcCurrentState = 0;
-                else if(!HLC.getAskMarker())
+            case 3: 
+                // If there is a resonse from marker's detection               
+                if(HLC.getMarkerResponse()) hlcCurrentState = 2;
+                // If there is no request yet and the robot is not moving
+                else if(!HLC.getMarkerAsked() && !HLC.getCommandState())
                 { 
-                    ROS_INFO("AskForMarker...");
+                    ROS_INFO("[STATE %d] - Ask for marker...",hlcCurrentState);
+                    // Ask to location_node if it sees a marker
                     HLC.askForMarker();
                 }
                 break;
             
             //Location
-            case 2:
-                
+            case 4:
+                // Wait the new localisation after seen a marker
                 if(HLC.location())
                 {
-                    ROS_INFO("Location ready...");
-                    hlcCurrentState = 3;
+                    ROS_INFO("[STATE %d] - Location ready...",hlcCurrentState);
+                    hlcCurrentState = 5;
                 }
                 else 
                 {
-                    ROS_INFO("Wait for location...");
-                    hlcCurrentState = 2;
+                    ROS_INFO("[STATE %d] - Wait for location...",hlcCurrentState);
+                    hlcCurrentState = 4;
                 }    
                 break;
             
             //Marker Goals    
-            case 3:
+            case 5:
+                // Test if the closest marker to the goal is reached
                 if(HLC.finalMarkerGoal())
                 {
-                    hlcCurrentState = 5;
-                    ROS_INFO("Final Marker Goal reached...");
+                    ROS_INFO("[STATE %d] - Final Marker Goal reached...",hlcCurrentState);
+                    hlcCurrentState = 7;
                 }
                 else 
-                {   
-                    ROS_INFO("Send goal...");
-                    HLC.sendGoal();
-                    hlcCurrentState = 4;
+                {  
+                    // If it's not, send a goal towards a next marker 
+                    ROS_INFO("[STATE %d] - Send goal...",hlcCurrentState);
+                    HLC.sendMarkerGoal(atof(argv[5]));
+                    hlcCurrentState = 6;
                 }
                 break;
             
             //Movement    
-            case 4:
-                if(HLC.getGoalAborted()) hlcCurrentState = -1;
-                else if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
+            case 6:
+                // If the movement is aborted, star over to testing visibility zone
+                if(HLC.getGoalAborted()) hlcCurrentState = 1;
+                // While the intermediate goal is not reached, the robot is moving
+                else if(!HLC.intermediateGoal()) ROS_INFO("[STATE %d] - Moving...",hlcCurrentState);
                 else 
                 {
-                    ROS_INFO("Intermediate goal reached...");
+                    ROS_INFO("[STATE %d] - Intermediate goal reached...",hlcCurrentState);
                     hlcCurrentState = 1;
                 }
                 break;
             
             //Final marker goal reached    
-            case 5:
-                ROS_INFO("Send last goal...");
-                HLC.sendGoal();
-                hlcCurrentState = 6;
+            case 7:
+                ROS_INFO("[STATE %d] - Send last goal...",hlcCurrentState);
+                // Send goal to X_goal Y_goal
+                HLC.sendFinalGoal();
+                hlcCurrentState = 8;
                 break;
             
             //Final Goal reaching
-            case 6:
-                if(!HLC.intermediateGoal()) ROS_INFO("Moving...");
+            case 8:
+                // While the final goal is not reached, the robot is moving
+                if(!HLC.intermediateGoal()) ROS_INFO("[STATE %d] - Moving...",hlcCurrentState);
                 else 
                 {
-                    ROS_INFO("Final goal reached...");
-                    HLC.finalGoal(1.5);
-                    hlcCurrentState = 8;
+                    ROS_INFO("[STATE %d] - Final goal reached...",hlcCurrentState);
+                    // If the goal is reahced with a precision under XY_precision, a special sound is played
+                    HLC.finalGoal(atof(argv[4]));
+                    hlcCurrentState = 10;
                 };
                 break; 
             
             //Find visibility zone
-            case 7:
-                ROS_INFO("Seeking a visibility zone...");
-                hlcCurrentState = 7;
+            case 9:
+                ROS_INFO("[STATE %d] - Seeking a visibility zone...",hlcCurrentState);
+                // Not implemented yet...
+                hlcCurrentState = 9;
                 break; 
                 
             //End
-            case 8:
-                ROS_INFO("The end."); 
+            case 10:
+                // The supervision is closed
+                return 1; 
                 break; 
                    
             default:
-                hlcCurrentState = -2;
-                HLC.findGlobalGoal();
+                hlcCurrentState = 0;
                 break;
 
         }
 
+        // Synchronize with rate
         loop_rate.sleep();
     }
     

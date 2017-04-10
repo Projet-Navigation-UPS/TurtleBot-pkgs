@@ -1,3 +1,12 @@
+/*
+  bgrConverter_node.cpp
+  Bruno Dato & Tristan Klempka
+
+  ROS Node which convert bgr8 to rgb8 using opencv bridge.
+  A complete explaination can be found at :
+  http://wiki.ros.org/cv_bridge/Tutorials/UsingCvBridgeToConvertBetweenROSImagesAndOpenCVImages
+ 
+ */
 #include <ros/ros.h>
 #include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
@@ -15,9 +24,8 @@ public:
   ImageConverter()
     : it_(nh_)
   {
-    // Subscrive to input video feed and publish output video feed
-    image_sub_ = it_.subscribe("/camera/rgb/image_color", 1, 
-      &ImageConverter::imageCb, this);
+    // Subscribe to input video feed and publish output video feed
+    image_sub_ = it_.subscribe("/camera/rgb/image_color", 1, &ImageConverter::imageCb, this);
     image_pub_ = it_.advertise("/nav/image_converter/output_video", 1);
   }
 
@@ -26,6 +34,7 @@ public:
     cv_bridge::CvImagePtr cv_ptr;
     try
     {
+      // Our algorithms take RGB on 8 bits
       cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::RGB8);
     }
     catch (cv_bridge::Exception& e)

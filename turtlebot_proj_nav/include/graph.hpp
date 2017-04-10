@@ -1,3 +1,10 @@
+/*
+  graph.hpp
+  Bruno Dato
+
+  Header file 
+ 
+ */
 #ifndef _GRAPH_HPP_
 #define _GRAPH_HPP_
 
@@ -13,6 +20,7 @@
 #include <vector>
 #include <string>
 
+// Definition of the properties of a node/vertex
 struct NodeProperty
 {
     int id;
@@ -26,6 +34,7 @@ struct NodeProperty
 typedef boost::property<boost::edge_weight_t, double> EdgeWeightProperty;
 typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, NodeProperty, EdgeWeightProperty> Graph;
 
+// Functions
 Graph xmlToGraph(std::string xmlFile);
 void displayGraph(Graph g);
 NodeProperty nextNode(int sourceId, int targetId, std::string xmlFile);

@@ -1,3 +1,8 @@
+/*
+  analyse.hpp
+  
+  Header file 
+ */
 #ifndef _ANALYSE_H_
 #define _ANALYSE_H_
 

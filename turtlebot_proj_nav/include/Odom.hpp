@@ -1,3 +1,10 @@
+/*
+  Odom.hpp
+  Bruno Dato & Thibaut Aghnatios
+
+  Header file
+ 
+ */
 #ifndef _ODOM_
 #define _ODOM_
 
@@ -10,33 +17,27 @@
 class Odom
 {    
 private:
-        
-    //Publishers
 
-    
-	//Subscribers
+	//Subscriber
 	ros::Subscriber subscriberMobileBaseSensorsCore;
 
-    //Messages
+    //Message
 	kobuki_msgs::SensorState mobileBaseSensorsCore;
-	
-        
-    ros::NodeHandle& m_node;
-
 
 public:
 
     Odom(ros::NodeHandle& node);
     ~Odom();
-	kobuki_msgs::SensorState getMobileBaseSensorsCore();
 
+    //Get sensors data
+    kobuki_msgs::SensorState getMobileBaseSensorsCore();
 
-    //Motion
+    //CB
+    void callbackTicWheel(const kobuki_msgs::SensorState& msg);
 
-    //Diplays
-	void displayMobileBaseSenorsCore();
+    //Diplays 
+    void displayMobileBaseSenorsCore();
 
-private:
 	
 };
 

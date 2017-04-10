@@ -1,4 +1,10 @@
-//#define IPFILENAME "../../robotinoip.txt"
+/*
+  objet.hpp
+
+  Header file 
+  Definition of the class Objet used to define the ball caracteristics when it's found
+ 
+ */
 #define PI 3.14159
 #define COMPACT_MIN 0.5 // Compacité minimum pour une région
 #define SURF_MIN 300 // Surface minimum pour une région

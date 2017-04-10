@@ -4,8 +4,7 @@
   <version>0.0.0</version>
   <description>The turtlebot_proj_nav package</description>
 
-
-  <maintainer email="projturtlebot@todo.todo">projturtlebot</maintainer>
+  <maintainer email="bruno.dato.meneses@gmail.com">projturtlebot</maintainer>
 
   <license>GPLv3</license>
 
@@ -37,6 +36,5 @@
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->
-
   </export>
 </package>

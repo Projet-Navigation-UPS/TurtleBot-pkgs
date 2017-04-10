@@ -1,9 +1,7 @@
 <launch>
       
-
   <!-- Set rviz -->
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find turtlebot_proj_nav)/config/localisation.rviz" />
-
 
 </launch>
 

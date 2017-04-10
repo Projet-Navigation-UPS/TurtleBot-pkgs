@@ -139,7 +139,6 @@ include_directories(
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(turtlebot_proj_nav ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 add_executable(localisation_node src/localisation_node.cpp)
@@ -149,8 +148,7 @@ add_executable(ballSearch_node src/ballSearch_node.cpp src/BallSearch.cpp src/Gr
 add_executable(command_node src/command_node.cpp src/TurtleBotCommand.cpp src/analyse.cpp src/traitement.cpp src/GraphicServer.cpp)
 add_executable(highLevelCommand_node src/highLevelCommand_node.cpp src/HighLevelCommand.cpp src/graph.cpp)
 add_executable(test_node src/test_node.cpp)
-add_executable(odom_tests_node src/odom_node.cpp src/TurtleBotCommand.cpp )
-add_executable(directedGraph_node src/directedGraph.cpp  src/graph.cpp)
+add_executable(odom_tests_node src/odom_node.cpp src/TurtleBotCommand.cpp src/Odom.cpp)
 add_executable(visib_pgmwriter_node src/visib_pgmwriter_node.cpp src/visib_init.cpp)
 add_executable(visib_pgmreader_node src/visib_pgmreader_node.cpp src/visib_init.cpp)
 
@@ -163,8 +161,7 @@ add_dependencies(ballSearch_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EX
 add_dependencies(highLevelCommand_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(test_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(odom_tests_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(directedGraph_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-# add_dependencies(turtlebot_proj_nav_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(turtlebot_proj_nav_node
@@ -193,10 +190,6 @@ target_link_libraries(test_node
 )
 target_link_libraries(odom_tests_node
   ${catkin_LIBRARIES}
-)
-target_link_libraries(directedGraph_node
-  ${catkin_LIBRARIES}
-  ${TinyXML_LIBRARIES}
 )
 target_link_libraries(visib_pgmwriter_node
   ${catkin_LIBRARIES}
