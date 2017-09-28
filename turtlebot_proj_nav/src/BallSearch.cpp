@@ -111,49 +111,54 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
          if (!command_busy.data)
          {
          
-         switch (etat_recherche)
+         /*switch (etat_recherche)
             {
                 case 0:
-                    ROS_INFO("Rotate left by Pi/3...");
-                    this->sendBallReference(0, 1.5, 0, PI/3);
+                    ROS_INFO("Rotate left by Pi/4...");
+                    this->sendBallReference(0, 1.5, 0, PI/4);
                     etat_recherche = 1;
                     break;
                 case 1:
-                    ROS_INFO("Rotate right by 2Pi/3...");
-                    this->sendBallReference(0, -1.5, 0, 2*PI/3);
+                    ROS_INFO("Rotate right by 2Pi/4...");
+                    this->sendBallReference(0, -1.5, 0, 2*PI/4);
                     etat_recherche = 2;
                     break;
                 case 2:
-                    ROS_INFO("Rotate left by Pi...");
-                    this->sendBallReference(0, 1.5, 0, PI);
+                    ROS_INFO("Rotate left by 3Pi/4...");
+                    this->sendBallReference(0, 1.5, 0, 3*PI/4);
                     etat_recherche = 3;
                     break;
                 case 3:
-                    ROS_INFO("Rotate right by 4Pi/3...");
-                    this->sendBallReference(0, -1.5, 0, 4*PI/3);
+                    ROS_INFO("Rotate right by Pi...");
+                    this->sendBallReference(0, -1.5, 0, PI);
                     etat_recherche = 4;
                     break;
                 case 4:
-                    ROS_INFO("Rotate left by 5Pi/3...");
-                    this->sendBallReference(0, 1.5, 0, 5*PI/3);
+                    ROS_INFO("Rotate left by 5Pi/4...");
+                    this->sendBallReference(0, 1.5, 0, 5*PI/4);
                     etat_recherche = 5;
                     break;
                 case 5:
-                    ROS_INFO("Rotate right by 2Pi...");
-                    this->sendBallReference(0, -1.5, 0, 2*PI);
+                    ROS_INFO("Rotate right by 3Pi/2...");
+                    this->sendBallReference(0, -1.5, 0, 3*PI/2);
                     etat_recherche = 6;
                     break;
                 case 6:
+                    ROS_INFO("Rotate left by 7Pi/4...");
+                    this->sendBallReference(0, 1.5, 0, 7*PI/4);
+                    etat_recherche = 7;
+                    break;
+                case 7:
                     ROS_INFO("Abort seeking");
                     break;
-		        case 7:
+		        case 8:
                     ROS_INFO("Seeking over");
                     break;
                 default:
                     ROS_INFO("Abort seeking");
                     break;
 
-            }
+            }*/
          }
       }
       else {         
@@ -185,7 +190,7 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
          //ROS_INFO("Barycentre : (%d, %d), Wmin, Wmax : (%d,%d), Hmin, Hmax : (%d,%d), Bounding box : (%d,%d), distance : %.2lf, Surface : %d", obj->Vcg, obj->Ucg,obj->Wmin,obj->Wmax, obj->Hmin, obj->Hmax, obj->Hmax-obj->Hmin, obj->Wmax-obj->Wmin, z, obj->Surface); 
          obj->Dist = z;
          obj->Theta = -theta*180.0/PI;
-	    etat_recherche = 7;
+	    etat_recherche = 8;
          
       }
    
@@ -193,3 +198,5 @@ Objet * BallSearch::Recherche_balle(unsigned char* raw, int  width, int height, 
 } 
 
 bool BallSearch::getCommandState(){return command_busy.data;}
+
+

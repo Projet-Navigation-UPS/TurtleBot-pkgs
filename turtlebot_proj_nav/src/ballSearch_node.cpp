@@ -68,6 +68,9 @@ int main(int argc, char **argv)
             if ( obj == NULL ) 
             {
                ROS_INFO("No ball found");
+               
+               
+               
             }
             else if(!command_sent)
             {
@@ -76,7 +79,7 @@ int main(int argc, char **argv)
                ROS_INFO("Center of the ball : (%d,%d) ", obj->Ucg, obj->Vcg);
             
                // Send distance and angle command to reach the ball
-	           if (obj->Theta<0) 
+	           /*if (obj->Theta<0) 
 	           {
 	                ballSearch.sendBallReference(0.2, -1.5, (obj->Dist)-0.7,-(obj->Theta)*PI/180);
 	                command_sent = true;
@@ -84,6 +87,17 @@ int main(int argc, char **argv)
 	           else 
 	           {
 	                ballSearch.sendBallReference(0.2, 1.5, (obj->Dist)-0.7,(obj->Theta)*PI/180);
+	                command_sent = true;
+               }*/
+               
+               if (obj->Theta<0) 
+	           {
+	                ballSearch.sendBallReference(0.0, -1.5, 0.0,-(obj->Theta)*PI/180);
+	                command_sent = true;
+	           }
+	           else 
+	           {
+	                ballSearch.sendBallReference(0.0, 1.5, 0.0,(obj->Theta)*PI/180);
 	                command_sent = true;
                }
                
