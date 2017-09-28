@@ -40,6 +40,8 @@ int main(int argc, char **argv)
 	    ros::spinOnce();
 	    
 	    
+	    
+	    
 	    /*if(turtlebotCommand.start())
                 {
                     // A mouvement has been asked on the topic meant for that purpose
@@ -62,7 +64,7 @@ int main(int argc, char **argv)
                 }*/
 	    
 	    
-	    switch (rotationcommandCurrentState)
+	    /*switch (rotationcommandCurrentState)
         {
             //Starting and waiting state
             case 1:

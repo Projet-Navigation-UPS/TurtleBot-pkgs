@@ -53,12 +53,14 @@ void TurtleBotCommand::callBackCommandReceived(const turtlebot_proj_nav::command
         //std::cout<<msg<<std::endl;
 	    commandAsked = msg;
 	    // Set boolean values
-	    turning = true;
-	    moving = false;
-	    startMouvement = true;
-	    busy.data = true;
+	    //turning = true;
+	    //moving = false;
+	    //startMouvement = true;
+	    //busy.data = true;
 	    // publish busyness
-	    pubCommandState.publish(busy);
+	    //pubCommandState.publish(busy);
+	    TurtleBotCommand::turn(commandAsked.angularVelocity*commandAsked.commandAsked.angle/2);
+	    
 }
 
 // Sends linear and angular speeds to the /mobile_base/commands/velocity topic

@@ -92,12 +92,12 @@ int main(int argc, char **argv)
                
                if (obj->Theta<0) 
 	           {
-	                ballSearch.sendBallReference(0.0, -1.5, 0.0,-(obj->Theta)*PI/180);
+	                ballSearch.sendBallReference(0.0, -1, 0.0,-(obj->Theta)*PI/180);
 	                command_sent = true;
 	           }
 	           else 
 	           {
-	                ballSearch.sendBallReference(0.0, 1.5, 0.0,(obj->Theta)*PI/180);
+	                ballSearch.sendBallReference(0.0, 1, 0.0,(obj->Theta)*PI/180);
 	                command_sent = true;
                }
                
