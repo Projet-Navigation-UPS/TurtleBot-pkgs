@@ -58,8 +58,16 @@ void TurtleBotCommand::callBackCommandReceived(const turtlebot_proj_nav::command
 	    //startMouvement = true;
 	    //busy.data = true;
 	    // publish busyness
-	    //pubCommandState.publish(busy);
-	    TurtleBotCommand::turn(commandAsked.angularVelocity*commandAsked.angle/2);
+	    //pubCommandState.publish(busy);  
+	    
+	    if(commandAsked.distance>0.2){
+	        TurtleBotCommand::moveAndTurn(commandAsked.linearVelocity, commandAsked.angularVelocity*commandAsked.angle*5);
+	    }  
+	    else {
+	        TurtleBotCommand::moveAndTurn(0, commandAsked.angularVelocity*commandAsked.angle*5);
+	    }
+	    
+
 	    
 }
 
