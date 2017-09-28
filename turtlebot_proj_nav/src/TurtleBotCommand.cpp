@@ -59,7 +59,7 @@ void TurtleBotCommand::callBackCommandReceived(const turtlebot_proj_nav::command
 	    //busy.data = true;
 	    // publish busyness
 	    //pubCommandState.publish(busy);
-	    TurtleBotCommand::turn(commandAsked.angularVelocity*commandAsked.commandAsked.angle/2);
+	    TurtleBotCommand::turn(commandAsked.angularVelocity*commandAsked.angle/2);
 	    
 }
 

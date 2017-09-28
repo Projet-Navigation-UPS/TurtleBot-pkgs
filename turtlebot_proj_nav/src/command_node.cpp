@@ -116,7 +116,7 @@ int main(int argc, char **argv)
                 rotationcommandCurrentState = 1;
                 break;
 
-        }
+        }*/
         // After every loop, we publish the command state again as a security
         turtlebotCommand.publishCommandState();
         

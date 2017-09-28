@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "ballSearch_node");
     ros::NodeHandle n;
     // Rate of the node
-    ros::Rate loop_rate(0.3); // 0.3Hz 
+    ros::Rate loop_rate(5); // 0.3Hz 
 
     // Object which provides image processing
     BallSearch ballSearch(n);
