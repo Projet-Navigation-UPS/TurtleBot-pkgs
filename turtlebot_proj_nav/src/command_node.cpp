@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     
     
     // Initialization of the command FSM	    
-    int commandCurrentState = 1;
+    int rotationcommandCurrentState = 1;
     
     // Rate of the node
     ros::Rate r(FREQ); 
@@ -39,7 +39,30 @@ int main(int argc, char **argv)
 	    // Launches callbacks which received messages
 	    ros::spinOnce();
 	    
-	    switch (commandCurrentState)
+	    
+	    /*if(turtlebotCommand.start())
+                {
+                    // A mouvement has been asked on the topic meant for that purpose
+                    ROS_INFO("Mouvement asked...");
+                    duration = turtlebotCommand.turningDuration();
+                    ROS_INFO("Duration  : %lf",duration.toSec() );
+                    // Get startTime now      
+		            startTime = ros::WallTime::now();
+		            ROS_INFO("Begin...");
+		            while((ros::WallTime::now() - startTime) < duration){
+		                ROS_INFO("Turning...");
+		                turtlebotCommand.turn();
+	                }
+                    
+                    // When the duration is over, we quit the state in which the robot is turning or moving"
+                    ROS_INFO("Duration over...");
+                    ROS_INFO( "Turning finished...");
+		            turtlebotCommand.movingOver();
+                    }   
+                }*/
+	    
+	    
+	    switch (rotationcommandCurrentState)
         {
             //Starting and waiting state
             case 1:
@@ -47,30 +70,19 @@ int main(int argc, char **argv)
                 {
                     // A mouvement has been asked on the topic meant for that purpose
                     ROS_INFO("Mouvement asked...");
-                    commandCurrentState = 2;
+                    rotationcommandCurrentState = 2;
                 }
                 break;
                 
             //Duration calculus
             case 2:
-                if(turtlebotCommand.turningPhase())
-                {
-                    ROS_INFO("Preparation for turning...");
-                    // Calculation of the turning duration
-                    duration = turtlebotCommand.turningDuration();
-                    commandCurrentState = 3;
-                }
-                else
-                {
-                    ROS_INFO("Preparation for moving...");
-                    // Calculation of the linear moving duration
-                    duration = turtlebotCommand.movingDuration();
-                    commandCurrentState = 3;
-                }
+                // Calculation of the turning duration
+                duration = turtlebotCommand.turningDuration();
                 ROS_INFO("Duration  : %lf",duration.toSec() ); 
                 // Get startTime now      
 		        startTime = ros::WallTime::now();
 		        ROS_INFO("Begin...");
+		        rotationcommandCurrentState = 3;
                 break;
                 
             //Mouvement
@@ -79,46 +91,27 @@ int main(int argc, char **argv)
                 {
                     // If the duration is over, we quit the state in which the robot is turning or moving"
                     ROS_INFO("Duration over...");
-                    commandCurrentState = 4;
+                    rotationcommandCurrentState = 4;
                 }
-                else if(turtlebotCommand.turningPhase())
+                else 
                 {
                     ROS_INFO("Turning... "); 
                     // If it's a turning phase, we send the command to turn
 		            turtlebotCommand.turn();
-                    commandCurrentState = 3;
-                }
-                else if(turtlebotCommand.movingPhase())
-                {
-                    ROS_INFO("Moving..."); 
-                    // If it's a moving phase, we send the command to move forward
-		            turtlebotCommand.move();
-                    commandCurrentState = 3;
+                    rotationcommandCurrentState = 3;
                 }
                 
                 break; 
                 
             //Duration over
             case 4:
-                
-                if(turtlebotCommand.turningPhase() && !turtlebotCommand.movingPhase())
-			    {
-			        ROS_INFO( "Turning finished...");
-			        // If the turning phase is over and the moving phase has not passed yet
-			        turtlebotCommand.turningOver();
-			        commandCurrentState = 1;
-			    }
-		        else
-		        {
-		            ROS_INFO( "All mouvements finished...");
-		            // Turning and moving phase are over
-		            turtlebotCommand.movingOver();
-		            commandCurrentState = 1;
-			    }
+                turtlebotCommand.movingOver();
+	            rotationcommandCurrentState = 1;
+
                 break;
                       
             default:
-                commandCurrentState = 1;
+                rotationcommandCurrentState = 1;
                 break;
 
         }

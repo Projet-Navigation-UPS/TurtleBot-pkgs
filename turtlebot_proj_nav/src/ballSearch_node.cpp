@@ -72,7 +72,7 @@ int main(int argc, char **argv)
                
                
             }
-            else if(!command_sent)
+            else 
             {
                ROS_INFO("Distance estimated to the ball : %lf m",  (obj->Dist));
                ROS_INFO("Angle estimated to the ball: %lf degrees", obj->Theta);
